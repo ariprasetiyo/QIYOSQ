@@ -5,13 +5,12 @@
  */
 package arprast.qiyosq.controller.rest;
 
-import arprast.qiyosq.dao.MenusDao;
 import arprast.qiyosq.model.MenusModel;
+import arprast.qiyosq.services.MenuService;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.persistence.EntityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,29 +30,19 @@ import org.springframework.web.bind.annotation.RestController;
 public class MenuRestController {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
+    
     @Autowired
-    private MenusDao sysMenusDao;
+    private MenuService menuService;
 
-    @Autowired
-    private EntityManager em;
-
-    @RequestMapping(value = "/list", method = RequestMethod.POST)
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	@RequestMapping(value = "/list", method = RequestMethod.POST)
     public ResponseEntity<List<MenusModel>> listMenu(
             @RequestParam("offset") int offset,
             @RequestParam("limit") int limit,
             @RequestParam(value = "search", required = false) String keySearch
-    ) {
-
-        List<MenusModel> listSysMenus = em
-                .createQuery("from MenusModel where menusName like :searchUserName order by menusName asc")
-                .setFirstResult(offset)
-                .setMaxResults(limit)
-                .setParameter("searchUserName", "%" + keySearch + "%")
-                .getResultList();
-
-        return new ResponseEntity(listSysMenus, HttpStatus.OK);
-    }
+	) {
+		return new ResponseEntity(menuService.listOfMenus(keySearch, offset, limit), HttpStatus.OK);
+	}
 
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     public Map<String, Object> saveMenu(
@@ -71,7 +60,7 @@ public class MenuRestController {
             sysMenus.setId(idMenu);
         }
         sysMenus.setId(idMenu);
-        sysMenus = sysMenusDao.save(sysMenus);
+        sysMenus = menuService.saveMenu(sysMenus);
 
         boolean isSuccessSave = false;
         if (sysMenus.getModifiedTime() != null) {

@@ -9,6 +9,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import arprast.qiyosq.model.RolesModel;
 
@@ -16,6 +17,7 @@ import arprast.qiyosq.model.RolesModel;
  *
  * @author ari-prasetiyo
  */
+@Repository
 public interface RolesDao extends PagingAndSortingRepository<RolesModel, Long> {
 
     @Query("select id from RolesModel where roleName = :nRolesName order by id desc")
@@ -25,6 +27,6 @@ public interface RolesDao extends PagingAndSortingRepository<RolesModel, Long> {
     public List<RolesModel> getListByName(@Param("nRolesName") List<String> roleName);
 
     @Query("from RolesModel where roleName in :nRolesName order by id desc")
-    public List<RolesModel> getListIdByName(@Param("nRolesName") List roleName);
+    public List<RolesModel> getListIdByName(@Param("nRolesName") List<String> roleName);
 }
 

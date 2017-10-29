@@ -20,7 +20,7 @@ public class BasicwebController {
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String index(){
         System.out.println("test");
-        return "/admin/v1/basicweb/index";
+        return "/admin/v1/pages/basicweb-index";
     }
     
 }

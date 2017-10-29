@@ -24,21 +24,21 @@ public class AuthorizationController {
     Logger log = LoggerFactory.getLogger(this.getClass());
     
     @Autowired
-    AuthorizationService authorizationImpl;
+    AuthorizationService authorizationService;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String index(Model model) {
-    	authorizationImpl.viewSysRoles(model, null);
-        return "/admin/v1/authorization/index";
+    	authorizationService.viewSysRoles(model, null);
+        return "/admin/v1/pages/authorization-index";
     }
 
     @RequestMapping(value = "", method = RequestMethod.POST)
     public String index(Model model, Pageable page,
             @RequestParam(value = "roles_id", required = false) Long idRole) {
-    	authorizationImpl.viewSysRoles(model, idRole);
-    	authorizationImpl.viewDataMenu(model, idRole);
-    	authorizationImpl.existingMenuInSysMenu(model);
-    	authorizationImpl.existingMenuInAuthorization(model, idRole);
-        return "/admin/v1/authorization/index";
+    	authorizationService.viewSysRoles(model, idRole);
+    	authorizationService.viewDataMenu(model, idRole);
+    	authorizationService.existingMenuInSysMenu(model);
+    	authorizationService.existingMenuInAuthorization(model, idRole);
+        return "/admin/v1/pages/authorization-index";
     }
 }

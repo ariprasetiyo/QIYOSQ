@@ -2,8 +2,6 @@ package arprast.qiyosq.controller.rest;
 
 import java.util.List;
 
-import javax.transaction.Transactional;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +16,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import arprast.qiyosq.dao.AuthorizationDao;
 import arprast.qiyosq.dto.GlobalDto;
 import arprast.qiyosq.dto.AuthorizationDto;
 import arprast.qiyosq.dto.RolesDto;
@@ -30,10 +27,7 @@ import arprast.qiyosq.util.LogsUtil;
 public class AuthorizationRestController {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    @Autowired
-    AuthorizationDao dsSysAuthorization;
-    
+   
     @Autowired
     AuthorizationService authorizationService;
 
@@ -45,9 +39,9 @@ public class AuthorizationRestController {
             @RequestParam(value = "vUpdate") boolean vUpdate,
             @RequestParam(value = "vDelete") boolean vDelete,
             @RequestParam(value = "vDisable") boolean vDisable) {
-        int inUpdate = dsSysAuthorization.updateAuthorization(id, vInsert, vUpdate, vDelete, vDisable);
+        int inUpdate = authorizationService.updateAuthorization(id, vInsert, vUpdate, vDelete, vDisable);
 
-        LogsUtil.logDebug(logger,"{} inUpdate {}", id, inUpdate);
+        LogsUtil.logDebug(logger, false,"{} inUpdate {}", id, inUpdate);
 
         GlobalDto globalDto = new GlobalDto();
         globalDto.setId(id);
@@ -78,7 +72,7 @@ public class AuthorizationRestController {
     @RequestMapping(value = "/deleteMenu/{idAuthorization}", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<GlobalDto> deleteMenu(@PathVariable("idAuthorization") Long id) {
-        dsSysAuthorization.delete(id);
+    	authorizationService.deleteAuthorization(id);
         GlobalDto globalDto = new GlobalDto();
         globalDto.setId(id);
         return new ResponseEntity<GlobalDto>(globalDto, HttpStatus.OK);

@@ -19,6 +19,6 @@ public class MenuController {
     
     @RequestMapping(value = "", method=RequestMethod.GET)
     public String index(){
-        return "/admin/v1/menu/index";
+        return "/admin/v1/pages/menu-index";
     }
 }

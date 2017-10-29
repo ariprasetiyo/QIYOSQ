@@ -23,8 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import arprast.qiyosq.dto.GlobalDto;
 import arprast.qiyosq.model.UserModel;
-import arprast.qiyosq.model.UserRolesModel;
-import arprast.qiyosq.services.UserRolesService;
 import arprast.qiyosq.services.UserService;
 import arprast.qiyosq.util.LogsUtil;
 
@@ -37,13 +35,10 @@ public class UserRestController {
     @Autowired
     private UserService userService;
     
-    @Autowired
-    private UserRolesService sysUserRolesService;
-    
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = "/delete{idUser}", method = RequestMethod.DELETE)
     public ResponseEntity<GlobalDto> deleteUser(@PathVariable("idUser") Long idUser) {
-    	userService.delete(idUser);
+    	userService.deleteUser(idUser);
         GlobalDto globalDto = new GlobalDto();
         globalDto.setId(idUser);
         return new ResponseEntity<GlobalDto>(globalDto, HttpStatus.OK);
@@ -55,8 +50,8 @@ public class UserRestController {
             @RequestParam("offset") int offset,
             @RequestParam("limit") int limit,
             @RequestParam(value = "search", required = false) String keySearch) { 
-		LogsUtil.logDebug(logger, "offset : {}, limit : {}, search : {}", offset, limit, keySearch);
-        return new ResponseEntity(userService.functionSysUserDto(offset, limit, keySearch), HttpStatus.OK);
+		LogsUtil.logDebug(logger, false, "offset : {}, limit : {}, search : {}", offset, limit, keySearch);
+        return new ResponseEntity(userService.listUserHeader(offset, limit, keySearch), HttpStatus.OK);
     }
     
     @RequestMapping(value = "/saveUser", method = RequestMethod.POST)
@@ -71,47 +66,14 @@ public class UserRestController {
             @RequestParam("textPassword") String textPassword,
             @RequestParam(value = "idUSerNya", required = false) String idUser
     ) {
-		LogsUtil.logDebug(logger,
+		LogsUtil.logDebug(logger, false,
 				" textUserName : {}, textPassword : {},textName : {}, textEmail : {},"
 						+ " noHp : {}, selectRole : {}, isActiveUser : {}, idUSerNya : {}",
 				textUserName, textPassword, textName, textEmail, noHp, selectRole[0], isActiveUser, idUser);
 
-		UserModel sysUser = new UserModel();     
-        boolean isUpdate = false;
-        if (idUser != null && !idUser.isEmpty()) {
-            sysUser.setId(Long.valueOf(idUser));
-            isUpdate = true;
-        }
-        
-        sysUser.setUsername(textUserName);
-        sysUser.setPassword(textPassword);
-        sysUser.setName(textName);
-        sysUser.setEmail(textEmail);
-        sysUser.setNoHp(noHp);
-        sysUser.setIsActive(isActiveUser);
-        sysUser = userService.save(sysUser);
-        
-		if (isUpdate) {
-			// int countDelete = em.createQuery("delete from SysUserRoles where
-			// sysUser.id = :userId ")
-			// .setParameter("userId", sysUser.getId())
-			// .executeUpdate();
-			sysUserRolesService.deleteByUserId(sysUser.getId());
-		}
-        
-        for (int a = 0; a < selectRole.length; a++) {
-            UserRolesModel sysUserRoles = new UserRolesModel();
-            sysUserRoles.setSysUser(sysUser);
-            sysUserRoles.setSysRoles(selectRole[a]);
-            sysUserRolesService.save(sysUserRoles);
-        }
-        
-        Map<String, Object> mapJson = new HashMap<String, Object>();
-        boolean isSuccessSave = false;
-        if (sysUser.getId() != null) {
-            isSuccessSave = true;
-        }
-        mapJson.put("isSuccessSave", isSuccessSave);
+		Map<String, Object> mapJson = new HashMap<String, Object>();
+        mapJson.put("isSuccessSave", userService.isSuccessSaveUserAndRole( textUserName, textName, textEmail, noHp, selectRole,
+    			isActiveUser, textPassword, idUser));
         return mapJson;
     }
     

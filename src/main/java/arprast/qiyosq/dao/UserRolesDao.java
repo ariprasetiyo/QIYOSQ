@@ -15,11 +15,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.stereotype.Repository;
 
 /**
  *
  * @author ari-prasetiyo
  */
+@Repository
 public interface UserRolesDao extends PagingAndSortingRepository<UserRolesModel, Long> {
 
     @Query("select x from  UserRolesModel x where sysRoles.roleName = :nRoleName order by id desc")
@@ -42,6 +44,7 @@ public interface UserRolesDao extends PagingAndSortingRepository<UserRolesModel,
     
     @Query("delete from UserRolesModel where sysUser.id = :nUserId")
     public Integer deleteByUserId(@Param("nUserId") Long userId);
+    
     
 //    @Query("delete from SysUserRoles where sysUser.id = :userId")
 //    public int deleteUserRoles(@Param("userId") long userId);

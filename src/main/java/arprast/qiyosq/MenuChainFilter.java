@@ -5,10 +5,10 @@
  */
 package arprast.qiyosq;
 
-import arprast.qiyosq.dao.AuthorizationDao;
-import arprast.qiyosq.dao.RolesDao;
 import arprast.qiyosq.model.RolesModel;
+import arprast.qiyosq.services.AuthorizationService;
 import arprast.qiyosq.services.MenuService;
+import arprast.qiyosq.services.RolesService;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -41,10 +41,13 @@ public class MenuChainFilter implements Filter {
     }
 
     @Autowired
-    AuthorizationDao authorizationDao;
+    AuthorizationService authorizationService;
 
     @Autowired
-    RolesDao sysRolesDao;
+    RolesService rolesService;
+    
+    @Autowired
+    MenuService menuService;
 
     @Override
     @Transactional
@@ -62,7 +65,7 @@ public class MenuChainFilter implements Filter {
         }
 
         //Looking for id from sys_roles
-        List<RolesModel> listId = sysRolesDao.getListIdByName(listAuthoritiesString);
+        List<RolesModel> listId = rolesService.getListIdByName(listAuthoritiesString);
         //convert SysRoles.getId to List Long
         List<Long> listLongId = getListAuthorities(listId);
         log.debug("User login : " + name);
@@ -73,7 +76,7 @@ public class MenuChainFilter implements Filter {
         }
 
         StringBuilder tmpScript = new StringBuilder();
-        String listMenu = MenuService.getScreenMenu(listLongId, 0, authorizationDao, tmpScript).toString();
+        String listMenu = menuService.getScreenMenu(listLongId, 0, tmpScript).toString();
         servletRequest.setAttribute("scriptMenu", listMenu);
         filterChain.doFilter(servletRequest, servletResponse);
     }
@@ -82,7 +85,7 @@ public class MenuChainFilter implements Filter {
     public void destroy() {
 
     }
-
+    
     private List<Long> getListAuthorities(List<RolesModel> listRoles) {
         List<Long> listId = new ArrayList<>();
         for (RolesModel sysRole : listRoles) {
