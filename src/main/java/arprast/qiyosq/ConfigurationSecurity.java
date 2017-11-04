@@ -92,7 +92,9 @@ public class ConfigurationSecurity extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity webSecurity) {
-        // webSecurity.ignoring().antMatchers("/without_restrict/**", "/login", "/");
+      
+    	//ignore resource with security access login
+    	// webSecurity.ignoring().antMatchers("/without_restrict/**", "/login", "/");
         webSecurity.ignoring().antMatchers("/resources/**");
     }
 

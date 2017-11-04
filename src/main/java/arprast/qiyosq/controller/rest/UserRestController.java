@@ -7,7 +7,8 @@ package arprast.qiyosq.controller.rest;
 
 import java.util.HashMap;
 import java.util.Map;
-import javax.transaction.Transactional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,52 +30,55 @@ import arprast.qiyosq.util.LogsUtil;
 @RestController
 @RequestMapping(value = "/admin/v1/api/user")
 public class UserRestController {
-    
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    
-    @Autowired
-    private UserService userService;
-    
-    @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/delete{idUser}", method = RequestMethod.DELETE)
-    public ResponseEntity<GlobalDto> deleteUser(@PathVariable("idUser") Long idUser) {
-    	userService.deleteUser(idUser);
-        GlobalDto globalDto = new GlobalDto();
-        globalDto.setId(idUser);
-        return new ResponseEntity<GlobalDto>(globalDto, HttpStatus.OK);
-    }
-    
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	@Autowired
+	private UserService userService;
+
+	@ResponseStatus(HttpStatus.OK)
+	@RequestMapping(value = "/delete{idUser}", method = RequestMethod.DELETE)
+	public ResponseEntity<GlobalDto> deleteUser(@PathVariable("idUser") Long idUser) {
+		userService.deleteUser(idUser);
+		GlobalDto globalDto = new GlobalDto();
+		globalDto.setId(idUser);
+		return new ResponseEntity<GlobalDto>(globalDto, HttpStatus.OK);
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@RequestMapping(value = "/list", method = RequestMethod.POST)
-    public ResponseEntity<UserModel> getListUser(
-            @RequestParam("offset") int offset,
-            @RequestParam("limit") int limit,
-            @RequestParam(value = "search", required = false) String keySearch) { 
-		LogsUtil.logDebug(logger, false, "offset : {}, limit : {}, search : {}", offset, limit, keySearch);
-        return new ResponseEntity(userService.listUserHeader(offset, limit, keySearch), HttpStatus.OK);
-    }
-    
-    @RequestMapping(value = "/saveUser", method = RequestMethod.POST)
-    @Transactional
-    public Map<String, Object> saveUser(
-            @RequestParam("textUserName") String textUserName,
-            @RequestParam("textName") String textName,
-            @RequestParam("textEmail") String textEmail,
-            @RequestParam("textNoHp") String noHp,
-            @RequestParam("selectRole[]") Long[] selectRole,
-            @RequestParam("checkBoxIsActive") boolean isActiveUser,
-            @RequestParam("textPassword") String textPassword,
-            @RequestParam(value = "idUSerNya", required = false) String idUser
-    ) {
+	public Future<ResponseEntity<UserModel>> getListUser(@RequestParam("offset") int offset,
+			@RequestParam("limit") int limit, @RequestParam(value = "search", required = false) String keySearch) {
+
+		/*
+		 * concurrent
+		 */
+		return CompletableFuture.supplyAsync(() -> {
+			try {
+				LogsUtil.logDebug(logger, false, "offset : {}, limit : {}, search : {}", offset, limit, keySearch);
+				return new ResponseEntity(userService.listUserHeader(offset, limit, keySearch), HttpStatus.OK);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return null;
+		});
+	}
+
+	@RequestMapping(value = "/saveUser", method = RequestMethod.POST)
+	public Map<String, Object> saveUser(@RequestParam("textUserName") String textUserName,
+			@RequestParam("textName") String textName, @RequestParam("textEmail") String textEmail,
+			@RequestParam("textNoHp") String noHp, @RequestParam("selectRole[]") Long[] selectRole,
+			@RequestParam("checkBoxIsActive") boolean isActiveUser, @RequestParam("textPassword") String textPassword,
+			@RequestParam(value = "idUSerNya", required = false) String idUser) {
 		LogsUtil.logDebug(logger, false,
 				" textUserName : {}, textPassword : {},textName : {}, textEmail : {},"
 						+ " noHp : {}, selectRole : {}, isActiveUser : {}, idUSerNya : {}",
 				textUserName, textPassword, textName, textEmail, noHp, selectRole[0], isActiveUser, idUser);
 
 		Map<String, Object> mapJson = new HashMap<String, Object>();
-        mapJson.put("isSuccessSave", userService.isSuccessSaveUserAndRole( textUserName, textName, textEmail, noHp, selectRole,
-    			isActiveUser, textPassword, idUser));
-        return mapJson;
-    }
-    
+		mapJson.put("isSuccessSave", userService.isSuccessSaveUserAndRole(textUserName, textName, textEmail, noHp,
+				selectRole, isActiveUser, textPassword, idUser));
+		return mapJson;
+	}
+
 }

@@ -3,6 +3,8 @@ package arprast.qiyosq.services;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +38,7 @@ public class UserServiceImpl implements UserService {
 		userDao.delete(idUser);
 	}
 
+    @Transactional
 	public boolean isSuccessSaveUserAndRole(String textUserName, String textName, String textEmail, String noHp, Long[] selectRole,
 			boolean isActiveUser, String textPassword, String idUser) {
 		UserModel sysUser = new UserModel();
