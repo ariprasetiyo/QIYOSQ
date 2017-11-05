@@ -29,4 +29,10 @@ public class RolesModel  extends ModelSerializable{
     public void setRoleName(String roleName) {
         this.roleName = roleName;
     }
+
+	@Override
+	public String toString() {
+		return "RolesModel [roleName=" + roleName + "]";
+	}
+    
 }

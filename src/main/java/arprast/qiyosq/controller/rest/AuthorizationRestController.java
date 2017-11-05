@@ -26,63 +26,55 @@ import arprast.qiyosq.util.LogsUtil;
 @RequestMapping("/admin/v1/api/authorization")
 public class AuthorizationRestController {
 
-    Logger logger = LoggerFactory.getLogger(this.getClass());
-   
-    @Autowired
-    AuthorizationService authorizationService;
+	Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @RequestMapping(value = "/update/{id}", method = RequestMethod.POST)
-    @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
-    public ResponseEntity<GlobalDto> index(@PathVariable("id") Long id,
-            @RequestParam(value = "vInsert") boolean vInsert,
-            @RequestParam(value = "vUpdate") boolean vUpdate,
-            @RequestParam(value = "vDelete") boolean vDelete,
-            @RequestParam(value = "vDisable") boolean vDisable) {
-        int inUpdate = authorizationService.updateAuthorization(id, vInsert, vUpdate, vDelete, vDisable);
+	@Autowired
+	AuthorizationService authorizationService;
 
-        LogsUtil.logDebug(logger, false,"{} inUpdate {}", id, inUpdate);
+	@RequestMapping(value = "/update/{id}", method = RequestMethod.POST)
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody
+	public ResponseEntity<GlobalDto> index(@PathVariable("id") Long id,
+			@RequestParam(value = "vInsert") boolean vInsert, @RequestParam(value = "vUpdate") boolean vUpdate,
+			@RequestParam(value = "vDelete") boolean vDelete, @RequestParam(value = "vDisable") boolean vDisable) {
+		int inUpdate = authorizationService.updateAuthorization(id, vInsert, vUpdate, vDelete, vDisable);
 
-        GlobalDto globalDto = new GlobalDto();
-        globalDto.setId(id);
-        globalDto.setCount(inUpdate);
+		LogsUtil.logDebug(logger, true, null, "{} inUpdate {}", id, inUpdate);
 
-        return new ResponseEntity<GlobalDto>(globalDto, HttpStatus.OK);
-    }
+		GlobalDto globalDto = new GlobalDto();
+		globalDto.setId(id);
+		globalDto.setCount(inUpdate);
 
-    @RequestMapping(value = "/addMenu/{idRoles}", method = RequestMethod.POST,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    public AuthorizationDto authorizationAddMenu(@PathVariable("idRoles") Long idRole,
-            @RequestParam("vInsert") boolean vInsert,
-            @RequestParam("vUpdate") boolean vUpdate,
-            @RequestParam("vDelete") boolean vDelete,
-            @RequestParam("vDisable") boolean vDisable,
-            @RequestParam("modelMenuId") Long MenuId,
-            @RequestParam("modelParentMenuId") Long parentMenuId) {
-        return authorizationService.saveDataMenu(idRole, vInsert, vUpdate,
-                vDelete, vDisable, MenuId, parentMenuId);
-    }
-       
+		return new ResponseEntity<GlobalDto>(globalDto, HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/addMenu/{idRoles}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	public AuthorizationDto authorizationAddMenu(@PathVariable("idRoles") Long idRole,
+			@RequestParam("vInsert") boolean vInsert, @RequestParam("vUpdate") boolean vUpdate,
+			@RequestParam("vDelete") boolean vDelete, @RequestParam("vDisable") boolean vDisable,
+			@RequestParam("modelMenuId") Long MenuId, @RequestParam("modelParentMenuId") Long parentMenuId) {
+		return authorizationService.saveDataMenu(idRole, vInsert, vUpdate, vDelete, vDisable, MenuId, parentMenuId);
+	}
+
 	@RequestMapping(value = "/list/{idRole}", method = RequestMethod.POST)
 	public ResponseEntity<List<AuthorizationDto>> viewAuthorizationList(@PathVariable("idRole") Long idRole) {
 		return new ResponseEntity<List<AuthorizationDto>>(authorizationService.getAuthorizationList(idRole),
 				HttpStatus.OK);
 	}
-	
-    @RequestMapping(value = "/deleteMenu/{idAuthorization}", method = RequestMethod.POST)
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<GlobalDto> deleteMenu(@PathVariable("idAuthorization") Long id) {
-    	authorizationService.deleteAuthorization(id);
-        GlobalDto globalDto = new GlobalDto();
-        globalDto.setId(id);
-        return new ResponseEntity<GlobalDto>(globalDto, HttpStatus.OK);
-    }
-    
-    @RequestMapping(value = "/viewRoles/", method = RequestMethod.POST,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    public RolesDto viewRoles(@RequestParam("idRole") Long idRoles) {
-        //logger.debug("view roles {}", idRoles);
-        return null;
-    }
+
+	@RequestMapping(value = "/deleteMenu/{idAuthorization}", method = RequestMethod.POST)
+	@ResponseStatus(HttpStatus.OK)
+	public ResponseEntity<GlobalDto> deleteMenu(@PathVariable("idAuthorization") Long id) {
+		authorizationService.deleteAuthorization(id);
+		GlobalDto globalDto = new GlobalDto();
+		globalDto.setId(id);
+		return new ResponseEntity<GlobalDto>(globalDto, HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/viewRoles/", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	public RolesDto viewRoles(@RequestParam("idRole") Long idRoles) {
+		// logger.debug("view roles {}", idRoles);
+		return null;
+	}
 
 }

@@ -14,83 +14,89 @@ import javax.persistence.Table;
 public class UserModel extends ModelSerializable {
 
 	private static final long serialVersionUID = 2432434267482377275L;
-	
-    @Column(length = 50, nullable = false)
-    private String username;
 
-    @Column(length = 50, nullable = true)
-    private String name;
+	@Column(length = 50, nullable = false)
+	private String username;
 
-    @Column(nullable = false)
-    private String password;
+	@Column(length = 50, nullable = true)
+	private String name;
 
-    @Column(length = 30)
-    private String email;
+	@Column(nullable = false)
+	private String password;
 
-    @Column(name = "no_hp", length = 13)
-    private String noHp;
+	@Column(length = 30)
+	private String email;
 
-    @Column(name = "is_active")
-    private boolean isActive;
+	@Column(name = "no_hp", length = 13)
+	private String noHp;
 
-//    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    @JoinColumn(nullable = true)
-//    private SysRoles SysUserRoles;
-//
-//    public SysRoles getSysUserRoles() {
-//        return SysUserRoles;
-//    }
-//
-//    public void setSysUserRoles(SysRoles SysUserRoles) {
-//        this.SysUserRoles = SysUserRoles;
-//    }
+	@Column(name = "is_active")
+	private boolean isActive;
 
-    public String getName() {
-        return name;
-    }
+	// @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	// @JoinColumn(nullable = true)
+	// private SysRoles SysUserRoles;
+	//
+	// public SysRoles getSysUserRoles() {
+	// return SysUserRoles;
+	// }
+	//
+	// public void setSysUserRoles(SysRoles SysUserRoles) {
+	// this.SysUserRoles = SysUserRoles;
+	// }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public String getUsername() {
-        return username;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public void setUsername(String userName) {
-        this.username = userName;
-    }
+	public String getUsername() {
+		return username;
+	}
 
-    public String getPassword() {
-        return password;
-    }
+	public void setUsername(String userName) {
+		this.username = userName;
+	}
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+	public String getPassword() {
+		return password;
+	}
 
-    public String getEmail() {
-        return email;
-    }
+	public void setPassword(String password) {
+		this.password = password;
+	}
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+	public String getEmail() {
+		return email;
+	}
 
-    public String getNoHp() {
-        return noHp;
-    }
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
-    public void setNoHp(String noHp) {
-        this.noHp = noHp;
-    }
+	public String getNoHp() {
+		return noHp;
+	}
 
-    public boolean isIsActive() {
-        return isActive;
-    }
+	public void setNoHp(String noHp) {
+		this.noHp = noHp;
+	}
 
-    public void setIsActive(boolean isActive) {
-        this.isActive = isActive;
-    }
+	public boolean isIsActive() {
+		return isActive;
+	}
+
+	public void setIsActive(boolean isActive) {
+		this.isActive = isActive;
+	}
+
+	@Override
+	public String toString() {
+		return "UserModel [username=" + username + ", name=" + name + ", password=" + password + ", email=" + email
+				+ ", noHp=" + noHp + ", isActive=" + isActive + "]";
+	}
 
 }

@@ -10,6 +10,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
@@ -59,5 +60,10 @@ public class UserRolesModel extends ModelSerializable {
         sysUserId.setId(id);
         this.sysUser = sysUserId;
     }
+
+	@Override
+	public String toString() {
+		return "UserRolesModel [sysUser=" + sysUser + ", sysRoles=" + sysRoles + "]";
+	}
 
 }

@@ -6,9 +6,11 @@
 package arprast.qiyosq;
 
 import arprast.qiyosq.model.RolesModel;
+import arprast.qiyosq.ref.ActionType;
 import arprast.qiyosq.services.AuthorizationService;
 import arprast.qiyosq.services.MenuService;
 import arprast.qiyosq.services.RolesService;
+import arprast.qiyosq.util.LogsUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,66 +33,71 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 public class MenuChainFilter implements Filter {
 
-    Logger log = LoggerFactory.getLogger(this.getClass());
+	Logger logger = LoggerFactory.getLogger(this.getClass());
+	private static final StringBuilder authorityLogs = new StringBuilder();
 
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-        //injector filter chain to spring
-        SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this,
-                filterConfig.getServletContext());
-    }
+	@Override
+	public void init(FilterConfig filterConfig) throws ServletException {
+		// injector filter chain to spring
+		SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, filterConfig.getServletContext());
+	}
 
-    @Autowired
-    AuthorizationService authorizationService;
+	@Autowired
+	AuthorizationService authorizationService;
 
-    @Autowired
-    RolesService rolesService;
-    
-    @Autowired
-    MenuService menuService;
+	@Autowired
+	RolesService rolesService;
 
-    @Override
-    @Transactional
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        HttpServletRequest httpServletRquest = (HttpServletRequest) servletRequest;
+	@Autowired
+	MenuService menuService;
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String name = auth.getName();
+	@Override
+	@Transactional
+	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
+			throws IOException, ServletException {
+		HttpServletRequest httpServletRquest = (HttpServletRequest) servletRequest;
 
-        //Convert Object to List
-        List<?> listAuthorities = new ArrayList<Object>(auth.getAuthorities());
-        List<String> listAuthoritiesString = new ArrayList<>(listAuthorities.size());
-        for (Object xx : listAuthorities) {
-            listAuthoritiesString.add(xx.toString());
-        }
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String name = auth.getName();
 
-        //Looking for id from sys_roles
-        List<RolesModel> listId = rolesService.getListIdByName(listAuthoritiesString);
-        //convert SysRoles.getId to List Long
-        List<Long> listLongId = getListAuthorities(listId);
-        log.debug("User login : " + name);
-        log.debug("Access page : " + httpServletRquest.getRequestURI());
-        log.debug("Authorities : ");
-        for (int a = 0; a < listAuthorities.size(); a++) {
-            log.debug("- id  " + listAuthorities.get(a));
-        }
+		// Convert Object to List
+		List<?> listAuthorities = new ArrayList<Object>(auth.getAuthorities());
+		List<String> listAuthoritiesString = new ArrayList<>(listAuthorities.size());
+		for (Object xx : listAuthorities) {
+			listAuthoritiesString.add(xx.toString());
+		}
 
-        StringBuilder tmpScript = new StringBuilder();
-        String listMenu = menuService.getScreenMenu(listLongId, 0, tmpScript).toString();
-        servletRequest.setAttribute("scriptMenu", listMenu);
-        filterChain.doFilter(servletRequest, servletResponse);
-    }
+		// Looking for id from sys_roles
+		List<RolesModel> listId = rolesService.getListIdByName(listAuthoritiesString);
+		// convert SysRoles.getId to List Long
+		List<Long> listLongId = getListAuthorities(listId);
 
-    @Override
-    public void destroy() {
+		for (int a = 0; a < listAuthorities.size(); a++) {
+			authorityLogs.append(listAuthorities.get(a));
+			if (a < (listAuthorities.size() - 1)) {
+				authorityLogs.append(",");
+			}
+		}
+		LogsUtil.logDebug(logger, true, ActionType.ACCESS_PAGE, "User login : {}, Access page : {}, Authorities : {}",
+				name, httpServletRquest.getRequestURI(), authorityLogs);
+		authorityLogs.delete(0, authorityLogs.length());
 
-    }
-    
-    private List<Long> getListAuthorities(List<RolesModel> listRoles) {
-        List<Long> listId = new ArrayList<>();
-        for (RolesModel sysRole : listRoles) {
-            listId.add(sysRole.getId());
-        }
-        return listId;
-    }
+		StringBuilder tmpScript = new StringBuilder();
+		String listMenu = menuService.getScreenMenu(listLongId, 0, tmpScript).toString();
+		servletRequest.setAttribute("scriptMenu", listMenu);
+		filterChain.doFilter(servletRequest, servletResponse);
+	}
+
+	@Override
+	public void destroy() {
+
+	}
+
+	private List<Long> getListAuthorities(List<RolesModel> listRoles) {
+		List<Long> listId = new ArrayList<>();
+		for (RolesModel sysRole : listRoles) {
+			listId.add(sysRole.getId());
+		}
+		return listId;
+	}
 }

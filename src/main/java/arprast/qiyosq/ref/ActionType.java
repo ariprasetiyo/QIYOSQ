@@ -12,8 +12,10 @@ public enum ActionType {
     APPROVAL("Approval"),
     VIEW("View"),
     CREATE("Create"),
-    DELETE("Delete");    
-
+    DELETE("Delete"),    
+	SAVE("Save"),  
+	ACCESS_PAGE("Access page");  
+	
     private String name;
 
     ActionType(String name) {

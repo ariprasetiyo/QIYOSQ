@@ -12,12 +12,12 @@ import arprast.qiyosq.util.LogsUtil;
 
 @Service
 public class UserRolesServiceImpl implements UserRolesService {
-	
+
 	private static Logger logger = LoggerFactory.getLogger(UserRolesServiceImpl.class);
-	
+
 	@Autowired
-    private UserRolesDao userRolesDao;
-	
+	private UserRolesDao userRolesDao;
+
 	@Autowired
 	private UserRolesDaoEM userRolesDaoEM;
 
@@ -29,7 +29,7 @@ public class UserRolesServiceImpl implements UserRolesService {
 	@Override
 	public int deleteByUserId(long userId) {
 		int countDelete = userRolesDaoEM.deleteByUserId(userId);
-		LogsUtil.logDebug(logger, false, "delete  UserRolesModel : {} for update", countDelete);
+		LogsUtil.logDebug(logger, true, null, "delete  UserRolesModel : {} for update", countDelete);
 		return countDelete;
 	}
 }
