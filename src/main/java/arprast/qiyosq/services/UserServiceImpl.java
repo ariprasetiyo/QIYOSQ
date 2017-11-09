@@ -20,6 +20,7 @@ import arprast.qiyosq.dto.UserDto;
 import arprast.qiyosq.dto.UserHeaderDto;
 import arprast.qiyosq.model.UserModel;
 import arprast.qiyosq.model.UserRolesModel;
+import arprast.qiyosq.ref.ActionType;
 import arprast.qiyosq.ref.MessageErrorType;
 import arprast.qiyosq.ref.MessageSuccessType;
 import arprast.qiyosq.util.LogsUtil;
@@ -51,35 +52,38 @@ public class UserServiceImpl implements UserService {
 	@Transactional
 	public JsonMessageDto saveUserAndRole(UserModel user, Long[] selectRole) {
 
+		LogsUtil.logDebug(logger, true, ActionType.SAVE, "{},{}", user.toString(), selectRole.toString());
+
 		JsonMessageDto jsonMessageDto = new JsonMessageDto();
 
 		int idUser = userDao.findUserByEmail(user.getEmail());
 		if (idUser > 0) {
-			LogsUtil.logDebug(logger, true, "Duplicate email {}", user.getEmail());
+			LogsUtil.logDebug(logger, true, MessageErrorType.DUPLICATE_EMAIL_ERROR, "Duplicate email {}",
+					user.getEmail());
 			jsonMessageDto.setMessageErrorType(MessageErrorType.DUPLICATE_EMAIL_ERROR);
 			return jsonMessageDto;
 		}
 
 		user = userDao.save(user);
 
+		if (user == null) {
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+			LogsUtil.logDebug(logger, true, MessageErrorType.SAVE_USER_ERROR, "null");
+			jsonMessageDto.setMessageErrorType(MessageErrorType.SAVE_USER_ERROR);
+			return jsonMessageDto;
+		}
+
 		for (int a = 0; a < selectRole.length; a++) {
 			UserRolesModel userRole = new UserRolesModel();
 			userRole.setSysUser(user);
 			userRole.setSysRoles(selectRole[a]);
 			userRole = userRolesDao.save(userRole);
-			if (userRole != null && userRole.getId() != null) {
+			if (userRole == null) {
 				TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-				LogsUtil.logDebug(logger, true, MessageErrorType.SAVE_ROLE_ERROR, userRole.toString());
+				LogsUtil.logDebug(logger, true, MessageErrorType.SAVE_ROLE_ERROR, "email : {}", user.getEmail());
 				jsonMessageDto.setMessageErrorType(MessageErrorType.SAVE_ROLE_ERROR);
 				return jsonMessageDto;
 			}
-		}
-
-		if (user != null && user.getId() != null) {
-			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-			LogsUtil.logDebug(logger, true, MessageErrorType.SAVE_USER_ERROR, user.toString());
-			jsonMessageDto.setMessageErrorType(MessageErrorType.SAVE_USER_ERROR);
-			return jsonMessageDto;
 		}
 
 		jsonMessageDto.setMessageSuccessType(MessageSuccessType.SAVE_SUCCEED);
