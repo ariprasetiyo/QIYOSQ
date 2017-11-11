@@ -18,17 +18,20 @@ import arprast.qiyosq.dto.JsonMessageDto;
 import arprast.qiyosq.dto.RolesDto;
 import arprast.qiyosq.dto.UserDto;
 import arprast.qiyosq.dto.UserHeaderDto;
+import arprast.qiyosq.mapper.UserMapper;
 import arprast.qiyosq.model.UserModel;
 import arprast.qiyosq.model.UserRolesModel;
 import arprast.qiyosq.ref.ActionType;
 import arprast.qiyosq.ref.MessageErrorType;
 import arprast.qiyosq.ref.MessageSuccessType;
 import arprast.qiyosq.util.LogsUtil;
+import fr.xebia.extras.selma.Selma;
 
 @Service
 public class UserServiceImpl implements UserService {
 
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+	private static final UserMapper userMapper = Selma.mapper(UserMapper.class);
 
 	@Autowired
 	private UserDao userDao;
@@ -44,16 +47,17 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Transactional
-	public JsonMessageDto updateUserAndRole(UserModel user, Long[] selectRole) {
+	public JsonMessageDto updateUserAndRole(UserDto userDto, Long[] selectRole) {
 		JsonMessageDto jsonMessageDto = new JsonMessageDto();
 		return jsonMessageDto;
 	}
 
 	@Transactional
-	public JsonMessageDto saveUserAndRole(UserModel user, Long[] selectRole) {
+	public JsonMessageDto saveUserAndRole(UserDto userDto, Long[] selectRole) {
 
-		LogsUtil.logDebug(logger, true, ActionType.SAVE, "{},{}", user.toString(), selectRole.toString());
+		LogsUtil.logDebug(logger, true, ActionType.SAVE, "{},{}", userDto.toString(), selectRole.toString());
 
+		UserModel user = userMapper.asUserModel(userDto);
 		JsonMessageDto jsonMessageDto = new JsonMessageDto();
 
 		int idUser = userDao.findUserByEmail(user.getEmail());
@@ -101,6 +105,7 @@ public class UserServiceImpl implements UserService {
 
 	public UserHeaderDto listUserHeader(int offset, int limit, String keySearch) {
 
+		LogsUtil.logDebug(logger, true, "offset={}, limit={}, search={}", offset, limit, keySearch);
 		List<UserModel> listSysUser = listUser(offset, limit, keySearch);
 
 		UserHeaderDto sysUserHeader = new UserHeaderDto();
@@ -125,8 +130,6 @@ public class UserServiceImpl implements UserService {
 				for (RolesDto sysRoleDto : listSysRoles) {
 					builderRoleName.append(sysRoleDto.getRoleName());
 					roloIdArrayLong[tmpPlusPlus] = sysRoleDto.getId();
-					LogsUtil.logDebug(logger, true, "{} -> role : {} ", sysUser.getUsername(),
-							sysRoleDto.getRoleName());
 					if (tmpPlusPlus == (listSysRoles.size() - 1)) {
 						continue;
 					}
@@ -141,6 +144,7 @@ public class UserServiceImpl implements UserService {
 		}
 		sysUserHeader.setListSysUserDto(listUserDto);
 		sysUserHeader.setTotalRecord(userDao.count());
+		LogsUtil.logDebug(logger, true, sysUserHeader.toString());
 		return sysUserHeader;
 	}
 }

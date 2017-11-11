@@ -8,8 +8,6 @@ package arprast.qiyosq.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
@@ -21,17 +19,14 @@ public class UserModel extends ModelSerializable {
 	private static final long serialVersionUID = 2432434267482377275L;
 
 	@Column(length = 50, nullable = false)
-	@NotNull
 	@NotBlank
 	private String username;
 
 	@Column(length = 50, nullable = false)
-	@NotNull
 	@NotBlank
 	private String name;
 
 	@Column(nullable = false)
-	@NotNull
 	@NotBlank
 	private String password;
 
@@ -41,14 +36,10 @@ public class UserModel extends ModelSerializable {
 	private String email;
 
 	@Column(name = "no_hp", length = 13)
-	@NotNull
 	@NotBlank
-	@Size(min = 10, max = 13)
 	private String noHp;
 
 	@Column(name = "is_active")
-	@NotNull
-	@NotBlank
 	private boolean isActive;
 
 	// @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

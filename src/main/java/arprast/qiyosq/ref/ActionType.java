@@ -7,14 +7,16 @@ package arprast.qiyosq.ref;
 
 
 public enum ActionType {
-    UPLOAD_FILE("Upload file"),
+    
+	UPLOAD_FILE("Upload file"),
     UPADATE("Update"),
     APPROVAL("Approval"),
     VIEW("View"),
     CREATE("Create"),
     DELETE("Delete"),    
 	SAVE("Save"),  
-	ACCESS_PAGE("Access page");  
+	ACCESS_PAGE("Access page"),
+	RESULT("Result");
 	
     private String name;
 

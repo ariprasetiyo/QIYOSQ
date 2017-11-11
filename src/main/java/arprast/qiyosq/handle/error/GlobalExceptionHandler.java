@@ -1,33 +1,36 @@
 package arprast.qiyosq.handle.error;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.http.HttpStatus;
 
 @ControllerAdvice
 @Component
 public class GlobalExceptionHandler {
 
 	private static final String TIMESTAMP = "timestamp";
-	private static final String CAUSE = "cause";
-	private static final String MESSAGE = "message";
 	private static final String RESPONSE_STATUS = "responseStatus";
 	private static final String RESPONSE_CODE = "responseCode";
-	private static final String ERROR = "error";
+	private static final String ERROR = "globalExceptionHandler";
+	private static final String ERRORS = "errors";
 
 	@ExceptionHandler
 	@ResponseBody
@@ -35,7 +38,7 @@ public class GlobalExceptionHandler {
 	public Map<?, ?> handle(MethodArgumentNotValidException exception) {
 		FieldError aa = exception.getBindingResult().getFieldError();
 		aa.getDefaultMessage();
-		return error(HttpStatus.BAD_REQUEST, exception.getBindingResult().getFieldErrors().stream()
+		return errors(HttpStatus.BAD_REQUEST, exception.getBindingResult().getFieldErrors().stream()
 				.map(FieldError::getDefaultMessage).collect(Collectors.toList()), exception.getCause());
 	}
 
@@ -43,23 +46,44 @@ public class GlobalExceptionHandler {
 	@ResponseBody
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public Map<?, ?> handle(MissingServletRequestParameterException exception) {
-		return error(HttpStatus.BAD_REQUEST, exception.getMessage(), exception.getCause());
+		return errors(HttpStatus.BAD_REQUEST, exception.getMessage(), exception.getCause());
 	}
 
 	@ExceptionHandler
 	@ResponseBody
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public Map<?, ?> handle(ConstraintViolationException exception) {
-		return error(HttpStatus.BAD_REQUEST, exception.getConstraintViolations().stream()
+		return errors(HttpStatus.BAD_REQUEST, exception.getConstraintViolations().stream()
 				.map(ConstraintViolation::getMessage).collect(Collectors.toList()), exception.getCause());
 	}
+	
+	
 
-	private Map<String, Object> error(HttpStatus httpStatus, Object message, Object cause) {
+	@ExceptionHandler
+	@ResponseBody
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public Map<?, ?> handle(BindException exception) {
+		return errors(HttpStatus.BAD_REQUEST, exception.getAllErrors());
+	}
+
+
+	private Map<String, Object> errors(HttpStatus httpStatus, Object message, Object cause) {
 		Map<String, Object> messageErrorMap = new HashMap<String, Object>();
 		messageErrorMap.put(RESPONSE_CODE, ERROR);
 		messageErrorMap.put(RESPONSE_STATUS, httpStatus);
-		messageErrorMap.put(CAUSE, cause);
-		messageErrorMap.put(MESSAGE, message);
+		List<String> listErrors = new ArrayList<String>();
+		listErrors.add(message.toString());
+		listErrors.add(cause.toString());
+		messageErrorMap.put(ERRORS, listErrors.toArray());
+		messageErrorMap.put(TIMESTAMP, String.valueOf((new Date().getTime())));
+		return messageErrorMap;
+	}
+
+	private Map<String, Object> errors(HttpStatus httpStatus, List<ObjectError> allErrors) {
+		Map<String, Object> messageErrorMap = new HashMap<String, Object>();
+		messageErrorMap.put(RESPONSE_CODE, ERROR);
+		messageErrorMap.put(RESPONSE_STATUS, httpStatus);
+		messageErrorMap.put(ERRORS, allErrors.toArray());
 		messageErrorMap.put(TIMESTAMP, String.valueOf((new Date().getTime())));
 		return messageErrorMap;
 	}

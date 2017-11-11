@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import arprast.qiyosq.dao.UserRolesDao;
 import arprast.qiyosq.dao.UserRolesDaoEM;
 import arprast.qiyosq.model.UserRolesModel;
+import arprast.qiyosq.ref.ActionType;
 import arprast.qiyosq.util.LogsUtil;
 
 @Service
@@ -29,7 +30,7 @@ public class UserRolesServiceImpl implements UserRolesService {
 	@Override
 	public int deleteByUserId(long userId) {
 		int countDelete = userRolesDaoEM.deleteByUserId(userId);
-		LogsUtil.logDebug(logger, true, null, "delete  UserRolesModel : {} for update", countDelete);
+		LogsUtil.logDebug(logger, true, ActionType.DELETE, "delete  UserRolesModel : {} for update", countDelete);
 		return countDelete;
 	}
 }

@@ -14,22 +14,28 @@ import java.util.List;
  */
 public class UserHeaderDto {
 
-    private float totalRecord;
-    private List<UserDto> listSysUserDto = new ArrayList<UserDto>();
+	private float totalRecord;
+	private List<UserDto> listSysUserDto = new ArrayList<UserDto>();
 
-    public float getTotalRecord() {
-        return totalRecord;
-    }
+	public float getTotalRecord() {
+		return totalRecord;
+	}
 
-    public void setTotalRecord(float totalRecord) {
-        this.totalRecord = totalRecord;
-    }
+	public void setTotalRecord(float totalRecord) {
+		this.totalRecord = totalRecord;
+	}
 
-    public List<UserDto> getListSysUserDto() {
-        return listSysUserDto;
-    }
+	public List<UserDto> getListSysUserDto() {
+		return listSysUserDto;
+	}
 
-    public void setListSysUserDto(List<UserDto> listSysUserDto) {
-        this.listSysUserDto = listSysUserDto;
-    }
+	public void setListSysUserDto(List<UserDto> listSysUserDto) {
+		this.listSysUserDto = listSysUserDto;
+	}
+
+	@Override
+	public String toString() {
+		return "UserHeaderDto [totalRecord=" + totalRecord + ", listSysUserDto=" + listSysUserDto + "]";
+	}
+
 }

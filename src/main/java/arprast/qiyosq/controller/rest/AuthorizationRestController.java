@@ -39,7 +39,7 @@ public class AuthorizationRestController {
 			@RequestParam(value = "vDelete") boolean vDelete, @RequestParam(value = "vDisable") boolean vDisable) {
 		int inUpdate = authorizationService.updateAuthorization(id, vInsert, vUpdate, vDelete, vDisable);
 
-		LogsUtil.logDebug(logger, true, null, "{} inUpdate {}", id, inUpdate);
+		LogsUtil.logDebug(logger, true, "{} inUpdate {}", id, inUpdate);
 
 		GlobalDto globalDto = new GlobalDto();
 		globalDto.setId(id);

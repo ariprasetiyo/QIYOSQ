@@ -5,21 +5,26 @@
  */
 package arprast.qiyosq.controller.rest;
 
-import org.apache.log4j.Logger;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import arprast.qiyosq.dto.UserDto;
 
 /**
  *
@@ -29,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 public class UserApiTest {
 
-    Logger log = Logger.getLogger(UserApiTest.class);
+    Logger log = LoggerFactory.getLogger(UserApiTest.class);
 
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -51,5 +56,44 @@ public class UserApiTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andReturn();
+    }
+    
+    /*
+     * http://localhost:8181/admin/v1/api/user/saveUser
+     */
+    @Test
+    public void testSaveUser() throws Exception {
+    	
+    	log.debug("Start test");
+    	 MvcResult mvcResult = mockMvc.perform(post("/admin/v1/api/user/saveUser")
+    			 .contentType(MediaType.APPLICATION_JSON)
+                 .param("username", userDto().getUsername())
+                 .param("name", userDto().getName())
+                 .param("password",  userDto().getPassword())
+                 .param("email",  userDto().getEmail())
+    			 .param("noHp",  userDto().getNoHp())
+    			 .param("isActive", String.valueOf(userDto().isIsActive()))
+    			 .param("selectRole[]",   String.valueOf(userDto().getRoleId()))
+    			 
+    			 )
+                 .andDo(print())
+                 //.andExpect(status().isOk())
+                 .andExpect(content().contentType("application/json;charset=UTF-8"))
+                 .andReturn();
+    	 String content = mvcResult.getResponse().getContentAsString(); 
+    	 log.debug("hallo {}",content);
+    }
+    
+    private static UserDto userDto(){
+    	UserDto userDto = new UserDto();
+    	userDto.setName("Ari Prasetiyo");
+    	userDto.setUsername("sasas");
+    	userDto.setIsActive(true);
+    	userDto.setEmail("prasetiyo@gmail.comc");
+    	userDto.setNoHp("1234567890123");
+    	userDto.setPassword("12344");
+    	long[] rolesId = {1,2,3};
+    	userDto.setRoleId(rolesId);
+    	return userDto;
     }
 }

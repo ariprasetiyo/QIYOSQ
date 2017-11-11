@@ -5,23 +5,41 @@
  */
 package arprast.qiyosq.dto;
 
+import java.util.Arrays;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.Email;
+
 /**
  *
  * @author ari-prasetiyo
  */
 public class UserDto extends Dto {
 
+	@Size(min = 2, max = 50)
+	@NotNull
     private String username;
 
+	@Size(min = 2, max = 50)
+	@NotNull
     private String name;
 
+	@Size(min = 2, max = 50)
+	@NotNull
     private String password;
 
+	@NotNull
+	@Email
     private String email;
 
+	@Size(min = 10, max = 13)
+	@NotNull
     private String noHp;
 
-    private boolean isActive;
+	@NotNull
+	private boolean isActive;
 
     private String roleName;
 
@@ -100,4 +118,12 @@ public class UserDto extends Dto {
     public void setRoleId(long[] roleId) {
         this.roleId = roleId;
     }
+
+	@Override
+	public String toString() {
+		return "UserDto [username=" + username + ", name=" + name + ", password=" + password + ", email=" + email
+				+ ", noHp=" + noHp + ", isActive=" + isActive + ", roleName=" + roleName + ", roleId="
+				+ Arrays.toString(roleId) + ", url=" + url + "]";
+	}
+   
 }

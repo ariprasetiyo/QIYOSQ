@@ -78,8 +78,8 @@ public class MenuChainFilter implements Filter {
 				authorityLogs.append(",");
 			}
 		}
-		LogsUtil.logDebug(logger, true, ActionType.ACCESS_PAGE, "User login : {}, Access page : {}, Authorities : {}",
-				name, httpServletRquest.getRequestURI(), authorityLogs);
+		LogsUtil.logDebug(logger, true, ActionType.ACCESS_PAGE, "Login={}, Access page={}, Authorities={}", name,
+				httpServletRquest.getRequestURI(), authorityLogs);
 		authorityLogs.delete(0, authorityLogs.length());
 
 		StringBuilder tmpScript = new StringBuilder();
