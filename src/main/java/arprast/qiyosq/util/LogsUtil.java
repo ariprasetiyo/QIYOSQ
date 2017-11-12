@@ -70,16 +70,18 @@ public class LogsUtil {
 	}
 
 	/**
-	 *  
+	 * 
 	 * @param logger
 	 * @param isEnabled
 	 * @param message
 	 * @param values
 	 * 
-	 * */
+	 */
 	public static void logDebug(Logger logger, boolean isEnabled, String message, Object... values) {
-		if (logger.isDebugEnabled() && isEnabled) {
+		if (logger.isDebugEnabled() && isEnabled && values.length > 0) {
 			logger.debug(message, values);
+		} else {
+			logger.debug(message);
 		}
 	}
 }

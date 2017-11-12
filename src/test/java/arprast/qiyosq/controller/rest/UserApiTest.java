@@ -9,6 +9,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.asyncDispatch;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -48,14 +50,24 @@ public class UserApiTest {
 
     @Test
     public void testApiUserList() throws Exception {
-
+    	
         MvcResult mvcResult = mockMvc.perform(post("/admin/v1/api/user/list")
-                .param("start", "0")
-                .param("length", "25"))
-                .andDo(print())
+        		.contentType(MediaType.APPLICATION_JSON)
+                .param("offset", "10")
+                .param("limit", "10"))
+                .andExpect(request().asyncStarted())
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andReturn();
+        
+        MvcResult mvcResultCompletableFuture = this.mockMvc.perform(asyncDispatch(mvcResult))
+				.andDo(print())
+				.andExpect(status().isOk())
+        		.andExpect(content().contentType("application/json;charset=UTF-8"))
+				.andReturn();
+        
+		String content = mvcResultCompletableFuture.getResponse().getContentAsString();
+		log.debug("hallo {}", content);
+       
     }
     
     /*
@@ -64,7 +76,6 @@ public class UserApiTest {
     @Test
     public void testSaveUser() throws Exception {
     	
-    	log.debug("Start test");
     	 MvcResult mvcResult = mockMvc.perform(post("/admin/v1/api/user/saveUser")
     			 .contentType(MediaType.APPLICATION_JSON)
                  .param("username", userDto().getUsername())
@@ -73,21 +84,26 @@ public class UserApiTest {
                  .param("email",  userDto().getEmail())
     			 .param("noHp",  userDto().getNoHp())
     			 .param("isActive", String.valueOf(userDto().isIsActive()))
-    			 .param("selectRole[]",   String.valueOf(userDto().getRoleId()))
-    			 
+    			 .param("selectRole[]",  "1,2")		 
     			 )
-                 .andDo(print())
+    			 .andExpect(request().asyncStarted())
                  //.andExpect(status().isOk())
-                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                  .andReturn();
-    	 String content = mvcResult.getResponse().getContentAsString(); 
+    	 
+    	 MvcResult mvcResultAsynchronous = this.mockMvc.perform(asyncDispatch(mvcResult))
+    			 .andDo(print())
+    			 //.andExpect(status().isOk())
+         		 .andExpect(content().contentType("application/json;charset=UTF-8"))
+ 				 .andReturn();
+    	 
+    	 String content = mvcResultAsynchronous.getResponse().getContentAsString(); 
     	 log.debug("hallo {}",content);
     }
     
     private static UserDto userDto(){
     	UserDto userDto = new UserDto();
     	userDto.setName("Ari Prasetiyo");
-    	userDto.setUsername("sasas");
+    	userDto.setUsername("s");
     	userDto.setIsActive(true);
     	userDto.setEmail("prasetiyo@gmail.comc");
     	userDto.setNoHp("1234567890123");

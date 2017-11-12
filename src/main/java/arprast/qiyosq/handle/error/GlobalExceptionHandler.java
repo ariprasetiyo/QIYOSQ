@@ -14,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -63,7 +62,14 @@ public class GlobalExceptionHandler {
 	@ResponseBody
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public Map<?, ?> handle(BindException exception) {
-		return errors(HttpStatus.BAD_REQUEST, exception.getAllErrors());
+		return errors(HttpStatus.BAD_REQUEST, exception.getFieldErrors());
+	}
+	
+	@ExceptionHandler
+	@ResponseBody
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public Map<?, ?> handle(IllegalStateException exception) {
+		return errors(HttpStatus.BAD_REQUEST, exception.getMessage(), exception.getCause());
 	}
 
 
@@ -79,7 +85,7 @@ public class GlobalExceptionHandler {
 		return messageErrorMap;
 	}
 
-	private Map<String, Object> errors(HttpStatus httpStatus, List<ObjectError> allErrors) {
+	private Map<String, Object> errors(HttpStatus httpStatus, List<FieldError> allErrors) {
 		Map<String, Object> messageErrorMap = new HashMap<String, Object>();
 		messageErrorMap.put(RESPONSE_CODE, ERROR);
 		messageErrorMap.put(RESPONSE_STATUS, httpStatus);

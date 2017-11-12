@@ -56,7 +56,8 @@ public class UserRestController {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			return null;
+			
+			return new ResponseEntity<UserHeaderDto>(new UserHeaderDto(), HttpStatus.NOT_ACCEPTABLE);
 		});
 	}
 
@@ -70,7 +71,7 @@ public class UserRestController {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			return null;
+			return new ResponseEntity<JsonMessageDto>(new JsonMessageDto(), HttpStatus.NOT_ACCEPTABLE);
 		});
 	}
 
