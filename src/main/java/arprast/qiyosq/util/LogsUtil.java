@@ -48,7 +48,11 @@ public class LogsUtil {
 					logger.debug(messages.toString(), values);
 				}
 			} else if (paramMessageStatus instanceof ActionType) {
-				if (logger.isDebugEnabled() && isEnabled) {
+				if (logger.isDebugEnabled() && isEnabled && Util.isLogAuditTrail()) {
+
+					if (paramMessageStatus == ActionType.ACCESS_PAGE && !Util.isEnableLoggerAccessPage())
+						return;
+
 					messages.append(ACTION_TYPE);
 					messages.append(COLON);
 					messages.append(paramMessageStatus.toString());
@@ -57,7 +61,7 @@ public class LogsUtil {
 					logger.debug(messages.toString(), values);
 				}
 			} else {
-				if (logger.isDebugEnabled() && isEnabled) {
+				if (logger.isDebugEnabled() && isEnabled && Util.isEnableCommonLogger()) {
 					logger.debug(message, values);
 				}
 			}
