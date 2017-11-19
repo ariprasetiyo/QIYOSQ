@@ -26,7 +26,7 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import arprast.qiyosq.ref.ActionType;
 import arprast.qiyosq.services.MenuService;
-import arprast.qiyosq.util.LogsUtil;
+import arprast.qiyosq.util.LogUtil;
 import arprast.qiyosq.util.Util;
 
 public class MenuChainFilter implements Filter {
@@ -92,7 +92,7 @@ public class MenuChainFilter implements Filter {
 				authorityLogs.append(",");
 			}
 		}
-		LogsUtil.logDebug(logger, true, ActionType.ACCESS_PAGE, "Login={}, Access page={}, Authorities={}", name,
+		LogUtil.logDebugType(logger, true, ActionType.ACCESS_PAGE, "Login={}, Access page={}, Authorities={}", name,
 				httpServletRquest.getRequestURI(), authorityLogs);
 		authorityLogs.delete(0, authorityLogs.length());
 	}

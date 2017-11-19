@@ -24,7 +24,7 @@ import arprast.qiyosq.model.UserRolesModel;
 import arprast.qiyosq.ref.ActionType;
 import arprast.qiyosq.ref.MessageErrorType;
 import arprast.qiyosq.ref.MessageSuccessType;
-import arprast.qiyosq.util.LogsUtil;
+import arprast.qiyosq.util.LogUtil;
 import fr.xebia.extras.selma.Selma;
 
 @Service
@@ -55,14 +55,14 @@ public class UserServiceImpl implements UserService {
 	@Transactional
 	public JsonMessageDto saveUserAndRole(UserDto userDto, Long[] selectRole) {
 
-		LogsUtil.logDebug(logger, true, ActionType.SAVE, "{},{}", userDto.toString(), selectRole.toString());
+		LogUtil.logDebugType(logger, true, ActionType.SAVE, "{},{}", userDto.toString(), selectRole.toString());
 
 		UserModel user = userMapper.asUserModel(userDto);
 		JsonMessageDto jsonMessageDto = new JsonMessageDto();
 
 		int idUser = userDao.findUserByEmail(user.getEmail());
 		if (idUser > 0) {
-			LogsUtil.logDebug(logger, true, MessageErrorType.DUPLICATE_EMAIL_ERROR, "Duplicate email {}",
+			LogUtil.logDebugType(logger, true, MessageErrorType.DUPLICATE_EMAIL_ERROR, "Duplicate email {}",
 					user.getEmail());
 			jsonMessageDto.setMessageErrorType(MessageErrorType.DUPLICATE_EMAIL_ERROR);
 			return jsonMessageDto;
@@ -72,7 +72,7 @@ public class UserServiceImpl implements UserService {
 
 		if (user == null) {
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-			LogsUtil.logDebug(logger, true, MessageErrorType.SAVE_USER_ERROR, "null");
+			LogUtil.logDebugType(logger, true, MessageErrorType.SAVE_USER_ERROR, "null");
 			jsonMessageDto.setMessageErrorType(MessageErrorType.SAVE_USER_ERROR);
 			return jsonMessageDto;
 		}
@@ -84,14 +84,14 @@ public class UserServiceImpl implements UserService {
 			userRole = userRolesDao.save(userRole);
 			if (userRole == null) {
 				TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-				LogsUtil.logDebug(logger, true, MessageErrorType.SAVE_ROLE_ERROR, "email : {}", user.getEmail());
+				LogUtil.logDebugType(logger, true, MessageErrorType.SAVE_ROLE_ERROR, "email : {}", user.getEmail());
 				jsonMessageDto.setMessageErrorType(MessageErrorType.SAVE_ROLE_ERROR);
 				return jsonMessageDto;
 			}
 		}
 
 		jsonMessageDto.setMessageSuccessType(MessageSuccessType.SAVE_SUCCEED);
-		LogsUtil.logDebug(logger, true, MessageSuccessType.SAVE_SUCCEED, user.toString());
+		LogUtil.logDebugType(logger, true, MessageSuccessType.SAVE_SUCCEED, user.toString());
 		return jsonMessageDto;
 	}
 
@@ -105,7 +105,7 @@ public class UserServiceImpl implements UserService {
 
 	public UserHeaderDto listUserHeader(int offset, int limit, String keySearch) {
 
-		LogsUtil.logDebug(logger, true, "offset={}, limit={}, search={}", offset, limit, keySearch);
+		LogUtil.logDebug(logger, true, "offset={}, limit={}, search={}", offset, limit, keySearch);
 		List<UserModel> listSysUser = listUser(offset, limit, keySearch);
 
 		UserHeaderDto sysUserHeader = new UserHeaderDto();
@@ -144,7 +144,7 @@ public class UserServiceImpl implements UserService {
 		}
 		sysUserHeader.setListSysUserDto(listUserDto);
 		sysUserHeader.setTotalRecord(userDao.count());
-		LogsUtil.logDebug(logger, true, sysUserHeader.toString());
+		LogUtil.logDebug(logger, true, sysUserHeader.toString());
 		return sysUserHeader;
 	}
 }

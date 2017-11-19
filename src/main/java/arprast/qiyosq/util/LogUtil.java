@@ -6,7 +6,7 @@ import arprast.qiyosq.ref.ActionType;
 import arprast.qiyosq.ref.MessageErrorType;
 import arprast.qiyosq.ref.MessageSuccessType;
 
-public class LogsUtil {
+public class LogUtil {
 
 	private static StringBuilder messages = new StringBuilder();
 	private static final String MESSAGE_SUCCESS_TYPE = "MessageSuccessType";
@@ -26,7 +26,7 @@ public class LogsUtil {
 	 * @param values
 	 * 
 	 */
-	public static void logDebug(Logger logger, boolean isEnabled, Object paramMessageStatus, String message,
+	public static void logDebugType(Logger logger, boolean isEnabled, Object paramMessageStatus, String message,
 			Object... values) {
 		try {
 			if (paramMessageStatus instanceof MessageSuccessType) {

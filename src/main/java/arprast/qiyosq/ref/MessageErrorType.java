@@ -3,7 +3,7 @@ package arprast.qiyosq.ref;
 public enum MessageErrorType {
 
 	DUPLICATE_DATA_ERROR(1), DUPLICATE_EMAIL_ERROR(2), NULL_POINTER_ERROR(3), NOT_SAVED_ERROR(4), SAVE_USER_ERROR(
-			5), SAVE_ROLE_ERROR(6);
+			5), SAVE_ROLE_ERROR(6), API_REQ_RES_ERROR(7), API_REQ_RES_GLOBAL_ERROR(8);
 
 	public final int intValue;
 
@@ -28,6 +28,10 @@ public enum MessageErrorType {
 			return SAVE_USER_ERROR;
 		case 6:
 			return SAVE_ROLE_ERROR;
+		case 7:
+			return API_REQ_RES_ERROR;
+		case 8:
+			return API_REQ_RES_GLOBAL_ERROR;
 		default:
 			return null;
 		}

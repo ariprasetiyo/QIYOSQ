@@ -20,7 +20,7 @@ import arprast.qiyosq.dto.GlobalDto;
 import arprast.qiyosq.dto.AuthorizationDto;
 import arprast.qiyosq.dto.RolesDto;
 import arprast.qiyosq.services.AuthorizationService;
-import arprast.qiyosq.util.LogsUtil;
+import arprast.qiyosq.util.LogUtil;
 
 @RestController
 @RequestMapping("/admin/v1/api/authorization")
@@ -39,7 +39,7 @@ public class AuthorizationRestController {
 			@RequestParam(value = "vDelete") boolean vDelete, @RequestParam(value = "vDisable") boolean vDisable) {
 		int inUpdate = authorizationService.updateAuthorization(id, vInsert, vUpdate, vDelete, vDisable);
 
-		LogsUtil.logDebug(logger, true, "{} inUpdate {}", id, inUpdate);
+		LogUtil.logDebug(logger, true, "{} inUpdate {}", id, inUpdate);
 
 		GlobalDto globalDto = new GlobalDto();
 		globalDto.setId(id);

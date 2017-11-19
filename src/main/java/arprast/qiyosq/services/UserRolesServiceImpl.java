@@ -9,7 +9,7 @@ import arprast.qiyosq.dao.UserRolesDao;
 import arprast.qiyosq.dao.UserRolesDaoEM;
 import arprast.qiyosq.model.UserRolesModel;
 import arprast.qiyosq.ref.ActionType;
-import arprast.qiyosq.util.LogsUtil;
+import arprast.qiyosq.util.LogUtil;
 
 @Service
 public class UserRolesServiceImpl implements UserRolesService {
@@ -30,7 +30,7 @@ public class UserRolesServiceImpl implements UserRolesService {
 	@Override
 	public int deleteByUserId(long userId) {
 		int countDelete = userRolesDaoEM.deleteByUserId(userId);
-		LogsUtil.logDebug(logger, true, ActionType.DELETE, "delete  UserRolesModel : {} for update", countDelete);
+		LogUtil.logDebugType(logger, true, ActionType.DELETE, "delete  UserRolesModel : {} for update", countDelete);
 		return countDelete;
 	}
 }
