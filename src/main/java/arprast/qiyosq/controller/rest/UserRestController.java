@@ -50,13 +50,13 @@ public class UserRestController {
 		 * concurrent
 		 */
 		return CompletableFuture.supplyAsync(() -> {
-			try {		
+			try {
 				return new ResponseEntity<UserHeaderDto>(userService.listUserHeader(offset, limit, keySearch),
 						HttpStatus.OK);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			
+
 			return new ResponseEntity<UserHeaderDto>(new UserHeaderDto(), HttpStatus.NOT_ACCEPTABLE);
 		});
 	}
@@ -66,8 +66,7 @@ public class UserRestController {
 			@RequestParam(value = "selectRole[]", required = true) Long[] selectRole) {
 		return CompletableFuture.supplyAsync(() -> {
 			try {
-				return new ResponseEntity<JsonMessageDto>(userService.saveUserAndRole(user, selectRole),
-						HttpStatus.OK);
+				return new ResponseEntity<JsonMessageDto>(userService.saveUserAndRole(user, selectRole), HttpStatus.OK);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

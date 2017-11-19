@@ -11,6 +11,9 @@ mvn spring-boot:run
 - Compile and run application with skip test :
 mvn clean package spring-boot:run -DskipTests
 
+- Run application with skip test and remote debug :
+mvn spring-boot:run -DskipTests -Drun.jvmArguments="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005"
+
 - Access link url :
 http://localhost:8181/login
 
