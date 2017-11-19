@@ -1,4 +1,4 @@
-package arprast.qiyosq.mapper;
+package arprast.qiyosq.beans;
 
 import arprast.qiyosq.dto.UserDto;
 import arprast.qiyosq.model.UserModel;

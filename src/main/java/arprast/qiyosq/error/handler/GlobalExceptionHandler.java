@@ -1,4 +1,4 @@
-package arprast.qiyosq.handle.error;
+package arprast.qiyosq.error.handler;
 
 import java.util.List;
 import java.util.stream.Collectors;

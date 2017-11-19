@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
+import arprast.qiyosq.beans.UserMapper;
 import arprast.qiyosq.dao.UserDao;
 import arprast.qiyosq.dao.UserDaoEM;
 import arprast.qiyosq.dao.UserRolesDao;
@@ -18,7 +19,6 @@ import arprast.qiyosq.dto.JsonMessageDto;
 import arprast.qiyosq.dto.RolesDto;
 import arprast.qiyosq.dto.UserDto;
 import arprast.qiyosq.dto.UserHeaderDto;
-import arprast.qiyosq.mapper.UserMapper;
 import arprast.qiyosq.model.UserModel;
 import arprast.qiyosq.model.UserRolesModel;
 import arprast.qiyosq.ref.ActionType;
