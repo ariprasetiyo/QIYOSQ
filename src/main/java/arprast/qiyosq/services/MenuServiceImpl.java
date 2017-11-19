@@ -24,7 +24,6 @@ public class MenuServiceImpl implements MenuService {
 	private static final String HTML_6 = "\"><i class=\"fa fa-circle-o\"></i>";
 	private static final String HTML_7 = "\n<span class=\"pull-right-container\">\n<i class=\"fa fa-angle-left pull-right\"></i>\n</span>\n</a>\n<ul class=\"treeview-menu\">\n";
 	private static final String HTML_8 = "</a></li>\n";
-	private static final StringBuilder tmpScript = new StringBuilder();
 
 	@Autowired
 	private RolesService rolesService;
@@ -48,6 +47,7 @@ public class MenuServiceImpl implements MenuService {
 		// convert SysRoles.getId to List Long
 		List<Long> listLongId = getListAuthorities(listId);
 
+		StringBuilder tmpScript = new StringBuilder();
 		String resultMenus = getScreenMenu(listLongId, 0, tmpScript).toString();
 		tmpScript.delete(0, tmpScript.length());
 		return resultMenus;
