@@ -45,32 +45,55 @@ $(function() {
 						checkBoxIsActive = $("#CheckBoxIsActive")
 								.is(':checked');
 						idUSerNya = $("#idUserNya").val();
-						$.ajax({
-							type : 'POST',
-							url : '/admin/v1/api/user/saveUser',
-							headers : {
-								'X-XSRF-TOKEN' : csrfToken
-							},
-							data : {
-								username : textUsername,
-								name : textName,
-								email : textEmail,
-								noHp : textNoHp,
-								selectRole : selectRole,
-								isActive : checkBoxIsActive,
-								password : textPassword,
-								idUSerNya : idUSerNya
-							},
-							datatype : 'json',
-							success : function(data, textStatus, jqXHR) {
-								removeModalInputUser();
-								$("#infoSaveUser").text("Save user success");
-								// datatable reload
-								$('#tableUser').DataTable().ajax.reload();
-							},
-							complete : function() {
-							}
-						});
+						$
+								.ajax({
+									type : 'POST',
+									url : '/admin/v1/api/user/saveUser',
+									headers : {
+										'X-XSRF-TOKEN' : csrfToken
+									},
+									data : {
+										username : textUsername,
+										name : textName,
+										email : textEmail,
+										noHp : textNoHp,
+										selectRole : selectRole,
+										isActive : checkBoxIsActive,
+										password : textPassword,
+										idUSerNya : idUSerNya
+									},
+									datatype : 'json',
+									success : function(data, textStatus, jqXHR) {
+										removeModalInputUser();
+										$("#infoSaveUser").text("Save success");
+										$("#infoSaveUser").attr('class',
+												'success-message')
+										// datatable reload
+										$('#tableUser').DataTable().ajax
+												.reload();
+									},
+									complete : function() {
+									},
+									error : function(jqXHR, textStatus,
+											errorThrown) {
+										var objJson = JSON
+												.parse(jqXHR.responseText);
+										var errorMessage = "Save failed, ";
+										for (a = 0; a < objJson.fieldErrors.length; a++) {
+											errorMessage += objJson.fieldErrors[a].objectName;
+											errorMessage += " : ";
+											errorMessage += objJson.fieldErrors[a].defaultMessage;
+											if ((objJson.fieldErrors.length - 1) == a) {
+												errorMessage += ".";
+												continue;
+											}
+											errorMessage += ", ";
+										}
+										$("#infoSaveUser").attr('class',
+												'warning-message')
+										$("#infoSaveUser").text(errorMessage);
+									}
+								});
 					});
 
 	function removeModalInputUser() {
@@ -83,7 +106,7 @@ $(function() {
 		$("#CheckBoxIsActive").is(':unchecked');
 	}
 	$(".buttonClose").on("click", function() {
-		$("#infoSaveUser").text("");
+		$("#infoSaveUser").attr('class', '').text("");
 	});
 
 	// dataTables ajax logic
