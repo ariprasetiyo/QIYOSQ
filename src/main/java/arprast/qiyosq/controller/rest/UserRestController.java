@@ -62,11 +62,22 @@ public class UserRestController {
 	}
 
 	@RequestMapping(value = "/saveUser", method = RequestMethod.POST)
-	public Future<ResponseEntity<JsonMessageDto>> saveUser(@Valid UserDto user,
-			@RequestParam(value = "selectRole[]", required = true) Long[] selectRole) {
+	public Future<ResponseEntity<JsonMessageDto>> saveUser(@Valid UserDto user) {
 		return CompletableFuture.supplyAsync(() -> {
 			try {
-				return new ResponseEntity<JsonMessageDto>(userService.saveUserAndRole(user, selectRole), HttpStatus.OK);
+				return new ResponseEntity<JsonMessageDto>(userService.saveUserAndRole(user), HttpStatus.OK);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return new ResponseEntity<JsonMessageDto>(new JsonMessageDto(), HttpStatus.NOT_ACCEPTABLE);
+		});
+	}
+
+	@RequestMapping(value = "/editUser", method = RequestMethod.POST)
+	public Future<ResponseEntity<JsonMessageDto>> editUser(@Valid UserDto user) {
+		return CompletableFuture.supplyAsync(() -> {
+			try {
+				return new ResponseEntity<JsonMessageDto>(userService.updateUserAndRole(user), HttpStatus.OK);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

@@ -1,4 +1,6 @@
 $(function() {
+	var csrfToken = $('#csrfToken').val();
+
 	$(".role-select2-multiple").select2({
 		width : 75 + "%",
 		maximumSelectionLength : 3
@@ -29,72 +31,71 @@ $(function() {
 		}
 	});
 
-	var csrfToken = $('#csrfToken').val();
+	// edit user
+	$("#editUser").on('click', function() {
+		var id = $("#idUserNya").val();
+		var url = '/admin/v1/api/user/editUser';
+		saveEditUser(id, url);
+	});
+
 	// save user
-	$("#saveModalAddMenu")
-			.on(
-					'click',
-					function() {
-						var textUsername, textName, textEmail, textNoHp, selectRole, checkBoxIsActive, textPassword, idUSerNya;
-						textUsername = $("#TextUsername").val();
-						textName = $("#TextName").val();
-						textEmail = $("#TextEmail").val();
-						textNoHp = $("#TextNoHp").val();
-						selectRole = $("#SelectRole").val();
-						textPassword = $("#TextPassword").val();
-						checkBoxIsActive = $("#CheckBoxIsActive")
-								.is(':checked');
-						idUSerNya = $("#idUserNya").val();
-						$
-								.ajax({
-									type : 'POST',
-									url : '/admin/v1/api/user/saveUser',
-									headers : {
-										'X-XSRF-TOKEN' : csrfToken
-									},
-									data : {
-										username : textUsername,
-										name : textName,
-										email : textEmail,
-										noHp : textNoHp,
-										selectRole : selectRole,
-										isActive : checkBoxIsActive,
-										password : textPassword,
-										idUSerNya : idUSerNya
-									},
-									datatype : 'json',
-									success : function(data, textStatus, jqXHR) {
-										removeModalInputUser();
-										$("#infoSaveUser").text("Save success");
-										$("#infoSaveUser").attr('class',
-												'success-message')
-										// datatable reload
-										$('#tableUser').DataTable().ajax
-												.reload();
-									},
-									complete : function() {
-									},
-									error : function(jqXHR, textStatus,
-											errorThrown) {
-										var objJson = JSON
-												.parse(jqXHR.responseText);
-										var errorMessage = "Save failed, ";
-										for (a = 0; a < objJson.fieldErrors.length; a++) {
-											errorMessage += objJson.fieldErrors[a].objectName;
-											errorMessage += " : ";
-											errorMessage += objJson.fieldErrors[a].defaultMessage;
-											if ((objJson.fieldErrors.length - 1) == a) {
-												errorMessage += ".";
-												continue;
-											}
-											errorMessage += ", ";
-										}
-										$("#infoSaveUser").attr('class',
-												'warning-message')
-										$("#infoSaveUser").text(errorMessage);
-									}
-								});
-					});
+	$("#saveModalAddMenu").on('click', function() {
+		var url = '/admin/v1/api/user/saveUser';
+		saveEditUser(null, url);
+	});
+
+	function saveEditUser(id, url, message) {
+		var textUsername, textName, textEmail, textNoHp, selectRole, checkBoxIsActive, textPassword, idUSerNya;
+		textUsername = $("#TextUsername").val();
+		textName = $("#TextName").val();
+		textEmail = $("#TextEmail").val();
+		textNoHp = $("#TextNoHp").val();
+		selectRole = $("#SelectRole").val();
+		textPassword = $("#TextPassword").val();
+		checkBoxIsActive = $("#CheckBoxIsActive").is(':checked');
+		$.ajax({
+			type : 'POST',
+			url : url,
+			headers : {
+				'X-XSRF-TOKEN' : csrfToken
+			},
+			data : {
+				username : textUsername,
+				name : textName,
+				email : textEmail,
+				noHp : textNoHp,
+				roleId : selectRole,
+				isActive : checkBoxIsActive,
+				password : textPassword,
+				id : id
+			},
+			datatype : 'json',
+			success : function(data, textStatus, jqXHR) {
+				removeModalInputUser();
+				$("#infoSaveUser").text(message + " success");
+				$("#infoSaveUser").attr('class', 'success-message')
+				$('#tableUser').DataTable().ajax.reload();
+			},
+			complete : function() {
+			},
+			error : function(jqXHR, textStatus, errorThrown) {
+				var objJson = JSON.parse(jqXHR.responseText);
+				var errorMessage = message + " failed, ";
+				for (a = 0; a < objJson.fieldErrors.length; a++) {
+					errorMessage += objJson.fieldErrors[a].objectName;
+					errorMessage += " : ";
+					errorMessage += objJson.fieldErrors[a].defaultMessage;
+					if ((objJson.fieldErrors.length - 1) == a) {
+						errorMessage += ".";
+						continue;
+					}
+					errorMessage += ", ";
+				}
+				$("#infoSaveUser").attr('class', 'warning-message')
+				$("#infoSaveUser").text(errorMessage);
+			}
+		});
+	}
 
 	function removeModalInputUser() {
 		$("#TextUsername").val("");
