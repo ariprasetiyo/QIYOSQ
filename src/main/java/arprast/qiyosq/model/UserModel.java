@@ -5,8 +5,14 @@
  */
 package arprast.qiyosq.model;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.validator.constraints.Email;
@@ -14,11 +20,11 @@ import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
 @Table(name = "sys_user")
-public class UserModel extends ModelSerializable {
+public class UserModel extends ModelEntity {
 
 	private static final long serialVersionUID = 2432434267482377275L;
 
-	@Column(length = 50, nullable = false)
+	@Column(length = 50, nullable = false, unique = true)
 	@NotBlank
 	private String username;
 
@@ -30,7 +36,7 @@ public class UserModel extends ModelSerializable {
 	@NotBlank
 	private String password;
 
-	@Column(length = 30)
+	@Column(length = 30, unique = true)
 	@Email
 	@NotBlank
 	private String email;
@@ -42,17 +48,17 @@ public class UserModel extends ModelSerializable {
 	@Column(name = "is_active")
 	private boolean isActive;
 
-	// @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	// @JoinColumn(nullable = true)
-	// private SysRoles SysUserRoles;
-	//
-	// public SysRoles getSysUserRoles() {
-	// return SysUserRoles;
-	// }
-	//
-	// public void setSysUserRoles(SysRoles SysUserRoles) {
-	// this.SysUserRoles = SysUserRoles;
-	// }
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinColumn(nullable = true, name ="sys_user_id")
+	private  List<UserRolesModel> userRolesModel;
+
+	public List<UserRolesModel> getUserRolesModel() {
+		return userRolesModel;
+	}
+
+	public void setUserRolesModel(List<UserRolesModel> userRolesModel) {
+		this.userRolesModel = userRolesModel;
+	}
 
 	public String getName() {
 		return name;
@@ -105,7 +111,7 @@ public class UserModel extends ModelSerializable {
 	@Override
 	public String toString() {
 		return "UserModel [username=" + username + ", name=" + name + ", password=" + password + ", email=" + email
-				+ ", noHp=" + noHp + ", isActive=" + isActive + "]";
+				+ ", noHp=" + noHp + ", isActive=" + isActive + ", userRolesModel=" + userRolesModel + "]";
 	}
 
 }

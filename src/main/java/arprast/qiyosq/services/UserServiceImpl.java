@@ -1,14 +1,12 @@
 package arprast.qiyosq.services;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import arprast.qiyosq.beans.UserMapper;
@@ -16,7 +14,6 @@ import arprast.qiyosq.dao.UserDao;
 import arprast.qiyosq.dao.UserDaoEM;
 import arprast.qiyosq.dao.UserRolesDao;
 import arprast.qiyosq.dto.JsonMessageDto;
-import arprast.qiyosq.dto.RolesDto;
 import arprast.qiyosq.dto.UserDto;
 import arprast.qiyosq.dto.UserHeaderDto;
 import arprast.qiyosq.model.UserModel;
@@ -41,59 +38,61 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private UserRolesDao userRolesDao;
+	
+	
+	public JsonMessageDto saveEditUserAndRole(UserDto userDto) throws Exception, IllegalArgumentException  {
 
-	public void deleteUser(long idUser) {
-		userDao.delete(idUser);
-	}
+		boolean isEdit = (userDto.getId() != null ? true : false);
 
-	@Transactional
-	public JsonMessageDto updateUserAndRole(UserDto userDto, Long[] selectRole) {
-		JsonMessageDto jsonMessageDto = new JsonMessageDto();
-		return jsonMessageDto;
-	}
-
-	@Transactional
-	public JsonMessageDto saveUserAndRole(UserDto userDto, Long[] selectRole) {
-
-		LogUtil.logDebugType(logger, true, ActionType.SAVE, "{},{}", userDto.toString(), selectRole.toString());
-
-		UserModel user = userMapper.asUserModel(userDto);
-		JsonMessageDto jsonMessageDto = new JsonMessageDto();
-
-		int idUser = userDao.findUserByEmail(user.getEmail());
-		if (idUser > 0) {
-			LogUtil.logDebugType(logger, true, MessageErrorType.DUPLICATE_EMAIL_ERROR, "Duplicate email {}",
-					user.getEmail());
-			jsonMessageDto.setMessageErrorType(MessageErrorType.DUPLICATE_EMAIL_ERROR);
-			return jsonMessageDto;
+		ActionType actionType = ActionType.SAVE;
+		MessageErrorType messageErrorType = MessageErrorType.SAVE_ERROR;
+		MessageSuccessType messageSuccessType = MessageSuccessType.SAVE_SUCCEED;
+		if (isEdit) {
+			actionType = ActionType.UPADATE;
+			messageErrorType = MessageErrorType.UPDATE_ERROR;
+			messageSuccessType = MessageSuccessType.UPDATE_SUCCEED;
 		}
 
-		user = userDao.save(user);
+		LogUtil.logDebugType(logger, true, actionType, "{}", userDto.toString());
+		UserModel user = userMapper.asUserModel(userDto);
 
+		if (isEdit) {
+			userDaoEM.deleteByUserId(user.getId());
+		}
+		user = saveUser(user);
+
+		JsonMessageDto jsonMessageDto = new JsonMessageDto();
 		if (user == null) {
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-			LogUtil.logDebugType(logger, true, MessageErrorType.SAVE_USER_ERROR, "null");
-			jsonMessageDto.setMessageErrorType(MessageErrorType.SAVE_USER_ERROR);
+			LogUtil.logDebugType(logger, true, messageErrorType, "null");
+			jsonMessageDto.setMessageErrorType(messageErrorType);
 			return jsonMessageDto;
 		}
 
-		for (int a = 0; a < selectRole.length; a++) {
-			UserRolesModel userRole = new UserRolesModel();
-			userRole.setSysUser(user);
-			userRole.setSysRoles(selectRole[a]);
-			userRole = userRolesDao.save(userRole);
-			if (userRole == null) {
-				TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-				LogUtil.logDebugType(logger, true, MessageErrorType.SAVE_ROLE_ERROR, "email : {}", user.getEmail());
-				jsonMessageDto.setMessageErrorType(MessageErrorType.SAVE_ROLE_ERROR);
-				return jsonMessageDto;
-			}
+		jsonMessageDto.setMessageSuccessType(messageSuccessType);
+		LogUtil.logDebugType(logger, true, messageSuccessType, user.toString());
+		if (1 == 1) {
+			//throw new IllegalArgumentException("Cobba");
 		}
-
-		jsonMessageDto.setMessageSuccessType(MessageSuccessType.SAVE_SUCCEED);
-		LogUtil.logDebugType(logger, true, MessageSuccessType.SAVE_SUCCEED, user.toString());
 		return jsonMessageDto;
 	}
+
+	// @Transactional(propagation = Propagation.REQUIRED)
+	public UserModel saveUser(UserModel user) {
+		user = userDao.save(user);
+		return user;
+	}
+
+	// @Transactional(propagation = Propagation.REQUIRED)
+	/*
+	 * private void deleteUser(UserModel user) { //
+	 * userRolesDao.deleteByUserId(user.getId()); }
+	 */
+
+	// @Transactional(propagation = Propagation.REQUIRED)
+//	private UserRolesModel saveUserRole(UserRolesModel userRolesModel) {
+//		return userRolesDao.save(userRolesModel);
+//	}
 
 	public List<UserModel> listUser(int offset, int limit, String keySearch) {
 		if (keySearch == null || keySearch.isEmpty()) {
@@ -109,42 +108,42 @@ public class UserServiceImpl implements UserService {
 		List<UserModel> listSysUser = listUser(offset, limit, keySearch);
 
 		UserHeaderDto sysUserHeader = new UserHeaderDto();
-		List<UserDto> listUserDto = new ArrayList<UserDto>();
-		for (UserModel sysUser : listSysUser) {
 
-			UserDto sysUserDto = new UserDto();
-			sysUserDto.setCreatedTime(sysUser.getCreatedTime());
-			sysUserDto.setModifiedTime(sysUser.getModifiedTime());
-			sysUserDto.setId(sysUser.getId());
-			sysUserDto.setUsername(sysUser.getUsername());
-			sysUserDto.setName(sysUser.getName());
-			sysUserDto.setEmail(sysUser.getEmail());
-			sysUserDto.setNoHp(sysUser.getNoHp());
-			sysUserDto.setIsActive(sysUser.isIsActive());
-
-			List<RolesDto> listSysRoles = userRolesDao.listRolesByNameUser(sysUser.getId());
-			if (listSysRoles.size() != 0) {
-				StringBuilder builderRoleName = new StringBuilder();
-				long[] roloIdArrayLong = new long[listSysRoles.size()];
-				int tmpPlusPlus = 0;
-				for (RolesDto sysRoleDto : listSysRoles) {
-					builderRoleName.append(sysRoleDto.getRoleName());
-					roloIdArrayLong[tmpPlusPlus] = sysRoleDto.getId();
-					if (tmpPlusPlus == (listSysRoles.size() - 1)) {
-						continue;
-					}
-					builderRoleName.append(", ");
-					tmpPlusPlus++;
-				}
-				sysUserDto.setRoleName(builderRoleName.toString());
-				sysUserDto.setRoleId(roloIdArrayLong);
-			}
-
-			listUserDto.add(sysUserDto);
-		}
-		sysUserHeader.setListSysUserDto(listUserDto);
+		sysUserHeader.setListSysUserDto(userMapper.asUserDTO(listSysUser));
 		sysUserHeader.setTotalRecord(userDao.count());
 		LogUtil.logDebug(logger, true, sysUserHeader.toString());
 		return sysUserHeader;
+	}
+
+	public void deleteUser(long idUser) {
+		userDao.delete(idUser);
+	}
+
+	/*
+	 * private void deleteUserRole(long idUser) {
+	 * userRolesDao.deleteByUserId(idUser); }
+	 */
+
+
+	@Transactional(rollbackFor = { Exception.class, Throwable.class, IllegalArgumentException.class }, readOnly = false)
+	public JsonMessageDto updateUserAndRole(UserDto userDto) {
+		try{
+			return saveEditUserAndRole(userDto);	
+		}catch(Exception x){
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+			x.printStackTrace();
+		}
+		return null;
+	}
+
+
+	@Transactional(rollbackFor = { Exception.class, Throwable.class, IllegalArgumentException.class }, readOnly = false)
+	public JsonMessageDto saveUserAndRole(UserDto userDto) {
+		try{
+			return saveEditUserAndRole(userDto);	
+		}catch(Exception x){
+			x.printStackTrace();
+		}
+		return null;
 	}
 }

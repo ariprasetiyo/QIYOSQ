@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * @author ari-prasetiyo
  */
 @Controller
-@RequestMapping("/admin/v1/menu")
+@RequestMapping("/admin/v1/view/menu")
 public class MenuController {
     
     @RequestMapping(value = "", method=RequestMethod.GET)

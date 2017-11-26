@@ -7,9 +7,9 @@ import arprast.qiyosq.dto.UserHeaderDto;
 public interface UserService {
 	void deleteUser(long idUser);
 
-	JsonMessageDto saveUserAndRole(UserDto user, Long[] selectRole);
+	JsonMessageDto saveUserAndRole(UserDto user);
 
-	JsonMessageDto updateUserAndRole(UserDto user, Long[] selectRole);
+	JsonMessageDto updateUserAndRole(UserDto user);
 
 	UserHeaderDto listUserHeader(int offset, int limit, String keySearch);
 }

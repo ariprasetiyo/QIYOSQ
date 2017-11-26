@@ -5,6 +5,7 @@
  */
 package arprast.qiyosq.model;
 
+import javax.persistence.Column;
 import javax.persistence.ColumnResult;
 import javax.persistence.ConstructorResult;
 import javax.persistence.Entity;
@@ -62,28 +63,32 @@ import arprast.qiyosq.dto.ScreenMenuDto;
 //                    @FieldResult(name = "parent.id", column = "parent_id"),
 //                    @FieldResult(name = "counts", column = "con")
 //                }))
-public class AuthorizationModel extends ModelSerializable {
+public class AuthorizationModel extends ModelEntity {
 	
 	private static final long serialVersionUID = 2432434267482377275L;
 
 //    @Column(name = "pattern_dispatcher_url", length = 100, nullable = true)
 //    private String patternDispatcherUrl;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false)
+    @JoinColumn(nullable = false, name = "sys_roles_id")
     private RolesModel sysRoles;
 
 //    @Column(name = "name_menu")
 //    public String nameMenu;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = true)
+    @JoinColumn(nullable = true, name = "sys_menu_id")
     private MenusModel sysMenu;
 
+    @Column(name = "is_update")
     private boolean isUpdate;
 
+    @Column(name = "is_delete")
     private boolean isDelete;
 
+    @Column(name = "is_insert")
     private boolean isInsert;
 
+    @Column(name = "is_read")
     private boolean isRead;
 
     @Transient

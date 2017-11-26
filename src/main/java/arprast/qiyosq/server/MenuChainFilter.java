@@ -33,11 +33,12 @@ public class MenuChainFilter implements Filter {
 
 	private static final Logger logger = LoggerFactory.getLogger(MenuChainFilter.class);
 	private static final StringBuilder authorityLogs = new StringBuilder();
+	private static final String PATH_URI = "/admin/v1/view/";
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
 		/*
-		 *  injector filter chain to spring
+		 * injector filter chain to spring
 		 */
 		SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, filterConfig.getServletContext());
 	}
@@ -56,22 +57,38 @@ public class MenuChainFilter implements Filter {
 
 	}
 
+	/**
+	 * If path = "/admin/v1/api/" not necessary call screen menu
+	 * 
+	 * @param servletRequest
+	 * @param servletResponse
+	 * @param filterChain
+	 * @throws IOException
+	 * @throws ServletException
+	 */
 	private void doFilterMenu(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
 			throws IOException, ServletException {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-		List<String> listAuthorities = new ArrayList<String>();
-		for (Object listAuthority : auth.getAuthorities()) {
-			listAuthorities.add(listAuthority.toString());
+		HttpServletRequest httpServletRquest = (HttpServletRequest) servletRequest;
+		String path = httpServletRquest.getRequestURI();
+		LogUtil.logDebug(logger, true, "Uri chain filter={}", path);
+
+		if (path.startsWith(PATH_URI)) {
+			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+			List<String> listAuthorities = new ArrayList<String>();
+			for (Object listAuthority : auth.getAuthorities()) {
+				listAuthorities.add(listAuthority.toString());
+			}
+
+			String listMenu = menuService.getScreenMenu(listAuthorities);
+			servletRequest.setAttribute("scriptMenu", listMenu);
+			if (Util.isEnableLoggerAccessPage()) {
+				logAccessPage(servletRequest, auth, listAuthorities, httpServletRquest, logger);
+			}
 		}
 
-		String listMenu = menuService.getScreenMenu(listAuthorities);
-		servletRequest.setAttribute("scriptMenu", listMenu);
 		filterChain.doFilter(servletRequest, servletResponse);
-
-		if (Util.isEnableLoggerAccessPage()) {
-			accessPageLog(servletRequest, auth, listAuthorities, logger);
-		}
 	}
 
 	/**
@@ -81,10 +98,9 @@ public class MenuChainFilter implements Filter {
 	 * @param listAuthorities
 	 * @param logger
 	 */
-	private static final void accessPageLog(ServletRequest servletRequest, Authentication auth,
-			List<String> listAuthorities, Logger logger) {
+	private static final void logAccessPage(ServletRequest servletRequest, Authentication auth,
+			List<String> listAuthorities, HttpServletRequest httpServletRquest, Logger logger) {
 
-		HttpServletRequest httpServletRquest = (HttpServletRequest) servletRequest;
 		String name = auth.getName();
 		for (int a = 0; a < listAuthorities.size(); a++) {
 			authorityLogs.append(listAuthorities.get(a));

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import arprast.qiyosq.services.RolesService;
 
 @Controller
-@RequestMapping("/admin/v1/main")
+@RequestMapping("/admin/v1/view/main")
 public class MainAdminController {
 
 	@Autowired

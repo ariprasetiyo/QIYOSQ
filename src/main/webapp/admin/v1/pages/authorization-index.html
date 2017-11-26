@@ -651,7 +651,7 @@ $(function () {
             ajax: function (data, callback, settings) {
             	$.ajax({
                 	type: "POST",
-                    url: "api/authorization/list/"+idRole,
+                    url: "../api/authorization/list/"+idRole,
                     headers: {'X-XSRF-TOKEN': $("#csrf").val()},
                     data: {
                         limit: data.length,

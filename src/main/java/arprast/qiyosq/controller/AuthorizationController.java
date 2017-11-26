@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import arprast.qiyosq.services.AuthorizationService;
 
 @Controller
-@RequestMapping("/admin/v1/authorization")
+@RequestMapping("/admin/v1/view/authorization")
 public class AuthorizationController {
 
     Logger log = LoggerFactory.getLogger(this.getClass());

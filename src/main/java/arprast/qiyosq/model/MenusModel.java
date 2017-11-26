@@ -15,29 +15,31 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "sys_menu")
+//@NamedNativeQueries({
+//		@NamedNativeQuery(name = "UserRolesModel.deleteByUserId", query = "delete from sys_user_roles where sys_user_id = :nUserId") })
 public class MenusModel extends ModelEntity {
 
 	private static final long serialVersionUID = 2432434267482377275L;
-	
+
 	@Column(name = "menus_name")
-    private String menusName;
-    
-    @Column(nullable = true, length = 100)
-    private String url;
+	private String menusName;
 
-    public String getMenusName() {
-        return menusName;
-    }
+	@Column(nullable = true, length = 100)
+	private String url;
 
-    public void setMenusName(String menusName) {
-        this.menusName = menusName;
-    }
+	public String getMenusName() {
+		return menusName;
+	}
 
-    public String getUrl() {
-        return url;
-    }
+	public void setMenusName(String menusName) {
+		this.menusName = menusName;
+	}
 
-    public void setUrl(String url) {
-        this.url = url;
-    }
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
 }

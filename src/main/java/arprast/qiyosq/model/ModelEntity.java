@@ -18,23 +18,26 @@ import javax.persistence.TemporalType;
  * @author ari-prasetiyo
  */
 @MappedSuperclass
-public class ModelSerializable implements Serializable {
+public class ModelEntity implements Serializable {
 
 	private static final long serialVersionUID = 2432434267482377275L;
 
 	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(length = 100)
     private Long id;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(nullable = false, name = "created_time", insertable = true, updatable = false)
+    @Column(nullable = false, name = "created_time", insertable = true, updatable = false,
+    		columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     //@DateTimeFormat(pattern = "dd-MM-yyyy hh:mm:ss")
     @JsonFormat(pattern = "dd-MM-yyyy hh:mm:ss")
     private Date createdTime ;//= new Date();
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(nullable = false, name = "modified_time", insertable = false, updatable = true)
+    @Column(nullable = false, name = "modified_time", insertable = false, updatable = true,
+    		columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"
+    		)
     @JsonFormat(pattern = "dd-MM-yyyy hh:mm:ss")
     private Date modifiedTime; //= new Date();
 

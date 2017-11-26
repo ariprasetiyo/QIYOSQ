@@ -1,6 +1,8 @@
 package arprast.qiyosq.beans;
 
 
+import java.util.List;
+
 import arprast.qiyosq.dto.UserDto;
 import arprast.qiyosq.model.UserModel;
 import fr.xebia.extras.selma.Field;
@@ -41,6 +43,13 @@ public interface UserMapper {
 	 */
 //	@Maps(withCustomFields = { @Field({ "userRolesModel", "roles" }) })
 	UserDto asUserDTO(UserModel source);
+	
+	/**
+	 * 
+	 * @param source
+	 * @return List<UserDto>
+	 */
+	List<UserDto> asUserDTO(List<UserModel> source);
 
 	/**
 	 * 

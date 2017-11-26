@@ -8,16 +8,29 @@ package arprast.qiyosq.dao;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
+
 import arprast.qiyosq.model.UserModel;
 
 /**
  *
  * @author ari-prasetiyo
  */
-@Repository
+//@Repository
 public interface UserDao extends JpaRepository<UserModel, Long> {
 
+	/**
+	 * 
+	 * @param email
+	 * @return Integer
+	 */
 	@Query("select count(id) from UserModel where email = :nEmail ")
-	public int findUserByEmail(@Param("nEmail") String email);
+	public int countUserByEmail(@Param("nEmail") String email);
+	
+	/**
+	 * 
+	 * @param email
+	 * @return UserModel
+	 */
+	@Query("from UserModel where email = :nEmail ")
+	public UserModel findUserByEmail(@Param("nEmail") String email);
 }

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * @author ari-prasetiyo
  */
 @Controller
-@RequestMapping("/admin/v1/basicweb")
+@RequestMapping("/admin/v1/view/basicweb")
 public class BasicwebController {
     
     @RequestMapping(value = "", method = RequestMethod.GET)

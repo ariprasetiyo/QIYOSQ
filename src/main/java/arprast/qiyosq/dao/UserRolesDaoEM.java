@@ -21,8 +21,9 @@ public class UserRolesDaoEM {
 	private EntityManager em;
 	
 	public int deleteByUserId(long userId) {
-		return em.createQuery("delete from UserRolesModel where sysUser.id = :userId ").setParameter("userId", userId)
-				.executeUpdate();
+//		return em.createQuery("delete from UserRolesModel where sysUser.id = :userId ").setParameter("userId", userId)
+//				.executeUpdate();
+		return 0;
 	}
 
 }
