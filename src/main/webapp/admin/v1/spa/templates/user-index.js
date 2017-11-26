@@ -176,7 +176,7 @@ $(function() {
 																dataResponse.listSysUserDto[i].name,
 																dataResponse.listSysUserDto[i].email,
 																dataResponse.listSysUserDto[i].noHp,
-																dataResponse.listSysUserDto[i].roleName,
+																rolesName(dataResponse.listSysUserDto[i].roles),
 																dataResponse.listSysUserDto[i].isActive,
 																buttonAction(i,
 																		idUser) ]);
@@ -230,6 +230,18 @@ $(function() {
 		}
 		idUserForDelete = null;
 	});
+
+	function rolesName(roles) {
+		var rolesNameTmp = "";
+		for (a = 0; a < roles.length; a++) {
+			rolesNameTmp += roles[a].roleName;
+			if (a == (roles.length - 1)) {
+				continue;
+			}
+			rolesNameTmp += ", ";
+		}
+		return rolesNameTmp;
+	}
 
 	function deleteDataUser(idMenu) {
 		$.ajax({
