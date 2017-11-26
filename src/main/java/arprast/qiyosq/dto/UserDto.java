@@ -5,7 +5,7 @@
  */
 package arprast.qiyosq.dto;
 
-import java.util.Arrays;
+import java.util.List;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -41,10 +41,9 @@ public class UserDto extends Dto {
 	@NotNull
 	private boolean isActive;
 
-    private String roleName;
-
-    private long[] roleId;
-
+	@NotNull
+	private List<RolesDto> roles;
+	
     private String url;
 
     public String getUrl() {
@@ -103,27 +102,19 @@ public class UserDto extends Dto {
         this.isActive = isActive;
     }
 
-    public String getRoleName() {
-        return roleName;
-    }
+	public List<RolesDto> getRoles() {
+		return roles;
+	}
 
-    public void setRoleName(String roleName) {
-        this.roleName = roleName;
-    }
-
-    public long[] getRoleId() {
-        return roleId;
-    }
-
-    public void setRoleId(long[] roleId) {
-        this.roleId = roleId;
-    }
+	public void setRoles(List<RolesDto> roles) {
+		this.roles = roles;
+	}
 
 	@Override
 	public String toString() {
 		return "UserDto [username=" + username + ", name=" + name + ", password=" + password + ", email=" + email
-				+ ", noHp=" + noHp + ", isActive=" + isActive + ", roleName=" + roleName + ", roleId="
-				+ Arrays.toString(roleId) + ", url=" + url + "]";
+				+ ", noHp=" + noHp + ", isActive=" + isActive + ", roles=" + roles + ", url=" + url + ", getId()="
+				+ getId() + "]";
 	}
-   
+
 }

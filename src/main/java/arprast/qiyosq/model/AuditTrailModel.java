@@ -9,7 +9,7 @@ import arprast.qiyosq.ref.ActionType;
 
 @Entity
 @Table(name ="sys_audit_trail")
-public class AuditTrailModel extends ModelSerializable {
+public class AuditTrailModel extends ModelEntity {
     
 	private static final long serialVersionUID = 2432434267482377275L;
 	

@@ -15,10 +15,11 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "sys_menu")
-public class MenusModel extends ModelSerializable {
+public class MenusModel extends ModelEntity {
 
 	private static final long serialVersionUID = 2432434267482377275L;
 	
+	@Column(name = "menus_name")
     private String menusName;
     
     @Column(nullable = true, length = 100)

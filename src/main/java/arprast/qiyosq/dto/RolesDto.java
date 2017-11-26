@@ -9,9 +9,7 @@ package arprast.qiyosq.dto;
  *
  * @author ari-prasetiyo
  */
-public class RolesDto {
-
-    private Long id;
+public class RolesDto extends Dto {
 
     private String roleName;
 
@@ -23,20 +21,9 @@ public class RolesDto {
         this.roleName = roleName;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public RolesDto(Long id) {
-        this.id = id;
-    }
-
-    public RolesDto(Long id, String roleName) {
-        this.id = id;
-        this.roleName = roleName;
-    }
+	@Override
+	public String toString() {
+		return "RolesDto [roleName=" + roleName + ", getId()=" + getId() + "]";
+	}
+    
 }

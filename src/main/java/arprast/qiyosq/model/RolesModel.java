@@ -15,7 +15,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="sys_roles")
-public class RolesModel  extends ModelSerializable{
+public class RolesModel  extends ModelEntity{
     
 	private static final long serialVersionUID = 2432434267482377275L;
 	
