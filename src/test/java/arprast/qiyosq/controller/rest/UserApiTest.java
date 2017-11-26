@@ -109,7 +109,7 @@ public class UserApiTest {
     	userDto.setNoHp("1234567890123");
     	userDto.setPassword("12344");
     	long[] rolesId = {1,2,3};
-    	userDto.setRoleId(rolesId);
+    	//userDto.setRoleId(rolesId);
     	return userDto;
     }
 }
