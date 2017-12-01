@@ -8,10 +8,11 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication
 //@EnableTransactionManagement(proxyTargetClass=false)
-//@EnableTransactionManagement(proxyTargetClass=false)
+//@EnableTransactionManagement(proxyTargetClass=true)
 @ImportResource("classpath:app-config.xml")
 public class SpringApplicationMain {
 

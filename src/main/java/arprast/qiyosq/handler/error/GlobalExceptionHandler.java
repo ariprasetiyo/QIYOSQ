@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import arprast.qiyosq.beans.Error;
-import arprast.qiyosq.ref.MessageErrorType;
+import arprast.qiyosq.ref.StatusType;
 import arprast.qiyosq.util.LogUtil;
 
 @ControllerAdvice
@@ -75,13 +75,13 @@ public class GlobalExceptionHandler {
 		for (FieldError fieldError : fieldErrors) {
 			error.addFieldError(fieldError.getField(), fieldError.getDefaultMessage());
 		}
-		LogUtil.logDebugType(logger, true, MessageErrorType.API_REQ_RES_ERROR, error.toString());
+		LogUtil.logDebugType(logger, true, StatusType.API_REQ_RES_ERROR, error.toString());
 		return error;
 	}
 
 	private Error errors(HttpStatus httpStatus, Object message, Object cause) {
 		Error messageErrorMap = new Error(httpStatus.value(), message.toString());
-		LogUtil.logDebugType(logger, true, MessageErrorType.API_REQ_RES_GLOBAL_ERROR, message.toString());
+		LogUtil.logDebugType(logger, true, StatusType.API_REQ_RES_GLOBAL_ERROR, message.toString());
 		return messageErrorMap;
 	}
 }

@@ -3,16 +3,14 @@ package arprast.qiyosq.util;
 import org.slf4j.Logger;
 
 import arprast.qiyosq.ref.ActionType;
-import arprast.qiyosq.ref.MessageErrorType;
-import arprast.qiyosq.ref.MessageSuccessType;
+import arprast.qiyosq.ref.StatusType;
 
 public class LogUtil {
 
 	private static StringBuilder messages = new StringBuilder();
-	private static final String MESSAGE_SUCCESS_TYPE = "MessageSuccessType";
-	private static final String MESSAGE_ERROR_TYPE = "MessageErrorType";
+	private static final String MESSAGE_STATUS_TYPE = "MESSAGE_STATUS_TYPE";
 	private static final String ACTION_TYPE = "ActionType";
-	private static final String COLON = ":";
+	private static final String COLON = "=";
 	private static final String DIRECTION = " -> ";
 
 	/**
@@ -21,7 +19,7 @@ public class LogUtil {
 	 * @param logger
 	 * @param isEnabled
 	 * @param paramMessageStatus
-	 *            : {@value MessageSuccessType, MessageErrorType, ActionType}
+	 *            : {@value StatusType, ActionType}
 	 * @param message
 	 * @param values
 	 * 
@@ -29,18 +27,9 @@ public class LogUtil {
 	public static void logDebugType(Logger logger, boolean isEnabled, Object paramMessageStatus, String message,
 			Object... values) {
 		try {
-			if (paramMessageStatus instanceof MessageSuccessType) {
+			if (paramMessageStatus instanceof StatusType) {
 				if (logger.isDebugEnabled() && isEnabled) {
-					messages.append(MESSAGE_SUCCESS_TYPE);
-					messages.append(COLON);
-					messages.append(paramMessageStatus.toString());
-					messages.append(DIRECTION);
-					messages.append(message);
-					logger.debug(messages.toString(), values);
-				}
-			} else if (paramMessageStatus instanceof MessageErrorType) {
-				if (logger.isDebugEnabled() && isEnabled) {
-					messages.append(MESSAGE_ERROR_TYPE);
+					messages.append(MESSAGE_STATUS_TYPE);
 					messages.append(COLON);
 					messages.append(paramMessageStatus.toString());
 					messages.append(DIRECTION);

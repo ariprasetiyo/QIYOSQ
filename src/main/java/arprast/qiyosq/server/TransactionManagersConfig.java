@@ -11,18 +11,18 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
-@EnableTransactionManagement
+//@EnableTransactionManagement
 public class TransactionManagersConfig {
-    @Autowired
-    EntityManagerFactory emf;
-    @Autowired
-    private DataSource dataSource;
-
-    @Bean(name = "transactionManager")
-    public PlatformTransactionManager transactionManager() {
-        JpaTransactionManager tm = new JpaTransactionManager();
-        tm.setEntityManagerFactory(emf);
-        tm.setDataSource(dataSource);
-        return tm;
-    }
+//    @Autowired
+//    EntityManagerFactory emf;
+//    @Autowired
+//    private DataSource dataSource;
+//
+//    @Bean(name = "transactionManager")
+//    public PlatformTransactionManager transactionManager() {
+//        JpaTransactionManager tm = new JpaTransactionManager();
+//        tm.setEntityManagerFactory(emf);
+//        tm.setDataSource(dataSource);
+//        return tm;
+//    }
 }

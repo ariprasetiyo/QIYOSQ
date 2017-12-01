@@ -5,8 +5,7 @@ import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import arprast.qiyosq.ref.MessageErrorType;
-import arprast.qiyosq.ref.MessageSuccessType;
+import arprast.qiyosq.ref.StatusType;
 
 public class JsonMessageDto implements Serializable {
 
@@ -14,13 +13,11 @@ public class JsonMessageDto implements Serializable {
 
 	private String message;
 
-	private MessageErrorType messageErrorType;
+	private StatusType statusType;
 
-	private MessageSuccessType messageSuccessType;
-	
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
 	private LocalDateTime timestamp;
-	
+
 	public String getMessage() {
 		return message;
 	}
@@ -29,20 +26,12 @@ public class JsonMessageDto implements Serializable {
 		this.message = message;
 	}
 
-	public MessageErrorType getMessageErrorType() {
-		return messageErrorType;
+	public StatusType getStatusType() {
+		return statusType;
 	}
 
-	public void setMessageErrorType(MessageErrorType messageErrorType) {
-		this.messageErrorType = messageErrorType;
-	}
-
-	public MessageSuccessType getMessageSuccessType() {
-		return messageSuccessType;
-	}
-
-	public void setMessageSuccessType(MessageSuccessType messageSuccessType) {
-		this.messageSuccessType = messageSuccessType;
+	public void setStatusType(StatusType statusType) {
+		this.statusType = statusType;
 	}
 
 	public LocalDateTime getTimestamp() {

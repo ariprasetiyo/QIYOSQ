@@ -74,12 +74,12 @@ public class UserServiceImplTest {
 		userDto.setIsActive(true);
 		userDto.setNoHp("08564548222");
 		//userDto.setRoleName("admin");
-		userDto.setName("bbbbbbbb");
+		userDto.setName("dddddddddddddd");
 		userDto.setId(userModel.getId());
 		
 		List<RolesDto> rolesDto = new ArrayList<RolesDto>(); 
 		RolesDto roleDto = new RolesDto();
-		roleDto.setId(2L);
+		roleDto.setId(1L);
 		rolesDto.add(roleDto);
 		userDto.setRoles(rolesDto);
 		userServiceImpl.updateUserAndRole(userDto);

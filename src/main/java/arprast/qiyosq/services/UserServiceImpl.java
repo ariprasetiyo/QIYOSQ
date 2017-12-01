@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
@@ -17,10 +18,8 @@ import arprast.qiyosq.dto.JsonMessageDto;
 import arprast.qiyosq.dto.UserDto;
 import arprast.qiyosq.dto.UserHeaderDto;
 import arprast.qiyosq.model.UserModel;
-import arprast.qiyosq.model.UserRolesModel;
 import arprast.qiyosq.ref.ActionType;
-import arprast.qiyosq.ref.MessageErrorType;
-import arprast.qiyosq.ref.MessageSuccessType;
+import arprast.qiyosq.ref.StatusType;
 import arprast.qiyosq.util.LogUtil;
 import fr.xebia.extras.selma.Selma;
 
@@ -39,60 +38,71 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private UserRolesDao userRolesDao;
 	
-	
-	public JsonMessageDto saveEditUserAndRole(UserDto userDto) throws Exception, IllegalArgumentException  {
+	public JsonMessageDto saveEditUserAndRole(UserDto userDto) throws Exception, IllegalArgumentException {
 
 		boolean isEdit = (userDto.getId() != null ? true : false);
 
 		ActionType actionType = ActionType.SAVE;
-		MessageErrorType messageErrorType = MessageErrorType.SAVE_ERROR;
-		MessageSuccessType messageSuccessType = MessageSuccessType.SAVE_SUCCEED;
+		StatusType messageErrorType = StatusType.SAVE_ERROR;
+		StatusType messageSuccessType = StatusType.SAVE_SUCCEED;
 		if (isEdit) {
 			actionType = ActionType.UPADATE;
-			messageErrorType = MessageErrorType.UPDATE_ERROR;
-			messageSuccessType = MessageSuccessType.UPDATE_SUCCEED;
+			messageErrorType = StatusType.UPDATE_ERROR;
+			messageSuccessType = StatusType.UPDATE_SUCCEED;
 		}
 
 		LogUtil.logDebugType(logger, true, actionType, "{}", userDto.toString());
 		UserModel user = userMapper.asUserModel(userDto);
 
-		if (isEdit) {
-			userDaoEM.deleteByUserId(user.getId());
-		}
-		user = saveUser(user);
-
+		user =saveEditUserRole(user, isEdit);
+		
 		JsonMessageDto jsonMessageDto = new JsonMessageDto();
 		if (user == null) {
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
 			LogUtil.logDebugType(logger, true, messageErrorType, "null");
-			jsonMessageDto.setMessageErrorType(messageErrorType);
+			jsonMessageDto.setStatusType(messageErrorType);
 			return jsonMessageDto;
 		}
 
-		jsonMessageDto.setMessageSuccessType(messageSuccessType);
+		jsonMessageDto.setStatusType(messageSuccessType);
 		LogUtil.logDebugType(logger, true, messageSuccessType, user.toString());
 		if (1 == 1) {
-			//throw new IllegalArgumentException("Cobba");
+			throw new IllegalArgumentException("Cobba");
 		}
 		return jsonMessageDto;
 	}
 
-	// @Transactional(propagation = Propagation.REQUIRED)
+	@Transactional(rollbackFor = { Exception.class, Throwable.class, IllegalArgumentException.class }, readOnly = false)
+	public UserModel saveEditUserRole(UserModel user, boolean isEdit) {
+		TransactionStatus TransactionStatus = TransactionAspectSupport.currentTransactionStatus();
+		try{
+			if (isEdit) {
+				userDaoEM.deleteByUserId(user.getId());
+			}
+			user = saveUser(user);
+			return user;		
+		}catch(Exception e){
+			TransactionStatus.setRollbackOnly();
+		}
+		return null;
+	}
+	
+
+	@Transactional(rollbackFor = { Exception.class, Throwable.class, IllegalArgumentException.class }, readOnly = false)
+	public JsonMessageDto updateUserAndRole(UserDto userDto) {
+		try {
+			return saveEditUserAndRole(userDto);
+		} catch (Exception x) {
+
+			x.printStackTrace();
+		}
+		return null;
+	}
+
 	public UserModel saveUser(UserModel user) {
 		user = userDao.save(user);
 		return user;
 	}
-
-	// @Transactional(propagation = Propagation.REQUIRED)
-	/*
-	 * private void deleteUser(UserModel user) { //
-	 * userRolesDao.deleteByUserId(user.getId()); }
-	 */
-
-	// @Transactional(propagation = Propagation.REQUIRED)
-//	private UserRolesModel saveUserRole(UserRolesModel userRolesModel) {
-//		return userRolesDao.save(userRolesModel);
-//	}
 
 	public List<UserModel> listUser(int offset, int limit, String keySearch) {
 		if (keySearch == null || keySearch.isEmpty()) {
@@ -119,29 +129,11 @@ public class UserServiceImpl implements UserService {
 		userDao.delete(idUser);
 	}
 
-	/*
-	 * private void deleteUserRole(long idUser) {
-	 * userRolesDao.deleteByUserId(idUser); }
-	 */
-
-
-	@Transactional(rollbackFor = { Exception.class, Throwable.class, IllegalArgumentException.class }, readOnly = false)
-	public JsonMessageDto updateUserAndRole(UserDto userDto) {
-		try{
-			return saveEditUserAndRole(userDto);	
-		}catch(Exception x){
-			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-			x.printStackTrace();
-		}
-		return null;
-	}
-
-
 	@Transactional(rollbackFor = { Exception.class, Throwable.class, IllegalArgumentException.class }, readOnly = false)
 	public JsonMessageDto saveUserAndRole(UserDto userDto) {
-		try{
-			return saveEditUserAndRole(userDto);	
-		}catch(Exception x){
+		try {
+			return saveEditUserAndRole(userDto);
+		} catch (Exception x) {
 			x.printStackTrace();
 		}
 		return null;
