@@ -12,6 +12,7 @@ import java.util.List;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -95,7 +96,9 @@ public class ConfigurationSecurity extends WebSecurityConfigurerAdapter {
       
     	//ignore resource with security access login
     	// webSecurity.ignoring().antMatchers("/without_restrict/**", "/login", "/");
-        webSecurity.ignoring().antMatchers("/resources/**");
+        webSecurity.ignoring()
+        .antMatchers("/resources/**")
+        .antMatchers(HttpMethod.POST, "/admin/v1/security/**");
     }
 
     private CsrfTokenRepository csrfTokenRepository() {

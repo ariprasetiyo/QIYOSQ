@@ -34,9 +34,6 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private UserDaoEM userDaoEM;
-
-	@Autowired
-	private UserRolesDao userRolesDao;
 	
 	public JsonMessageDto saveEditUserAndRole(UserDto userDto) throws Exception, IllegalArgumentException {
 
@@ -88,7 +85,7 @@ public class UserServiceImpl implements UserService {
 	}
 	
 
-	@Transactional(rollbackFor = { Exception.class, Throwable.class, IllegalArgumentException.class }, readOnly = false)
+	//@Transactional(rollbackFor = { Exception.class, Throwable.class, IllegalArgumentException.class }, readOnly = false)
 	public JsonMessageDto updateUserAndRole(UserDto userDto) {
 		try {
 			return saveEditUserAndRole(userDto);

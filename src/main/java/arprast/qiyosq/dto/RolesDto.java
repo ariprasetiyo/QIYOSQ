@@ -11,19 +11,20 @@ package arprast.qiyosq.dto;
  */
 public class RolesDto extends Dto {
 
-    private String roleName;
+	private static final long serialVersionUID = 7283833745054615419L;
+	private String roleName;
 
-    public String getRoleName() {
-        return roleName;
-    }
+	public String getRoleName() {
+		return roleName;
+	}
 
-    public void setRoleName(String roleName) {
-        this.roleName = roleName;
-    }
+	public void setRoleName(String roleName) {
+		this.roleName = roleName;
+	}
 
 	@Override
 	public String toString() {
 		return "RolesDto [roleName=" + roleName + ", getId()=" + getId() + "]";
 	}
-    
+
 }

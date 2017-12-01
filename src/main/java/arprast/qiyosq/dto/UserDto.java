@@ -18,6 +18,8 @@ import org.hibernate.validator.constraints.Email;
  */
 public class UserDto extends Dto {
 
+	private static final long serialVersionUID = 5664521009212316139L;
+
 	@Size(min = 2, max = 50)
 	@NotNull
     private String username;

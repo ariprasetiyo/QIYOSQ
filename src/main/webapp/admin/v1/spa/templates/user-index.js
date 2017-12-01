@@ -53,12 +53,27 @@ $(function() {
 		selectRole = $("#SelectRole").val();
 		textPassword = $("#TextPassword").val();
 		checkBoxIsActive = $("#CheckBoxIsActive").is(':checked');
+		
+		var jsonData = {};
+		jsonData["username"] = textUsername;
+		jsonData["name"] = textName;
+		jsonData["email"] = textEmail;
+		jsonData["noHp"] = textNoHp;
+		jsonData["roles"] = textNoHp;
+		jsonData["isActive"] = checkBoxIsActive;
+		jsonData["password"] = textPassword;
+		jsonData["id"] = id;
+		var jsonDataResult = JSON.stringify(jsonData);
+		alert(jsonDataResult);
+		
 		$.ajax({
 			type : 'POST',
 			url : url,
+			contentType: 'application/json',
+			data: jsonDataResult,
 			headers : {
 				'X-XSRF-TOKEN' : csrfToken
-			},
+			},/*,
 			data : {
 				username : textUsername,
 				name : textName,
@@ -68,7 +83,7 @@ $(function() {
 				isActive : checkBoxIsActive,
 				password : textPassword,
 				id : id
-			},
+			},*/
 			datatype : 'json',
 			success : function(data, textStatus, jqXHR) {
 				removeModalInputUser();

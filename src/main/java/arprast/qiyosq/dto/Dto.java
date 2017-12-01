@@ -6,15 +6,21 @@
 package arprast.qiyosq.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  *
  * @author ari-prasetiyo
  */
-public class Dto {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class Dto implements Serializable {
 
-    private Long id;
+	private static final long serialVersionUID = 1690600905679083387L;
+
+	private Long id;
     
     @JsonFormat(pattern="dd-MM-yyyy hh:mm:ss")
     private Date createdTime;

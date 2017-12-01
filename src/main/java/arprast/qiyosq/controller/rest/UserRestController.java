@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -73,8 +74,11 @@ public class UserRestController {
 		});
 	}
 
-	@RequestMapping(value = "/editUser", method = RequestMethod.POST)
-	public Future<ResponseEntity<JsonMessageDto>> editUser(@Valid UserDto user) {
+	@RequestMapping(value = "/editUser", method = RequestMethod.POST, 
+			produces = { "application/json", "application/xml" },
+			consumes = { "application/json", "application/xml" })
+	public Future<ResponseEntity<JsonMessageDto>> editUser(
+			@RequestBody @Valid UserDto user) {
 		return CompletableFuture.supplyAsync(() -> {
 			try {
 				return new ResponseEntity<JsonMessageDto>(userService.updateUserAndRole(user), HttpStatus.OK);
