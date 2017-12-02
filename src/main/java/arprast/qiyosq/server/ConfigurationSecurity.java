@@ -84,7 +84,7 @@ public class ConfigurationSecurity extends WebSecurityConfigurerAdapter {
                 .loginPage("/login")
                 .permitAll()
                 //defaultSuccessUrl is user success login then foward to hallo and boolean true is user login direct access hallo, if false call back user before login
-                //.defaultSuccessUrl("/dashboard", true)
+                .defaultSuccessUrl("/admin/v1/view/main#/", true)
                 .and()
                 .logout().and()
                 .addFilterAfter(new ConfigurationCrsfFilter(), CsrfFilter.class)

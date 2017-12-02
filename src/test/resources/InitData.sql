@@ -1,10 +1,24 @@
+delete from sys_user_roles;
+alter table sys_user_roles AUTO_INCREMENT = 1;
+delete from sys_user;
+alter table sys_user AUTO_INCREMENT = 1;
+truncate sys_authorization;
+alter table sys_authorization AUTO_INCREMENT = 1;
+delete from  sys_menu;
+alter table sys_menu AUTO_INCREMENT = 1;
+delete from  sys_roles;
+alter table sys_roles AUTO_INCREMENT = 1;
+
+
+
 INSERT INTO sys_menu (id, created_by, created_time, disabled, modified_by, modified_time, version, menus_name, url) VALUES
 (1, 'ari', '2017-02-07 17:00:00', 0, 'ari', '2017-02-07 17:00:00', '1.0', 'Dashboard', NULL),
 (2, 'ari', '2017-02-07 17:00:00', 0, 'ari', '2017-02-07 17:00:00', '1.0', 'Dashboard V1', '/Dashboard/V1'),
 (3, 'ari', '2017-02-07 17:00:00', 0, 'ari', '2017-02-07 17:00:00', '1.0', 'Dashboard V2', '/Dashboard/V2'),
 (4, 'ari', '2017-02-07 17:00:00', 0, 'ari', '2017-02-07 17:00:00', '1.0', 'Utility', NULL),
 (5, 'ari', '2017-02-07 17:00:00', 0, 'ari', '2017-02-07 17:00:00', '1.0', 'Setting User', NULL),
-(6, 'ari', '2017-02-07 17:00:00', 0, 'ari', '2017-11-26 12:35:26', '1.0', 'User', '../../../admin/v1/view/user'),
+/*(6, 'ari', '2017-02-07 17:00:00', 0, 'ari', '2017-11-26 12:35:26', '1.0', 'User', '../../../admin/v1/view/user'),*/
+(6, 'ari', '2017-02-07 17:00:00', 0, 'ari', '2017-11-26 12:35:26', '1.0', 'User', '../../../admin/v1/view/main#/user/'),
 (7, 'ari', '2017-02-07 17:00:00', 0, 'ari', '2017-11-26 12:35:41', '1.0', 'Authorization', '../../../admin/v1/view/authorization'),
 (8, 'ari', '2017-02-07 17:00:00', 0, 'ari', '2017-02-07 17:00:00', '1.0', 'Profile Setting', 'admin/v1/setting/calendar'),
 (9, 'ari', '2017-02-07 17:00:00', 0, 'ari', '2017-02-07 17:00:00', '1.0', 'Report Setting', 'admin/v1/reportsetting '),
@@ -13,7 +27,8 @@ INSERT INTO sys_menu (id, created_by, created_time, disabled, modified_by, modif
 (12, 'NULL', '2017-04-18 17:00:00', 0, 'NULL', '2017-11-26 12:36:07', '1.0', 'Add Menu', '../../../admin/v1/view/menu'),
 (13, 'NULL', '2017-04-18 17:00:00', 0, 'NULL', '2017-11-26 12:36:21', '1.0', 'User Group', '../../../admin/v1/view/usergroup'),
 (14, 'NULL', '2017-04-18 17:00:00', 0, 'NULL', '2017-11-26 12:36:35', '1.0', 'Basic Web', '../../../admin/v1/view/basicweb'),
-(15, NULL, '2017-11-04 05:07:08', 1, NULL, '2017-11-26 12:36:53', '1.0', 'basic SPA', '../../../admin/v1/view/main');
+(15, NULL, '2017-11-04 05:07:08', 1, NULL, '2017-11-26 12:36:53', '1.0', 'basic SPA', '../../../admin/v1/view/main#/sample-spa/');
+
 
 INSERT INTO sys_roles (id, created_by, created_time, disabled, modified_by, modified_time, version, role_name) VALUES
 (1, NULL, '2016-11-20 01:38:52', 0, NULL, '2016-11-20 01:38:52', '1.0', 'admin'),
@@ -62,8 +77,8 @@ INSERT INTO sys_authorization (id, created_by, created_time, disabled, modified_
 (240, NULL, '2017-04-19 15:52:41', 1, NULL, '2017-04-19 15:52:41', '1.0', 1, 1, 1, 1, 1, 73, 13),
 (243, NULL, '2017-04-19 15:56:24', 1, NULL, '2017-04-19 15:56:24', '1.0', 1, 1, 1, 1, 1, 72, 11),
 (244, NULL, '2017-04-19 15:57:01', 1, NULL, '2017-04-19 15:57:01', '1.0', 1, 1, 1, 1, 1, 243, 12),
-(245, NULL, '2017-04-19 18:32:40', 1, NULL, '2017-04-19 18:32:40', '1.0', 1, 1, 1, 1, 1, NULL, 14);
-
+(245, NULL, '2017-04-19 18:32:40', 1, NULL, '2017-04-19 18:32:40', '1.0', 1, 1, 1, 1, 1, NULL, 14),
+(246, NULL, '2017-04-19 18:32:40', 1, NULL, '2017-04-19 18:32:40', '1.0', 1, 1, 1, 1, 1, NULL, 15);
 
 INSERT INTO sys_user (id, created_by, created_time, disabled, modified_by, modified_time, version, email, is_active, name, no_hp, password, username) VALUES
 (1, NULL, '2017-04-16 08:14:39', 0, NULL, '2017-04-16 08:14:39', '1.0', 'prasetiyooo@gmail.com', 1, '', '085645480401', '1234', 'ari'),

@@ -22,7 +22,14 @@
 			});
 		});
 
-		this.get('#/about/', function(context) {
+		this.get('#/sample-spa/', function(context) {
+			var str = location.href.toLowerCase();
+			context.app.swap('');
+			context.render('/admin/v1/spa/templates/user-index.html', {})
+					.appendTo(context.$element());
+		});
+		
+		this.get('#/user/', function(context) {
 			var str = location.href.toLowerCase();
 			context.app.swap('');
 			context.render('/admin/v1/spa/templates/user-index.html', {})
@@ -47,7 +54,7 @@
 	});
 
 	$(function() {
-		app.run('#/about/');
+		app.run('#/');
 	});
 
 })(jQuery);

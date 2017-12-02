@@ -50,44 +50,47 @@ $(function() {
 		textName = $("#TextName").val();
 		textEmail = $("#TextEmail").val();
 		textNoHp = $("#TextNoHp").val();
-		selectRole = $("#SelectRole").val();
+		selectRole = $("#SelectRole").select2('data');
+		var textSelectRole = $("#SelectRole").text();
 		textPassword = $("#TextPassword").val();
 		checkBoxIsActive = $("#CheckBoxIsActive").is(':checked');
-		
+
 		var jsonData = {};
+		var jsonObj = [];
+		for (var a = 0; a < selectRole.length; a++) {
+			item = {}
+			item["id"] = selectRole[a].id;
+			item["roleName"] = selectRole[a].text;
+			jsonObj.push(item);
+
+		}
 		jsonData["username"] = textUsername;
 		jsonData["name"] = textName;
 		jsonData["email"] = textEmail;
 		jsonData["noHp"] = textNoHp;
-		jsonData["roles"] = textNoHp;
+		jsonData["roles"] = jsonObj;
 		jsonData["isActive"] = checkBoxIsActive;
 		jsonData["password"] = textPassword;
 		jsonData["id"] = id;
 		var jsonDataResult = JSON.stringify(jsonData);
-		alert(jsonDataResult);
-		
+		console.log(jsonDataResult);
+
 		$.ajax({
 			type : 'POST',
 			url : url,
-			contentType: 'application/json',
-			data: jsonDataResult,
+			contentType : 'application/json',
+			data : jsonDataResult,
 			headers : {
 				'X-XSRF-TOKEN' : csrfToken
-			},/*,
-			data : {
-				username : textUsername,
-				name : textName,
-				email : textEmail,
-				noHp : textNoHp,
-				roleId : selectRole,
-				isActive : checkBoxIsActive,
-				password : textPassword,
-				id : id
-			},*/
+			},/*
+				 * , data : { username : textUsername, name : textName, email :
+				 * textEmail, noHp : textNoHp, roleId : selectRole, isActive :
+				 * checkBoxIsActive, password : textPassword, id : id },
+				 */
 			datatype : 'json',
 			success : function(data, textStatus, jqXHR) {
 				removeModalInputUser();
-				$("#infoSaveUser").text(message + " success");
+				$("#infoSaveUser").text(data.statusType);
 				$("#infoSaveUser").attr('class', 'success-message')
 				$('#tableUser').DataTable().ajax.reload();
 			},
@@ -214,7 +217,7 @@ $(function() {
 										}
 									});
 						},
-						scrollY : 360,
+						scrollY :getScreenDataTable(),
 						scroller : {
 							loadingIndicator : true
 						}

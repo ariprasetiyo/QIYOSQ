@@ -62,8 +62,12 @@ public class UserRestController {
 		});
 	}
 
-	@RequestMapping(value = "/saveUser", method = RequestMethod.POST)
-	public Future<ResponseEntity<JsonMessageDto>> saveUser(@Valid UserDto user) {
+	@RequestMapping(value = "/saveUser", method = RequestMethod.POST,
+			consumes ={"application/json", "application/xml"},
+			produces ={"application/json", "application/xml"}
+			)
+	public Future<ResponseEntity<JsonMessageDto>> saveUser(
+			@RequestBody @Valid UserDto user) {
 		return CompletableFuture.supplyAsync(() -> {
 			try {
 				return new ResponseEntity<JsonMessageDto>(userService.saveUserAndRole(user), HttpStatus.OK);

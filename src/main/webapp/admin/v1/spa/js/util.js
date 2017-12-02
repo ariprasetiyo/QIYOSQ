@@ -5,3 +5,7 @@ function getNumberOfRow(offset, count) {
 function getAlert() {
 	alert("Test")
 }
+
+function getScreenDataTable() {
+	return $(window).height() - 200;
+}
