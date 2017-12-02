@@ -17,7 +17,7 @@ import arprast.qiyosq.model.MenusModel;
  * @author ari-prasetiyo
  */
 @Repository
-public class MenusDaoEM {
+public class MenusDaoImpl {
 
 	@Autowired
 	EntityManager em;

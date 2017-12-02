@@ -11,8 +11,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication
-//@EnableTransactionManagement(proxyTargetClass=false)
-//@EnableTransactionManagement(proxyTargetClass=true)
+/*
+ * Enable proxyTargetClass=true in @EnableTransactionManagement if 
+ * there isn't have class interface
+ * E.g cases UserDaoImpl
+ */
+@EnableTransactionManagement
 @ImportResource("classpath:app-config.xml")
 public class SpringApplicationMain {
 
@@ -27,8 +31,7 @@ public class SpringApplicationMain {
 		 * ApplicationContext ctx =
 		 * SpringApplication.run(SpringApplicationMain.class, args);
 		 * SpringApplication.run(SpringApplicationMain.class, args);
-		 */
-	
+		 */	
 		new SpringApplicationBuilder(SpringApplicationMain.class).properties("spring.config.name:application").build()
 				.run(args);
 

@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import arprast.qiyosq.dao.UserRolesDao;
-import arprast.qiyosq.dao.UserRolesDaoEM;
+import arprast.qiyosq.dao.UserRolesDaoImpl;
 import arprast.qiyosq.model.UserRolesModel;
 import arprast.qiyosq.ref.ActionType;
 import arprast.qiyosq.util.LogUtil;
@@ -20,7 +20,7 @@ public class UserRolesServiceImpl implements UserRolesService {
 	private UserRolesDao userRolesDao;
 
 	@Autowired
-	private UserRolesDaoEM userRolesDaoEM;
+	private UserRolesDaoImpl userRolesDaoEM;
 
 	@Override
 	public UserRolesModel save(UserRolesModel sysUserRoles) {

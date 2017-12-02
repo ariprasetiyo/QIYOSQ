@@ -15,7 +15,7 @@ import org.springframework.stereotype.Repository;
  * @author ari-prasetiyo
  */
 @Repository
-public class UserRolesDaoEM {
+public class UserRolesDaoImpl {
 	
 	@Autowired
 	private EntityManager em;

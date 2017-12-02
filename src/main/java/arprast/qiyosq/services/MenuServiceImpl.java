@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import arprast.qiyosq.dao.AuthorizationDao;
 import arprast.qiyosq.dao.MenusDao;
-import arprast.qiyosq.dao.MenusDaoEM;
+import arprast.qiyosq.dao.MenusDaoImpl;
 import arprast.qiyosq.dto.ScreenMenuDto;
 import arprast.qiyosq.model.MenusModel;
 import arprast.qiyosq.model.RolesModel;
@@ -32,7 +32,7 @@ public class MenuServiceImpl implements MenuService {
 	private MenusDao menusDao;
 
 	@Autowired
-	private MenusDaoEM menusDaoEM;
+	private MenusDaoImpl menusDaoEM;
 
 	@Autowired
 	private AuthorizationDao authorizationDao;
