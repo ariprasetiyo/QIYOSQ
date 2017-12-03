@@ -35,6 +35,17 @@ public interface UserDao extends JpaRepository<UserModel, Long> {
 	@Query("from UserModel where email = :nEmail ")
 	public UserModel findUserByEmail(@Param("nEmail") String email);
 
+	/**
+	 * 
+	 * @param email
+	 * @param userName
+	 * @param password
+	 * @return Integer
+	 */
+	@Query("select count(id) from UserModel where email = :nEmail and username=:nUserName and password =:nPassword ")
+	public int countUserByEmailAndPassword(@Param("nEmail") String email, @Param("nUserName") String userName,
+			@Param("nPassword") String password);
+
 	/*
 	 * @Autowired
 	 * 

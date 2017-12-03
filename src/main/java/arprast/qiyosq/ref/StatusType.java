@@ -2,27 +2,32 @@ package arprast.qiyosq.ref;
 
 public enum StatusType {
 
-	SAVE_SUCCEED(1), 
-	UPDATE_SUCCEED(2), 
-	DELETE_SUCCEED(3),
-	DUPLICATE_DATA_ERROR(501), 
-	DUPLICATE_EMAIL_ERROR(502), 
-	NULL_POINTER_ERROR(503), 
-	NOT_SAVED_ERROR(504), 
-	SAVE_USER_ERROR(505), 
-	SAVE_ROLE_ERROR(506), 
-	API_REQ_RES_ERROR(507), 
-	API_REQ_RES_GLOBAL_ERROR(508), 
-	UPDATE_ERROR(509), 
-	SAVE_ERROR(510);
+	SAVE_SUCCEED(1, "SAVE SUCCEDD"), 
+	UPDATE_SUCCEED(2, "UPDATE SUCCEDD"), 
+	DELETE_SUCCEED(3 , "DELETE SUCCEDD"),
+	DUPLICATE_DATA_ERROR(501, "DUPLICATE DATA ERROR"), 
+	DUPLICATE_EMAIL_ERROR(502, "DUPLICATE EMAIL ERROR"), 
+	NULL_POINTER_ERROR(503, "NULL POINTER ERROR"), 
+	NOT_SAVED_ERROR(504, "NOT SAVED ERROR"), 
+	SAVE_USER_ERROR(505, "SAVE USER ERROR" ), 
+	SAVE_ROLE_ERROR(506, "SAVE ROLE ERROR"), 
+	API_REQ_RES_ERROR(507, "API REQ RES ERROR"), 
+	API_REQ_RES_GLOBAL_ERROR(508, "API REQ RES GLOBAL ERROR"), 
+	UPDATE_ERROR(509, "UPDATE ERROR"), 
+	SAVE_ERROR(510, "SAVE ERROR"),
+	WRONG_OLD_PASSWORD(511, "WRONG OLD PASSWORD");
 
 	public final int intValue;
+	public final String stringValue;
 
 	/**
+	 * 
 	 * @param intValue
+	 * @param message
 	 */
-	private StatusType(int intValue) {
+	private StatusType(int intValue, String stringValue) {
 		this.intValue = intValue;
+		this.stringValue = stringValue;
 	}
 
 	public static StatusType valueOf(int intValue) {
@@ -53,6 +58,8 @@ public enum StatusType {
 			return UPDATE_ERROR;
 		case 510:
 			return SAVE_ERROR;
+		case 511:
+			return WRONG_OLD_PASSWORD;
 		default:
 			return null;
 		}

@@ -32,31 +32,36 @@ public class UserServiceImpl implements UserService {
 	private UserDao userDao;
 
 	public JsonMessageDto updateUserAndRole(UserDto userDto) {
-		return saveEditUserAndRole(userDto);
+		LogUtil.logDebugType(logger, true, ActionType.UPADATE, "{}", userDto.toString());
+		if (userDto.getOldPassword() != null || !userDto.getOldPassword().isEmpty()) {
+			if (isValidPassword(userDto) == false) {
+				JsonMessageDto jsonMessageDto = new JsonMessageDto();
+				jsonMessageDto.setStatusType(StatusType.UPDATE_ERROR);
+				jsonMessageDto.setMessage(StatusType.WRONG_OLD_PASSWORD.stringValue);
+				return jsonMessageDto;
+			}
+
+		}
+		return saveEditUserAndRole(userDto, true, ActionType.UPADATE, StatusType.UPDATE_ERROR,
+				StatusType.UPDATE_SUCCEED);
+	}
+
+	private boolean isValidPassword(UserDto userDto) {
+		int countUser = userDao.countUserByEmailAndPassword(userDto.getEmail(), userDto.getUsername(),
+				userDto.getOldPassword());
+		return (countUser >= 1 ? true : false);
 	}
 
 	public JsonMessageDto saveUserAndRole(UserDto userDto) {
-		return saveEditUserAndRole(userDto);
+		LogUtil.logDebugType(logger, true, ActionType.SAVE, "{}", userDto.toString());
+		return saveEditUserAndRole(userDto, false, ActionType.SAVE, StatusType.SAVE_ERROR, StatusType.SAVE_SUCCEED);
 	}
 
-	private JsonMessageDto saveEditUserAndRole(UserDto userDto) {
+	private JsonMessageDto saveEditUserAndRole(UserDto userDto, final boolean isEdit, final ActionType actionType,
+			final StatusType messageErrorType, final StatusType messageSuccessType) {
 
-		boolean isEdit = (userDto.getId() != null ? true : false);
-
-		ActionType actionType = ActionType.SAVE;
-		StatusType messageErrorType = StatusType.SAVE_ERROR;
-		StatusType messageSuccessType = StatusType.SAVE_SUCCEED;
-		if (isEdit) {
-			actionType = ActionType.UPADATE;
-			messageErrorType = StatusType.UPDATE_ERROR;
-			messageSuccessType = StatusType.UPDATE_SUCCEED;
-		}
-
-		LogUtil.logDebugType(logger, true, actionType, "{}", userDto.toString());
 		UserModel user = userMapper.asUserModel(userDto);
-
 		user = userDaoImpl.saveEditUserRole(user, isEdit);
-
 		JsonMessageDto jsonMessageDto = new JsonMessageDto();
 		if (user == null) {
 			LogUtil.logDebugType(logger, true, messageErrorType, "null");

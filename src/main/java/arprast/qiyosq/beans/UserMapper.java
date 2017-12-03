@@ -26,6 +26,7 @@ import fr.xebia.extras.selma.Mapper;
 		"arprast.qiyosq.dto.UserDto.url", 
 		"arprast.qiyosq.dto.RolesDto.createdtime",
 		"arprast.qiyosq.dto.RolesDto.modifiedtime",
+		"arprast.qiyosq.dto.UserDto.oldpassword",
 		"arprast.qiyosq.model.UserRolesModel.id"},
 		withCustomFields = {
 				@Field({"userRolesModel","roles"}),

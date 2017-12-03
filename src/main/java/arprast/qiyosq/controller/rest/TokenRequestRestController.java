@@ -17,7 +17,7 @@ import arprast.qiyosq.dto.TokenResponseDto;
  */
 @RestController
 @RequestMapping(value = "/admin/v1/security")
-public class TokenRequestController {
+public class TokenRequestRestController {
 
 	private static final String JSESSIONID = "JSESSIONID";
 	private static final String XSRF_TOKEN = "XSRF-TOKEN";

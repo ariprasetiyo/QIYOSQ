@@ -10,6 +10,16 @@ $(function() {
 	$("#TextNoHp").numeric();
 	$("#adduser").validate({
 		rules : {
+			TextOldPassword : {
+				minlength : 8
+			},
+			TextNewPassword : {
+				minlength : 8
+			},
+			TextVerifyPassword : {
+				minlength : 8,
+				equalTo : "#TextNewPassword"
+			},
 			TextEmail : {
 				required : true,
 				email : true
@@ -31,28 +41,29 @@ $(function() {
 		}
 	});
 
-	// edit user
+	// edit user button
 	$("#editUser").on('click', function() {
 		var id = $("#idUserNya").val();
 		var url = '/admin/v1/api/user/editUser';
 		saveEditUser(id, url);
 	});
 
-	// save user
+	// save user button
 	$("#saveModalAddMenu").on('click', function() {
 		var url = '/admin/v1/api/user/saveUser';
 		saveEditUser(null, url);
 	});
 
 	function saveEditUser(id, url, message) {
-		var textUsername, textName, textEmail, textNoHp, selectRole, checkBoxIsActive, textPassword, idUSerNya;
+		var textUsername, textName, textEmail, textNoHp, selectRole, checkBoxIsActive, textOldPassword, textNewPassword, idUSerNya;
 		textUsername = $("#TextUsername").val();
 		textName = $("#TextName").val();
 		textEmail = $("#TextEmail").val();
 		textNoHp = $("#TextNoHp").val();
 		selectRole = $("#SelectRole").select2('data');
 		var textSelectRole = $("#SelectRole").text();
-		textPassword = $("#TextPassword").val();
+		textNewPassword = $("#TextNewPassword").val();
+		textOldPassword = $("#TextOldPassword").val();
 		checkBoxIsActive = $("#CheckBoxIsActive").is(':checked');
 
 		var jsonData = {};
@@ -70,7 +81,8 @@ $(function() {
 		jsonData["noHp"] = textNoHp;
 		jsonData["roles"] = jsonObj;
 		jsonData["isActive"] = checkBoxIsActive;
-		jsonData["password"] = textPassword;
+		jsonData["oldPassword"] = textOldPassword;
+		jsonData["password"] = textNewPassword;
 		jsonData["id"] = id;
 		var jsonDataResult = JSON.stringify(jsonData);
 		console.log(jsonDataResult);
@@ -91,14 +103,14 @@ $(function() {
 			success : function(data, textStatus, jqXHR) {
 				removeModalInputUser();
 				$("#infoSaveUser").text(data.statusType);
-				$("#infoSaveUser").attr('class', 'success-message')
+				$("#infoSaveUser").attr('class', 'success-message');
 				$('#tableUser').DataTable().ajax.reload();
 			},
 			complete : function() {
 			},
 			error : function(jqXHR, textStatus, errorThrown) {
 				var objJson = JSON.parse(jqXHR.responseText);
-				var errorMessage = message + " failed, ";
+				var errorMessage = "";
 				for (a = 0; a < objJson.fieldErrors.length; a++) {
 					errorMessage += objJson.fieldErrors[a].objectName;
 					errorMessage += " : ";
@@ -217,7 +229,7 @@ $(function() {
 										}
 									});
 						},
-						scrollY :getScreenDataTable(),
+						scrollY : getScreenDataTable(),
 						scroller : {
 							loadingIndicator : true
 						}
@@ -295,115 +307,96 @@ $(function() {
 		});
 	}
 
-	// get data from table
-	$("#tableUser")
-			.on(
-					'click',
-					'.editButton',
-					function() {
-						var idEditButton = $(this).attr('id');
-						// disable button edit
-						// $('#' + idEditButton).attr("disabled", true);
-						var id = idEditButton.replace("editAuth", "");
+	// Add new user
+	$("#addNewUser").on('click', function() {
+		$("#formInputUser").text("Add new user");
+		$("#oldPassword").attr("hidden", "hidden");
+		$("#TextEmail").removeAttr("disabled");
+		$("#TextUsername").removeAttr("disabled");
+		$("#editUser").attr("disabled", "disabled");
+		$("#saveModalAddMenu").removeAttr("disabled");
+	});
 
-						var textUserName, textName, textEmail, textNoHp, textSelectRole, textPassword, CheckBoxIsActive;
+	// Get data from table
+	// Edit data
+	$("#tableUser").on('click', '.editButton', function() {
+		$("#formInputUser").text("Edit user");
+		$("#oldPassword").removeAttr("hidden");
+		$("#TextEmail").attr("disabled", "disabled");
+		$("#TextUsername").attr("disabled", "disabled");
+		$("#editUser").removeAttr("disabled");
+		$("#saveModalAddMenu").attr("disabled", "disabled");
+		getDataOnTable(this);
+	});
 
-						// find the row
-						var $row = $(this).closest("tr");
-						var $tds = $row.find("td");
-						var loopColumn = 1;
+	function getDataOnTable(varThis) {
+		var idEditButton = $(varThis).attr('id');
+		// disable button edit
+		// $('#' + idEditButton).attr("disabled", true);
+		var id = idEditButton.replace("editAuth", "");
 
-						// loop the column of per row
-						$
-								.each(
-										$tds,
-										function() {
-											if (loopColumn === 2) {
-												$("#idUserNya").val(
-														$(this).text());
-											}
-											if (loopColumn === 5) {
-												$("#TextUsername").val(
-														$(this).text());
-											} else if (loopColumn === 6) {
-												$("#TextName").val(
-														$(this).text());
-											} else if (loopColumn === 7) {
-												$("#TextEmail").val(
-														$(this).text());
-											} else if (loopColumn === 8) {
-												$("#TextNoHp").val(
-														$(this).text());
-											} else if (loopColumn === 9) {
-												// begin1 : get
-												// authorization and set to
-												// select2
-												//
-												// split data from table,
-												// example admin, approval,
-												// public
-												var test = $(this).text();
-												var splitData = test.split(",");
+		var textUserName, textName, textEmail, textNoHp, textSelectRole, textPassword, CheckBoxIsActive;
 
-												var mapSelect2 = {};
-												for (var a = 0; a < splitData.length; a++) {
-													mapSelect2[splitData[a]] = splitData[a];
-												}
+		// find the row
+		var $row = $(varThis).closest("tr");
+		var $tds = $row.find("td");
+		var loopColumn = 1;
 
-												var arrayTempVal = [];
-												$('select#SelectRole')
-														.find('option')
-														.each(
-																function() {
-																	var intNumberSelect2 = parseInt($(
-																			this)
-																			.val()) - 1;
-																	var key;
-																	for (key in mapSelect2) {
-																		if ($(
-																				this)
-																				.text()
-																				.trim() === key
-																				.trim()) {
-																			// get
-																			// number
-																			// for
-																			// to
-																			// set
-																			// select2
-																			// select2
-																			// just
-																			// recieve
-																			// val,
-																			// not
-																			// text
-																			arrayTempVal
-																					.push($(
-																							this)
-																							.val());
-																		}
-																	}
-																});
-												$("#SelectRole").val(
-														arrayTempVal).trigger(
-														'change');
-												// end1
-											} else if (loopColumn === 10) {
-												if ($(this).text().trim() === 'true') {
-													$("#CheckBoxIsActive")
-															.prop("checked",
-																	true);
-												} else {
-													$("#CheckBoxIsActive")
-															.prop('checked',
-																	false);
-												}
-											}
-											$("#TextPassword").val("dummay");
-											loopColumn += 1;
-										});
-						enableForm(id);
-					});
+		// loop the column of per row
+		$.each($tds, function() {
+			if (loopColumn === 2) {
+				$("#idUserNya").val($(this).text());
+			}
+			if (loopColumn === 5) {
+				$("#TextUsername").val($(this).text());
+			} else if (loopColumn === 6) {
+				$("#TextName").val($(this).text());
+			} else if (loopColumn === 7) {
+				$("#TextEmail").val($(this).text());
+			} else if (loopColumn === 8) {
+				$("#TextNoHp").val($(this).text());
+			} else if (loopColumn === 9) {
+				// begin1 : get authorization and set to select2
+
+				// split data from table, example admin, approval, public
+				var test = $(this).text();
+				var splitData = test.split(",");
+
+				var mapSelect2 = {};
+				for (var a = 0; a < splitData.length; a++) {
+					mapSelect2[splitData[a]] = splitData[a];
+				}
+
+				var arrayTempVal = [];
+				$('select#SelectRole').find('option').each(function() {
+					var intNumberSelect2 = parseInt($(this).val()) - 1;
+					var key;
+					for (key in mapSelect2) {
+						if ($(this).text().trim() === key.trim()) {
+							/*
+							 * get number for to set select2 select2 just
+							 * recieve val,not text
+							 */
+							arrayTempVal.push($(this).val());
+						}
+					}
+				});
+				$("#SelectRole").val(arrayTempVal).trigger('change');
+				// end1
+			} else if (loopColumn === 10) {
+				if ($(this).text().trim() === 'true') {
+					$("#CheckBoxIsActive").prop("checked", true);
+				} else {
+					$("#CheckBoxIsActive").prop('checked', false);
+				}
+			}
+			// Password not show
+			$("#TextNewPassword").val("");
+			loopColumn += 1;
+		});
+		enableForm(id);
+	}
+
 	function enableForm(id) {
 		$('#myModal').modal('show');
 	}

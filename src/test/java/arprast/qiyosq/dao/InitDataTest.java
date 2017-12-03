@@ -17,15 +17,21 @@ import org.springframework.test.context.junit4.SpringRunner;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@Sql(
-           // executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
-            scripts = "/InitData.sql"
-    )
+
 public class InitDataTest {
 
-    @Test
-    public void test() {
-        System.out.println("=======================================================");
-    }
-   
+	@Test
+	@Sql(
+			// executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
+			scripts = "/InitData.sql")
+	public void test() {
+		System.out.println("InitDataTest =======================================================");
+	}
+
+	@Sql(scripts = "/DropTables.sql")
+	@Test
+	public void dropTable() {
+		System.out.println("dropTable =======================================================");
+	}
+
 }

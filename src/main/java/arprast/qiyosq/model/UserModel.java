@@ -24,7 +24,7 @@ public class UserModel extends ModelEntity {
 
 	private static final long serialVersionUID = 2432434267482377275L;
 
-	@Column(length = 50, nullable = false, unique = true)
+	@Column(length = 50, nullable = false, unique = true, updatable = false)
 	@NotBlank
 	private String username;
 
@@ -32,11 +32,11 @@ public class UserModel extends ModelEntity {
 	@NotBlank
 	private String name;
 
-	@Column(nullable = false)
+	@Column(nullable = false, length = 150)
 	@NotBlank
 	private String password;
 
-	@Column(length = 30, unique = true)
+	@Column(length = 30, unique = true, updatable = false)
 	@Email
 	@NotBlank
 	private String email;
@@ -49,8 +49,8 @@ public class UserModel extends ModelEntity {
 	private boolean isActive;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	@JoinColumn(nullable = true, name ="sys_user_id")
-	private  List<UserRolesModel> userRolesModel;
+	@JoinColumn(nullable = true, name = "sys_user_id")
+	private List<UserRolesModel> userRolesModel;
 
 	public List<UserRolesModel> getUserRolesModel() {
 		return userRolesModel;
