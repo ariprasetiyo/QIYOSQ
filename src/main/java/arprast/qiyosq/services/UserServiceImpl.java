@@ -6,11 +6,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import arprast.qiyosq.beans.UserMapper;
 import arprast.qiyosq.dao.UserDao;
 import arprast.qiyosq.dao.UserDaoImpl;
-import arprast.qiyosq.dto.JsonMessageDto;
 import arprast.qiyosq.dto.UserDto;
 import arprast.qiyosq.dto.UserHeaderDto;
 import arprast.qiyosq.model.UserModel;
@@ -31,14 +32,14 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private UserDao userDao;
 
-	public JsonMessageDto updateUserAndRole(UserDto userDto) {
+	public UserDto updateUserAndRole(UserDto userDto) {
 		LogUtil.logDebugType(logger, true, ActionType.UPADATE, "{}", userDto.toString());
 		if (userDto.getOldPassword() != null || !userDto.getOldPassword().isEmpty()) {
 			if (isValidPassword(userDto) == false) {
-				JsonMessageDto jsonMessageDto = new JsonMessageDto();
-				jsonMessageDto.setStatusType(StatusType.UPDATE_ERROR);
-				jsonMessageDto.setMessage(StatusType.WRONG_OLD_PASSWORD.stringValue);
-				return jsonMessageDto;
+				userDto = new UserDto();
+				userDto.setStatusType(StatusType.UPDATE_ERROR);
+				userDto.setMessage(StatusType.WRONG_OLD_PASSWORD.stringValue);
+				return userDto;
 			}
 
 		}
@@ -52,27 +53,30 @@ public class UserServiceImpl implements UserService {
 		return (countUser >= 1 ? true : false);
 	}
 
-	public JsonMessageDto saveUserAndRole(UserDto userDto) {
+	public UserDto saveUserAndRole(UserDto userDto) {
 		LogUtil.logDebugType(logger, true, ActionType.SAVE, "{}", userDto.toString());
 		return saveEditUserAndRole(userDto, false, ActionType.SAVE, StatusType.SAVE_ERROR, StatusType.SAVE_SUCCEED);
 	}
 
-	private JsonMessageDto saveEditUserAndRole(UserDto userDto, final boolean isEdit, final ActionType actionType,
+	private UserDto saveEditUserAndRole(UserDto userDto, final boolean isEdit, final ActionType actionType,
 			final StatusType messageErrorType, final StatusType messageSuccessType) {
 
 		UserModel user = userMapper.asUserModel(userDto);
 		user = userDaoImpl.saveEditUserRole(user, isEdit);
-		JsonMessageDto jsonMessageDto = new JsonMessageDto();
+		userDto = userMapper.asUserDTO(user);
 		if (user == null) {
 			LogUtil.logDebugType(logger, true, messageErrorType, "null");
-			jsonMessageDto.setStatusType(messageErrorType);
-			return jsonMessageDto;
+			userDto = new UserDto();
+			userDto.setStatusType(messageErrorType);
+			userDto.setMessage(messageErrorType.stringValue);
+			return userDto;
 		}
 
-		jsonMessageDto.setStatusType(messageSuccessType);
+		userDto.setStatusType(messageSuccessType);
+		userDto.setMessage(messageErrorType.stringValue);
 		LogUtil.logDebugType(logger, true, messageSuccessType, user.toString());
 
-		return jsonMessageDto;
+		return userDto;
 	}
 
 	public UserHeaderDto listUserHeader(int offset, int limit, String keySearch) {
@@ -82,7 +86,7 @@ public class UserServiceImpl implements UserService {
 
 		UserHeaderDto sysUserHeader = new UserHeaderDto();
 
-		sysUserHeader.setListSysUserDto(userMapper.asUserDTO(listSysUser));
+		sysUserHeader.setListUser(userMapper.asUserDTO(listSysUser));
 		sysUserHeader.setTotalRecord(userDao.count());
 		LogUtil.logDebug(logger, true, sysUserHeader.toString());
 		return sysUserHeader;
@@ -96,8 +100,10 @@ public class UserServiceImpl implements UserService {
 		}
 	}
 
-	public void deleteUser(long idUser) {
+	public boolean deleteUser(long idUser) {
+		TransactionStatus TransactionStatus = TransactionAspectSupport.currentTransactionStatus();
 		userDao.delete(idUser);
+		return TransactionStatus.isCompleted();
 	}
 
 }

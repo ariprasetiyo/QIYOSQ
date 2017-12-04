@@ -35,10 +35,10 @@ public class AuthorizationController {
     @RequestMapping(value = "", method = RequestMethod.POST)
     public String index(Model model, Pageable page,
             @RequestParam(value = "roles_id", required = false) Long idRole) {
-    	authorizationService.viewSysRoles(model, idRole);
-    	authorizationService.viewDataMenu(model, idRole);
-    	authorizationService.existingMenuInSysMenu(model);
-    	authorizationService.existingMenuInAuthorization(model, idRole);
+//    	authorizationService.viewSysRoles(model, idRole);
+//    	authorizationService.viewDataMenu(model, idRole);
+//    	authorizationService.existingMenuInSysMenu(model);
+//    	authorizationService.existingMenuInAuthorization(model, idRole);
         return "/admin/v1/pages/authorization-index";
     }
 }

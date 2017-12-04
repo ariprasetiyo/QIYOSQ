@@ -15,7 +15,8 @@ public enum StatusType {
 	API_REQ_RES_GLOBAL_ERROR(508, "API REQ RES GLOBAL ERROR"), 
 	UPDATE_ERROR(509, "UPDATE ERROR"), 
 	SAVE_ERROR(510, "SAVE ERROR"),
-	WRONG_OLD_PASSWORD(511, "WRONG OLD PASSWORD");
+	WRONG_OLD_PASSWORD(511, "WRONG OLD PASSWORD"),
+	DELETE_ERROR(512, "DELETE ERROR");
 
 	public final int intValue;
 	public final String stringValue;
@@ -60,6 +61,8 @@ public enum StatusType {
 			return SAVE_ERROR;
 		case 511:
 			return WRONG_OLD_PASSWORD;
+		case 512:
+			return DELETE_ERROR;
 		default:
 			return null;
 		}

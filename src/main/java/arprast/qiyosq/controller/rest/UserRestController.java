@@ -21,10 +21,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import arprast.qiyosq.dto.GlobalDto;
-import arprast.qiyosq.dto.JsonMessageDto;
+import arprast.qiyosq.dto.Dto;
+import arprast.qiyosq.dto.ResponseDto;
 import arprast.qiyosq.dto.UserDto;
 import arprast.qiyosq.dto.UserHeaderDto;
+import arprast.qiyosq.ref.StatusType;
 import arprast.qiyosq.services.UserService;
 
 @RestController
@@ -35,61 +36,81 @@ public class UserRestController {
 	@Autowired
 	private UserService userService;
 
-	@RequestMapping(value = "/delete{idUser}", method = RequestMethod.DELETE)
-	public ResponseEntity<GlobalDto> deleteUser(@PathVariable("idUser") Long idUser) {
-		userService.deleteUser(idUser);
-		GlobalDto globalDto = new GlobalDto();
-		globalDto.setId(idUser);
-		return new ResponseEntity<GlobalDto>(globalDto, HttpStatus.OK);
+	@RequestMapping(value = "/delete{idUser}", method = RequestMethod.DELETE,
+			produces = {"application/json", "application/xml"})
+	public ResponseEntity<ResponseDto<Dto>> deleteUser(@PathVariable("idUser") Long idUser) {
+		Dto dto = new Dto();
+		dto.setId(idUser);
+
+		ResponseDto<Dto> responseDto = new ResponseDto<Dto>();
+		boolean isSuccessDeleteUser = userService.deleteUser(idUser);
+		if (isSuccessDeleteUser) {
+			responseDto = new ResponseDto<Dto>(StatusType.DELETE_SUCCEED, StatusType.DELETE_SUCCEED.stringValue,
+					dto);
+		} else {
+			responseDto = new ResponseDto<Dto>(StatusType.DELETE_ERROR, StatusType.DELETE_ERROR.stringValue, dto);
+		}
+		return new ResponseEntity<ResponseDto<Dto>>(responseDto, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/list", method = RequestMethod.POST)
-	public Future<ResponseEntity<UserHeaderDto>> getListUser(@RequestParam("offset") int offset,
+	@RequestMapping(value = "/list", method = RequestMethod.POST, 
+			 consumes = { "application/json","application/xml" }, 
+			 produces = { "application/json", "application/xml" })
+	public Future<ResponseEntity<ResponseDto<UserHeaderDto>>> getListUser(
+			@RequestParam("offset") int offset,
 			@RequestParam("limit") int limit, @RequestParam(value = "search", required = false) String keySearch) {
 
-		/*
-		 * concurrent
-		 */
 		return CompletableFuture.supplyAsync(() -> {
 			try {
-				return new ResponseEntity<UserHeaderDto>(userService.listUserHeader(offset, limit, keySearch),
-						HttpStatus.OK);
+
+				UserHeaderDto userHeaderDto = userService.listUserHeader(offset, limit, keySearch);
+				ResponseDto<UserHeaderDto> userHeaderJson = new ResponseDto<UserHeaderDto>(
+						userHeaderDto.getStatusType(), userHeaderDto.getMessage(), userHeaderDto);
+				return new ResponseEntity<ResponseDto<UserHeaderDto>>(userHeaderJson, HttpStatus.OK);
+
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-
-			return new ResponseEntity<UserHeaderDto>(new UserHeaderDto(), HttpStatus.NOT_ACCEPTABLE);
+			return new ResponseEntity<ResponseDto<UserHeaderDto>>(new ResponseDto<UserHeaderDto>(),
+					HttpStatus.NOT_ACCEPTABLE);
 		});
 	}
 
-	@RequestMapping(value = "/saveUser", method = RequestMethod.POST,
-			consumes ={"application/json", "application/xml"},
-			produces ={"application/json", "application/xml"}
-			)
-	public Future<ResponseEntity<JsonMessageDto>> saveUser(
-			@RequestBody @Valid UserDto user) {
+	@RequestMapping(value = "/saveUser", method = RequestMethod.POST, consumes = { "application/json",
+			"application/xml" }, produces = { "application/json", "application/xml" })
+	public Future<ResponseEntity<ResponseDto<UserDto>>> saveUser(@RequestBody @Valid UserDto user) {
 		return CompletableFuture.supplyAsync(() -> {
 			try {
-				return new ResponseEntity<JsonMessageDto>(userService.saveUserAndRole(user), HttpStatus.OK);
+
+				UserDto userDto = userService.saveUserAndRole(user);
+				ResponseDto<UserDto> userDtoJson = new ResponseDto<UserDto>(userDto.getStatusType(),
+						userDto.getMessage(), userDto);
+				return new ResponseEntity<ResponseDto<UserDto>>(userDtoJson, HttpStatus.OK);
+
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			return new ResponseEntity<JsonMessageDto>(new JsonMessageDto(), HttpStatus.NOT_ACCEPTABLE);
+			return new ResponseEntity<ResponseDto<UserDto>>(new ResponseDto<UserDto>(),
+					HttpStatus.NOT_ACCEPTABLE);
 		});
 	}
 
-	@RequestMapping(value = "/editUser", method = RequestMethod.POST, 
-			produces = { "application/json", "application/xml" },
-			consumes = { "application/json", "application/xml" })
-	public Future<ResponseEntity<JsonMessageDto>> editUser(
-			@RequestBody @Valid UserDto user) {
+	@RequestMapping(value = "/editUser", method = RequestMethod.POST, produces = { "application/json",
+			"application/xml" }, consumes = { "application/json", "application/xml" })
+	public Future<ResponseEntity<ResponseDto<UserDto>>> editUser(@RequestBody @Valid UserDto user) {
 		return CompletableFuture.supplyAsync(() -> {
 			try {
-				return new ResponseEntity<JsonMessageDto>(userService.updateUserAndRole(user), HttpStatus.OK);
+
+				UserDto userDto = userService.updateUserAndRole(user);
+				ResponseDto<UserDto> userDtoJson = new ResponseDto<UserDto>(userDto.getStatusType(),
+						userDto.getMessage(), userDto);
+				return new ResponseEntity<ResponseDto<UserDto>>(userDtoJson, HttpStatus.OK);
+
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			return new ResponseEntity<JsonMessageDto>(new JsonMessageDto(), HttpStatus.NOT_ACCEPTABLE);
+			return new ResponseEntity<ResponseDto<UserDto>>(new ResponseDto<UserDto>(),
+					HttpStatus.NOT_ACCEPTABLE);
 		});
 	}
 

@@ -5,11 +5,13 @@
  */
 package arprast.qiyosq.dto;
 
+import java.io.Serializable;
+import java.util.Date;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import java.io.Serializable;
-import java.util.Date;
+import arprast.qiyosq.ref.StatusType;
 
 /**
  *
@@ -21,75 +23,96 @@ public class Dto implements Serializable {
 	private static final long serialVersionUID = 1690600905679083387L;
 
 	private Long id;
-    
-    @JsonFormat(pattern="dd-MM-yyyy hh:mm:ss")
-    private Date createdTime;
-    
-    @JsonFormat(pattern="dd-MM-yyyy hh:mm:ss")
-    private Date modifiedTime;
 
-    private String version;
+	@JsonFormat(pattern = "dd-MM-yyyy hh:mm:ss")
+	private Date createdTime;
 
-    private boolean disabled;
+	@JsonFormat(pattern = "dd-MM-yyyy hh:mm:ss")
+	// @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy
+	// hh:mm:ss")
+	private Date modifiedTime;
 
-    private String createdBy;
+	private String version;
 
-    private String modifiedBy;
+	private boolean disabled;
 
-    public Long getId() {
-        return id;
-    }
+	private String createdBy;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	private String modifiedBy;
 
-    public Date getCreatedTime() {
-        return createdTime;
-    }
+	private StatusType statusType;
 
-    public void setCreatedTime(Date createdTime) {
-        this.createdTime = createdTime;
-    }
+	private String message;
 
-    public Date getModifiedTime() {
-        return modifiedTime;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public void setModifiedTime(Date modifiedTime) {
-        this.modifiedTime = modifiedTime;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public String getVersion() {
-        return version;
-    }
+	public Date getCreatedTime() {
+		return createdTime;
+	}
 
-    public void setVersion(String version) {
-        this.version = version;
-    }
+	public void setCreatedTime(Date createdTime) {
+		this.createdTime = createdTime;
+	}
 
-    public boolean isDisabled() {
-        return disabled;
-    }
+	public Date getModifiedTime() {
+		return modifiedTime;
+	}
 
-    public void setDisabled(boolean disabled) {
-        this.disabled = disabled;
-    }
+	public void setModifiedTime(Date modifiedTime) {
+		this.modifiedTime = modifiedTime;
+	}
 
-    public String getCreatedBy() {
-        return createdBy;
-    }
+	public String getVersion() {
+		return version;
+	}
 
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
+	public void setVersion(String version) {
+		this.version = version;
+	}
 
-    public String getModifiedBy() {
-        return modifiedBy;
-    }
+	public boolean isDisabled() {
+		return disabled;
+	}
 
-    public void setModifiedBy(String modifiedBy) {
-        this.modifiedBy = modifiedBy;
-    }
+	public void setDisabled(boolean disabled) {
+		this.disabled = disabled;
+	}
 
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getModifiedBy() {
+		return modifiedBy;
+	}
+
+	public void setModifiedBy(String modifiedBy) {
+		this.modifiedBy = modifiedBy;
+	}
+
+	public StatusType getStatusType() {
+		return statusType;
+	}
+
+	public void setStatusType(StatusType statusType) {
+		this.statusType = statusType;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
 }

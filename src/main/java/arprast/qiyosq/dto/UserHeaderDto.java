@@ -12,10 +12,11 @@ import java.util.List;
  *
  * @author ari-prasetiyo
  */
-public class UserHeaderDto {
+public class UserHeaderDto extends Dto {
 
+	private static final long serialVersionUID = -3158852729647788219L;
 	private float totalRecord;
-	private List<UserDto> listSysUserDto = new ArrayList<UserDto>();
+	private List<UserDto> listUser = new ArrayList<UserDto>();
 
 	public float getTotalRecord() {
 		return totalRecord;
@@ -25,17 +26,17 @@ public class UserHeaderDto {
 		this.totalRecord = totalRecord;
 	}
 
-	public List<UserDto> getListSysUserDto() {
-		return listSysUserDto;
+	public List<UserDto> getListUser() {
+		return listUser;
 	}
 
-	public void setListSysUserDto(List<UserDto> listSysUserDto) {
-		this.listSysUserDto = listSysUserDto;
+	public void setListUser(List<UserDto> listUser) {
+		this.listUser = listUser;
 	}
 
 	@Override
 	public String toString() {
-		return "UserHeaderDto [totalRecord=" + totalRecord + ", listSysUserDto=" + listSysUserDto + "]";
+		return "UserHeaderDto [totalRecord=" + totalRecord + ", listUser=" + listUser + ", getId()=" + getId() + "]";
 	}
 
 }
