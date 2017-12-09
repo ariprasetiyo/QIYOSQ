@@ -6,6 +6,7 @@
 package arprast.qiyosq.dao;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -46,6 +47,12 @@ public interface UserDao extends JpaRepository<UserModel, Long> {
 	public int countUserByEmailAndPassword(@Param("nEmail") String email, @Param("nUserName") String userName,
 			@Param("nPassword") String password);
 
+	@Query("select password from UserModel where id =:nId ")
+	public String findUserPassword(@Param("nId") long id);
+
+	@Modifying
+	@Query("delete from UserModel where id =:nId ")
+	public int deleteUser(@Param("nId") long id);
 	/*
 	 * @Autowired
 	 * 

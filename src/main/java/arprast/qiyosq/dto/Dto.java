@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import arprast.qiyosq.ref.StatusType;
@@ -40,8 +41,10 @@ public class Dto implements Serializable {
 
 	private String modifiedBy;
 
+	@JsonIgnore
 	private StatusType statusType;
 
+	@JsonIgnore
 	private String message;
 
 	public Long getId() {

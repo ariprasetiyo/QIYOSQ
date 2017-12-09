@@ -7,6 +7,7 @@ import arprast.qiyosq.dto.UserDto;
 import arprast.qiyosq.model.UserModel;
 import fr.xebia.extras.selma.Field;
 import fr.xebia.extras.selma.Mapper;
+import fr.xebia.extras.selma.Maps;
 
 /**
  * {@code SelmaMapper mapper = Selma.mapper(SelmaMapper.class); 
@@ -26,8 +27,13 @@ import fr.xebia.extras.selma.Mapper;
 		"arprast.qiyosq.dto.UserDto.url", 
 		"arprast.qiyosq.dto.RolesDto.createdtime",
 		"arprast.qiyosq.dto.RolesDto.modifiedtime",
+		"arprast.qiyosq.dto.UserDto.message",
 		"arprast.qiyosq.dto.UserDto.oldpassword",
-		"arprast.qiyosq.model.UserRolesModel.id"},
+		"arprast.qiyosq.dto.UserDto.statusType",
+		"arprast.qiyosq.model.UserRolesModel.id",
+		"arprast.qiyosq.dto.RolesDto.message",
+		"arprast.qiyosq.dto.RolesDto.statusType"
+		},
 		withCustomFields = {
 				@Field({"userRolesModel","roles"}),
 				@Field({"arprast.qiyosq.model.UserRolesModel.sysroles.rolename","arprast.qiyosq.dto.RolesDto.rolename"}),
@@ -42,7 +48,10 @@ public interface UserMapper {
 	 * @param source
 	 * @return UserDto
 	 */
-//	@Maps(withCustomFields = { @Field({ "userRolesModel", "roles" }) })
+	@Maps(withIgnoreFields = { 
+			"arprast.qiyosq.dto.UserDto.message",
+			"arprast.qiyosq.dto.UserDto.statusType",
+			"arprast.qiyosq.dto.UserDto.password"})
 	UserDto asUserDTO(UserModel source);
 	
 	/**
@@ -50,6 +59,9 @@ public interface UserMapper {
 	 * @param source
 	 * @return List<UserDto>
 	 */
+	@Maps(withIgnoreFields = { 
+			"arprast.qiyosq.dto.UserDto.message",
+			"arprast.qiyosq.dto.UserDto.statusType"})
 	List<UserDto> asUserDTO(List<UserModel> source);
 
 	/**

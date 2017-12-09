@@ -1,5 +1,6 @@
 package arprast.qiyosq.services;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -7,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import arprast.qiyosq.beans.UserMapper;
@@ -16,6 +18,7 @@ import arprast.qiyosq.dto.UserDto;
 import arprast.qiyosq.dto.UserHeaderDto;
 import arprast.qiyosq.model.UserModel;
 import arprast.qiyosq.ref.ActionType;
+import arprast.qiyosq.ref.MessageType;
 import arprast.qiyosq.ref.StatusType;
 import arprast.qiyosq.util.LogUtil;
 import fr.xebia.extras.selma.Selma;
@@ -32,16 +35,23 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private UserDao userDao;
 
+	public UserDto saveUserAndRole(UserDto userDto) {
+		LogUtil.logDebugType(logger, true, ActionType.SAVE, "{}", userDto.toString());
+		return saveEditUserAndRole(userDto, false, ActionType.SAVE, StatusType.SAVE_ERROR, StatusType.SAVE_SUCCEED);
+	}
+
 	public UserDto updateUserAndRole(UserDto userDto) {
 		LogUtil.logDebugType(logger, true, ActionType.UPADATE, "{}", userDto.toString());
-		if (userDto.getOldPassword() != null || !userDto.getOldPassword().isEmpty()) {
+		if (userDto.getOldPassword() != null && !userDto.getOldPassword().isEmpty()) {
 			if (isValidPassword(userDto) == false) {
 				userDto = new UserDto();
 				userDto.setStatusType(StatusType.UPDATE_ERROR);
 				userDto.setMessage(StatusType.WRONG_OLD_PASSWORD.stringValue);
 				return userDto;
 			}
-
+		} else {
+			String password = userDao.findUserPassword(userDto.getId());
+			userDto.setPassword(password);
 		}
 		return saveEditUserAndRole(userDto, true, ActionType.UPADATE, StatusType.UPDATE_ERROR,
 				StatusType.UPDATE_SUCCEED);
@@ -53,36 +63,50 @@ public class UserServiceImpl implements UserService {
 		return (countUser >= 1 ? true : false);
 	}
 
-	public UserDto saveUserAndRole(UserDto userDto) {
-		LogUtil.logDebugType(logger, true, ActionType.SAVE, "{}", userDto.toString());
-		return saveEditUserAndRole(userDto, false, ActionType.SAVE, StatusType.SAVE_ERROR, StatusType.SAVE_SUCCEED);
-	}
-
 	private UserDto saveEditUserAndRole(UserDto userDto, final boolean isEdit, final ActionType actionType,
 			final StatusType messageErrorType, final StatusType messageSuccessType) {
+
+		if (userDto.getPassword().isEmpty()) {
+			userDto = new UserDto();
+			userDto.setStatusType(messageErrorType);
+			userDto.setMessage(MessageType.PASSWORD_IS_EMPTY.stringValue);
+			return userDto;
+		}
+
+		if (userDto.getPassword().length() < 8) {
+			userDto = new UserDto();
+			userDto.setStatusType(messageErrorType);
+			userDto.setMessage(MessageType.PASSWORD_LESS_THAN_EIGHT.stringValue);
+			return userDto;
+		}
 
 		UserModel user = userMapper.asUserModel(userDto);
 		user = userDaoImpl.saveEditUserRole(user, isEdit);
 		userDto = userMapper.asUserDTO(user);
 		if (user == null) {
-			LogUtil.logDebugType(logger, true, messageErrorType, "null");
+			LogUtil.logDebugType(logger, true, messageErrorType, MessageType.NULL.stringValue);
 			userDto = new UserDto();
 			userDto.setStatusType(messageErrorType);
-			userDto.setMessage(messageErrorType.stringValue);
+			userDto.setMessage(MessageType.UPDATE_USER_IS_NULL.stringValue);
 			return userDto;
 		}
 
 		userDto.setStatusType(messageSuccessType);
-		userDto.setMessage(messageErrorType.stringValue);
 		LogUtil.logDebugType(logger, true, messageSuccessType, user.toString());
 
 		return userDto;
 	}
 
-	public UserHeaderDto listUserHeader(int offset, int limit, String keySearch) {
+	public UserHeaderDto listUser(int offset, int limit, String keySearch) {
 
 		LogUtil.logDebug(logger, true, "offset={}, limit={}, search={}", offset, limit, keySearch);
-		List<UserModel> listSysUser = listUser(offset, limit, keySearch);
+
+		List<UserModel> listSysUser = new ArrayList<UserModel>();
+		if (keySearch == null || keySearch.isEmpty()) {
+			listSysUser = userDaoImpl.listAllUser(offset, limit);
+		} else {
+			listSysUser = userDaoImpl.listUserSearchByUserName(offset, limit, keySearch);
+		}
 
 		UserHeaderDto sysUserHeader = new UserHeaderDto();
 
@@ -92,14 +116,7 @@ public class UserServiceImpl implements UserService {
 		return sysUserHeader;
 	}
 
-	private List<UserModel> listUser(int offset, int limit, String keySearch) {
-		if (keySearch == null || keySearch.isEmpty()) {
-			return userDaoImpl.listAllUser(offset, limit);
-		} else {
-			return userDaoImpl.listUserSearchByUserName(offset, limit, keySearch);
-		}
-	}
-
+	@Transactional(rollbackFor = { Exception.class, Throwable.class, IllegalArgumentException.class }, readOnly = false)
 	public boolean deleteUser(long idUser) {
 		TransactionStatus TransactionStatus = TransactionAspectSupport.currentTransactionStatus();
 		userDao.delete(idUser);

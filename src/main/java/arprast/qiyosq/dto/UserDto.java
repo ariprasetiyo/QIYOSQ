@@ -28,15 +28,17 @@ public class UserDto extends Dto {
 	@NotNull
 	private String name;
 
-	@Size(min = 2, max = 50)
+	@Size(max = 50)
 	@NotNull
 	private String password;
 
 	@Size(max = 50)
+	@NotNull
 	private String oldPassword;
 
 	@NotNull
 	@Email
+	@Size(min = 2, max = 50)
 	private String email;
 
 	@Size(min = 10, max = 13)

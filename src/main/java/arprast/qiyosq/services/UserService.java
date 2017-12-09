@@ -10,6 +10,6 @@ public interface UserService {
 
 	UserDto updateUserAndRole(UserDto user);
 
-	UserHeaderDto listUserHeader(int offset, int limit, String keySearch);
+	UserHeaderDto listUser(int offset, int limit, String keySearch);
 
 }

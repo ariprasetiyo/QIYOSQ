@@ -1,5 +1,7 @@
 package arprast.qiyosq.handler.error;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,27 +31,44 @@ import arprast.qiyosq.util.LogUtil;
 public class GlobalExceptionHandler {
 
 	private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+	private static final String REQUEST_DATA_REGEX = "requestData\\.";
+	private static final String EMPTY_STRING = "";
 
 	@ExceptionHandler
 	@ResponseBody
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public Error handle(MissingServletRequestParameterException exception) {
-		return errors(HttpStatus.BAD_REQUEST, exception.getMessage(), exception.getCause());
+		StringWriter st = new StringWriter();
+		exception.printStackTrace(new PrintWriter(st));
+		return errors(HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.toString(), st);
+	}
+
+	@ExceptionHandler
+	@ResponseBody
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	public Error handle(Exception exception) {
+		StringWriter st = new StringWriter();
+		exception.printStackTrace(new PrintWriter(st));
+		return errors(HttpStatus.INTERNAL_SERVER_ERROR, HttpStatus.BAD_REQUEST.toString(), st);
 	}
 
 	@ExceptionHandler
 	@ResponseBody
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public Error handle(ConstraintViolationException exception) {
+		StringWriter st = new StringWriter();
+		exception.printStackTrace(new PrintWriter(st));
 		return errors(HttpStatus.BAD_REQUEST, exception.getConstraintViolations().stream()
-				.map(ConstraintViolation::getMessage).collect(Collectors.toList()), exception.getCause());
+				.map(ConstraintViolation::getMessage).collect(Collectors.toList()), st);
 	}
 
 	@ExceptionHandler
 	@ResponseBody
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public Error handle(IllegalStateException exception) {
-		return errors(HttpStatus.BAD_REQUEST, exception.getClass(), "IllegalStateException");
+		StringWriter st = new StringWriter();
+		exception.printStackTrace(new PrintWriter(st));
+		return errors(HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.toString(), st);
 	}
 
 	@ExceptionHandler
@@ -73,7 +92,9 @@ public class GlobalExceptionHandler {
 	private Error processFieldErrors(HttpStatus httpStatus, List<FieldError> fieldErrors, String message) {
 		Error error = new Error(httpStatus.value(), message);
 		for (FieldError fieldError : fieldErrors) {
-			error.addFieldError(fieldError.getField(), fieldError.getDefaultMessage());
+			error.addFieldError(fieldError.getField().replaceAll(REQUEST_DATA_REGEX, EMPTY_STRING).toUpperCase(),
+					fieldError.getDefaultMessage());
+
 		}
 		LogUtil.logDebugType(logger, true, StatusType.API_REQ_RES_ERROR, error.toString());
 		return error;
@@ -81,7 +102,7 @@ public class GlobalExceptionHandler {
 
 	private Error errors(HttpStatus httpStatus, Object message, Object cause) {
 		Error messageErrorMap = new Error(httpStatus.value(), message.toString());
-		LogUtil.logDebugType(logger, true, StatusType.API_REQ_RES_GLOBAL_ERROR, message.toString());
+		LogUtil.logDebugType(logger, true, StatusType.API_REQ_RES_GLOBAL_ERROR, cause.toString());
 		return messageErrorMap;
 	}
 }

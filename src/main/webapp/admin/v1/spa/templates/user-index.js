@@ -54,7 +54,28 @@ $(function() {
 		saveEditUser(null, url);
 	});
 
-	function saveEditUser(id, url, message) {
+	/*
+	 * construct json request list data
+	 */
+	function jsonRequestListData(data) {
+		var jsonRequest = {};
+		var request = {};
+		request["limit"] = data.length;
+		request["offset"] = data.start;
+		request["search"] = data.search.value;
+		jsonRequest["requestData"] = request;
+		return JSON.stringify(jsonRequest);
+	}
+
+	function jsonRequestDeleteData(id) {
+		var jsonRequest = {};
+		var request = {};
+		request["id"] = id;
+		jsonRequest["requestData"] = request;
+		return JSON.stringify(jsonRequest);
+	}
+
+	function jsonRequestDataEditSaveUser(id) {
 		var textUsername, textName, textEmail, textNoHp, selectRole, checkBoxIsActive, textOldPassword, textNewPassword, idUSerNya;
 		textUsername = $("#TextUsername").val();
 		textName = $("#TextName").val();
@@ -66,6 +87,7 @@ $(function() {
 		textOldPassword = $("#TextOldPassword").val();
 		checkBoxIsActive = $("#CheckBoxIsActive").is(':checked');
 
+		var jsonRequest = {};
 		var jsonData = {};
 		var jsonObj = [];
 		for (var a = 0; a < selectRole.length; a++) {
@@ -84,14 +106,16 @@ $(function() {
 		jsonData["oldPassword"] = textOldPassword;
 		jsonData["password"] = textNewPassword;
 		jsonData["id"] = id;
-		var jsonDataResult = JSON.stringify(jsonData);
-		console.log(jsonDataResult);
+		jsonRequest["requestData"] = jsonData;
+		return JSON.stringify(jsonRequest);
+	}
 
+	function saveEditUser(id, url, message) {
 		$.ajax({
 			type : 'POST',
 			url : url,
 			contentType : 'application/json',
-			data : jsonDataResult,
+			data : jsonRequestDataEditSaveUser(id),
 			headers : {
 				'X-XSRF-TOKEN' : csrfToken
 			},/*
@@ -102,7 +126,12 @@ $(function() {
 			datatype : 'json',
 			success : function(data, textStatus, jqXHR) {
 				removeModalInputUser();
-				$("#infoSaveUser").text(data.statusType);
+				var message = data.message;
+				var messageInfo = data.statusType;
+				if (message != undefined) {
+					messageInfo += " " + message;
+				}
+				$("#infoSaveUser").text(messageInfo);
 				$("#infoSaveUser").attr('class', 'success-message');
 				$('#tableUser').DataTable().ajax.reload();
 			},
@@ -127,19 +156,6 @@ $(function() {
 		});
 	}
 
-	function removeModalInputUser() {
-		$("#TextUsername").val("");
-		$("#TextName").val("");
-		$("#TextEmail").val("");
-		$("#TextNoHp").val("");
-		$("#SelectRole").val("");
-		$("#TextPassword").val("");
-		$("#CheckBoxIsActive").is(':unchecked');
-	}
-	$(".buttonClose").on("click", function() {
-		$("#infoSaveUser").attr('class', '').text("");
-	});
-
 	// dataTables ajax logic
 	$('#tableUser')
 			.DataTable(
@@ -159,15 +175,17 @@ $(function() {
 									.ajax({
 										async : true,
 										type : 'POST',
+										contentType : 'application/json',
 										url : '/admin/v1/api/user/list',
 										headers : {
 											'X-XSRF-TOKEN' : csrfToken
 										},
-										data : {
-											limit : data.length,
-											offset : data.start,
-											search : data.search.value
-										},
+										/*
+										 * data : { limit : data.length, offset :
+										 * data.start, search :
+										 * data.search.value },
+										 */
+										data : jsonRequestListData(data),
 										dataType : "json",
 										beforeSend : function() {
 
@@ -192,22 +210,22 @@ $(function() {
 														+ '" class = "btn btn-primary deleteButton" > Delete </button>';
 											}
 
-											for (var i = 0, ien = dataResponse.listSysUserDto.length; i < ien; i++) {
-												idUser = dataResponse.listSysUserDto[i].id;
+											for (var i = 0, ien = dataResponse.responseData.listUser.length; i < ien; i++) {
+												idUser = dataResponse.responseData.listUser[i].id;
 												out
 														.push([
 																getNumberOfRow(
 																		data.start,
 																		i),
-																dataResponse.listSysUserDto[i].id,
-																dataResponse.listSysUserDto[i].createdTime,
-																dataResponse.listSysUserDto[i].modifiedTime,
-																dataResponse.listSysUserDto[i].username,
-																dataResponse.listSysUserDto[i].name,
-																dataResponse.listSysUserDto[i].email,
-																dataResponse.listSysUserDto[i].noHp,
-																rolesName(dataResponse.listSysUserDto[i].roles),
-																dataResponse.listSysUserDto[i].isActive,
+																dataResponse.responseData.listUser[i].id,
+																dataResponse.responseData.listUser[i].createdTime,
+																dataResponse.responseData.listUser[i].modifiedTime,
+																dataResponse.responseData.listUser[i].username,
+																dataResponse.responseData.listUser[i].name,
+																dataResponse.responseData.listUser[i].email,
+																dataResponse.responseData.listUser[i].noHp,
+																rolesName(dataResponse.responseData.listUser[i].roles),
+																dataResponse.responseData.listUser[i].isActive,
 																buttonAction(i,
 																		idUser) ]);
 											}
@@ -217,8 +235,8 @@ $(function() {
 														callback({
 															draw : data.draw,
 															data : out,
-															recordsTotal : dataResponse.totalRecord,
-															recordsFiltered : dataResponse.totalRecord
+															recordsTotal : dataResponse.responseData.totalRecord,
+															recordsFiltered : dataResponse.responseData.totalRecord
 														});
 													}, 50);
 										},
@@ -248,10 +266,24 @@ $(function() {
 				// var val1 =$(t).find('tr:eq(2) td:eq(4)').text();
 				var idButtonDelete = $(this).attr("id").replace("deleteAuth",
 						"").trim();
+				var userName;
+				// loop the column of per row
+				var $row = $(this).closest("tr");
+				var $tds = $row.find("td");
+				var loopColumn = 1;
+				$.each($tds, function() {
+					if (loopColumn === 6) {
+						userName = $(this).text();
+						return false;
+					}
+					loopColumn += 1;
+				});
 				idUserForDelete = $(".idDataHide" + idButtonDelete).attr("id");
 				idUserForDelete = idUserForDelete.replace("idData", "").trim();
 				$("#modalDeleteUser").modal('show');
-				// idData
+				$("#messageDelete").text(
+						"Are you sure delete this data username " + userName
+								+ " ?");
 			});
 
 	$("#deleteUser").on("click", function() {
@@ -276,10 +308,12 @@ $(function() {
 	function deleteDataUser(idMenu) {
 		$.ajax({
 			type : "DELETE",
-			url : "/admin/v1/api/user/delete" + idMenu,
+			contentType : "application/json",
+			url : "/admin/v1/api/user/delete",
 			headers : {
 				'X-XSRF-TOKEN' : csrfToken
 			},
+			data : jsonRequestDeleteData(idMenu),
 			dataType : "json",
 			success : function(data, textStatus, jqXHR) {
 				// alert(data.id);
@@ -309,6 +343,7 @@ $(function() {
 
 	// Add new user
 	$("#addNewUser").on('click', function() {
+		removePassword();
 		$("#formInputUser").text("Add new user");
 		$("#oldPassword").attr("hidden", "hidden");
 		$("#TextEmail").removeAttr("disabled");
@@ -320,6 +355,7 @@ $(function() {
 	// Get data from table
 	// Edit data
 	$("#tableUser").on('click', '.editButton', function() {
+		removePassword();
 		$("#formInputUser").text("Edit user");
 		$("#oldPassword").removeAttr("hidden");
 		$("#TextEmail").attr("disabled", "disabled");
@@ -329,14 +365,35 @@ $(function() {
 		getDataOnTable(this);
 	});
 
+	$(".buttonClose").on("click", function() {
+		$("#infoSaveUser").attr('class', '').text("");
+		removeModalInputUser();
+	});
+
+	function removePassword() {
+		$("#TextVerifyPassword").val("");
+		$("#TextOldPassword").val("");
+		$("#TextNewPassword").val("");
+	}
+
+	function removeModalInputUser() {
+		removePassword();
+		$("#TextUsername").val("");
+		$("#TextName").val("");
+		$("#TextEmail").val("");
+		$("#TextNoHp").val("");
+		$("#SelectRole").val("");
+		$("#CheckBoxIsActive").prop("checked", false);
+		var arrayTempVal = [];
+		$("#SelectRole").val(arrayTempVal).trigger('change');
+	}
+
 	function getDataOnTable(varThis) {
 		var idEditButton = $(varThis).attr('id');
 		// disable button edit
 		// $('#' + idEditButton).attr("disabled", true);
 		var id = idEditButton.replace("editAuth", "");
-
 		var textUserName, textName, textEmail, textNoHp, textSelectRole, textPassword, CheckBoxIsActive;
-
 		// find the row
 		var $row = $(varThis).closest("tr");
 		var $tds = $row.find("td");

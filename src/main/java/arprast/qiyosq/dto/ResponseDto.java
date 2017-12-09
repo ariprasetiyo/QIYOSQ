@@ -2,7 +2,7 @@ package arprast.qiyosq.dto;
 
 import arprast.qiyosq.ref.StatusType;
 
-public class ResponseDto <T extends Dto> {
+public class ResponseDto<T extends Dto> {
 
 	/*
 	 * protected Class<T> clazz;
@@ -16,7 +16,7 @@ public class ResponseDto <T extends Dto> {
 
 	private String message;
 
-	private T response;
+	private T responseData;
 
 	public ResponseDto() {
 
@@ -26,12 +26,12 @@ public class ResponseDto <T extends Dto> {
 	 * 
 	 * @param statusType
 	 * @param message
-	 * @param response
+	 * @param responseData
 	 */
-	public ResponseDto(StatusType statusType, String message, T response) {
+	public ResponseDto(StatusType statusType, String message, T responseData) {
 		this.message = message;
 		this.statusType = statusType;
-		this.response = response;
+		this.responseData = responseData;
 	}
 
 	public String getMessage() {
@@ -50,12 +50,12 @@ public class ResponseDto <T extends Dto> {
 		this.statusType = statusType;
 	}
 
-	public T getResponse() {
-		return response;
+	public T getResponseData() {
+		return responseData;
 	}
 
-	public void setResponse(T response) {
-		this.response = response;
+	public void setResponseData(T responseData) {
+		this.responseData = responseData;
 	}
 
 }

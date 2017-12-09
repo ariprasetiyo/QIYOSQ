@@ -9,3 +9,4 @@ function getAlert() {
 function getScreenDataTable() {
 	return $(window).height() - 200;
 }
+
