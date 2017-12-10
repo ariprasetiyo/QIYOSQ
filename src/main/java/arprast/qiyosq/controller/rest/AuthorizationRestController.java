@@ -1,51 +1,47 @@
 package arprast.qiyosq.controller.rest;
 
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import arprast.qiyosq.dto.GlobalDto;
 import arprast.qiyosq.dto.AuthorizationDto;
-import arprast.qiyosq.dto.RolesDto;
+import arprast.qiyosq.dto.RequestData;
+import arprast.qiyosq.dto.RequestDto;
+import arprast.qiyosq.dto.ResponseData;
+import arprast.qiyosq.dto.ResponseDto;
 import arprast.qiyosq.services.AuthorizationService;
-import arprast.qiyosq.util.LogUtil;
 
 @RestController
 @RequestMapping("/admin/v1/api/authorization")
 public class AuthorizationRestController {
 
-	Logger logger = LoggerFactory.getLogger(this.getClass());
-
 	@Autowired
 	AuthorizationService authorizationService;
 
-	@RequestMapping(value = "/update/{id}", method = RequestMethod.POST)
-	@ResponseStatus(HttpStatus.OK)
+	@RequestMapping(value = "/update/{id}", method = RequestMethod.POST, consumes = { MediaType.APPLICATION_JSON_VALUE,
+			MediaType.APPLICATION_XML_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE,
+					MediaType.APPLICATION_XML_VALUE })
 	@ResponseBody
-	public ResponseEntity<GlobalDto> index(@PathVariable("id") Long id,
-			@RequestParam(value = "vInsert") boolean vInsert, @RequestParam(value = "vUpdate") boolean vUpdate,
-			@RequestParam(value = "vDelete") boolean vDelete, @RequestParam(value = "vDisable") boolean vDisable) {
-		int inUpdate = authorizationService.updateAuthorization(id, vInsert, vUpdate, vDelete, vDisable);
+	public ResponseEntity<ResponseDto<ResponseData>> index(@PathVariable("id") Long id,
+			@RequestBody RequestDto<AuthorizationDto> requestDto) {
 
-		LogUtil.logDebug(logger, true, "{} inUpdate {}", id, inUpdate);
+		int inUpdate = authorizationService.updateAuthorization(id, requestDto.getRequestData());
 
-		GlobalDto globalDto = new GlobalDto();
-		globalDto.setId(id);
-		globalDto.setCount(inUpdate);
+		ResponseDto<ResponseData> responseDto = new ResponseDto<ResponseData>();
+		ResponseData responseData = new ResponseData();
+		responseData.setId(id);
+		responseData.setTotalRecord(inUpdate);
+		responseDto.setResponseData(responseData);
 
-		return new ResponseEntity<GlobalDto>(globalDto, HttpStatus.OK);
+		return new ResponseEntity<ResponseDto<ResponseData>>(responseDto, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/addMenu/{idRoles}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -56,25 +52,32 @@ public class AuthorizationRestController {
 		return authorizationService.saveDataMenu(idRole, vInsert, vUpdate, vDelete, vDisable, MenuId, parentMenuId);
 	}
 
-	@RequestMapping(value = "/list/{idRole}", method = RequestMethod.POST)
-	public ResponseEntity<List<AuthorizationDto>> viewAuthorizationList(@PathVariable("idRole") Long idRole) {
-		return new ResponseEntity<List<AuthorizationDto>>(authorizationService.getAuthorizationList(idRole),
-				HttpStatus.OK);
+	@RequestMapping(value = "/list/{idRole}", method = RequestMethod.POST, consumes = {
+			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE }, produces = {
+					MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+	public ResponseEntity<ResponseDto<ResponseData>> viewAuthorizationList(@PathVariable("idRole") Long idRole,
+			@RequestBody RequestDto<RequestData> requestDto) {
+
+		ResponseDto<ResponseData> responseDto = new ResponseDto<ResponseData>();
+		ResponseData responseData = new ResponseData();
+		responseData.setJsonMessage(authorizationService.getAuthorizationList(idRole));
+		responseData.setTotalRecord(0);
+		responseDto.setResponseData(responseData);
+		return new ResponseEntity<ResponseDto<ResponseData>>(responseDto, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/deleteMenu/{idAuthorization}", method = RequestMethod.POST)
-	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<GlobalDto> deleteMenu(@PathVariable("idAuthorization") Long id) {
-		authorizationService.deleteAuthorization(id);
-		GlobalDto globalDto = new GlobalDto();
-		globalDto.setId(id);
-		return new ResponseEntity<GlobalDto>(globalDto, HttpStatus.OK);
-	}
+	@RequestMapping(value = "/deleteMenu/{idAuthorization}", method = RequestMethod.POST, consumes = {
+			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE }, produces = {
+					MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+	public ResponseEntity<ResponseDto<ResponseData>> deleteMenu(@PathVariable("idAuthorization") Long id,
+			@RequestBody RequestDto<AuthorizationDto> requestDto) {
 
-	@RequestMapping(value = "/viewRoles/", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public RolesDto viewRoles(@RequestParam("idRole") Long idRoles) {
-		// logger.debug("view roles {}", idRoles);
-		return null;
+		authorizationService.deleteAuthorization(requestDto.getRequestData().getId());
+		ResponseDto<ResponseData> responseDto = new ResponseDto<ResponseData>();
+		ResponseData responseData = new ResponseData();
+		responseData.setId(id);
+		responseDto.setResponseData(responseData);
+		return new ResponseEntity<ResponseDto<ResponseData>>(responseDto, HttpStatus.OK);
 	}
 
 }

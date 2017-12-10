@@ -36,11 +36,11 @@ public class ReadDataTest {
         
         List<AuthorizationDto> results = authorizationDao.listRolenameAndDispatcherUrl();
         for (AuthorizationDto result : results) {
-            log.debug(result.getRoleName() + " : " + result.getPatternDispatcherUrl());
+            log.debug(result.getRoleName() + " : " + result.getUrl());
         }
         
         for (AuthorizationDto sysAuthorization : results) {
-            map.put(sysAuthorization.getPatternDispatcherUrl(), sysAuthorization.getRoleName());
+            map.put(sysAuthorization.getUrl(), sysAuthorization.getRoleName());
         }
         
         for (Object a : map.keySet()) {

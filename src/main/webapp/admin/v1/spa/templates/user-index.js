@@ -54,27 +54,6 @@ $(function() {
 		saveEditUser(null, url);
 	});
 
-	/*
-	 * construct json request list data
-	 */
-	function jsonRequestListData(data) {
-		var jsonRequest = {};
-		var request = {};
-		request["limit"] = data.length;
-		request["offset"] = data.start;
-		request["search"] = data.search.value;
-		jsonRequest["requestData"] = request;
-		return JSON.stringify(jsonRequest);
-	}
-
-	function jsonRequestDeleteData(id) {
-		var jsonRequest = {};
-		var request = {};
-		request["id"] = id;
-		jsonRequest["requestData"] = request;
-		return JSON.stringify(jsonRequest);
-	}
-
 	function jsonRequestDataEditSaveUser(id) {
 		var textUsername, textName, textEmail, textNoHp, selectRole, checkBoxIsActive, textOldPassword, textNewPassword, idUSerNya;
 		textUsername = $("#TextUsername").val();
@@ -185,7 +164,7 @@ $(function() {
 										 * data.start, search :
 										 * data.search.value },
 										 */
-										data : jsonRequestListData(data),
+										data : _jsonRequestListData(data),
 										dataType : "json",
 										beforeSend : function() {
 
@@ -214,7 +193,7 @@ $(function() {
 												idUser = dataResponse.responseData.listUser[i].id;
 												out
 														.push([
-																getNumberOfRow(
+																_getNumberOfRow(
 																		data.start,
 																		i),
 																dataResponse.responseData.listUser[i].id,
@@ -247,7 +226,7 @@ $(function() {
 										}
 									});
 						},
-						scrollY : getScreenDataTable(),
+						scrollY : _getScreenDataTable(),
 						scroller : {
 							loadingIndicator : true
 						}
@@ -313,7 +292,7 @@ $(function() {
 			headers : {
 				'X-XSRF-TOKEN' : csrfToken
 			},
-			data : jsonRequestDeleteData(idMenu),
+			data : _jsonRequestDeleteData(idMenu),
 			dataType : "json",
 			success : function(data, textStatus, jqXHR) {
 				// alert(data.id);

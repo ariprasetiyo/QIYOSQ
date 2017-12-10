@@ -5,23 +5,34 @@
  */
 package arprast.qiyosq.dto;
 
+import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
+import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.NONE;
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY;
+
 import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 /**
  *
  * @author ari-prasetiyo
  */
+@JsonInclude(NON_EMPTY)
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonAutoDetect(fieldVisibility = ANY, getterVisibility = NONE, isGetterVisibility = NONE, setterVisibility = NONE)
 public class AuthorizationDto extends Dto {
 
 	private static final long serialVersionUID = -5525131693784409145L;
+
 	private String roleName;
+
 	private String url;
 
 	private String menuName;
 
 	private Long parentId;
-
-	private Long id;
 
 	private boolean isUpdate;
 
@@ -30,6 +41,22 @@ public class AuthorizationDto extends Dto {
 	private boolean isInsert;
 
 	private boolean isRead;
+
+	public String getRoleName() {
+		return roleName;
+	}
+
+	public void setRoleName(String roleName) {
+		this.roleName = roleName;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
 
 	public String getMenuName() {
 		return menuName;
@@ -47,60 +74,36 @@ public class AuthorizationDto extends Dto {
 		this.parentId = parentId;
 	}
 
-	public boolean isIsUpdate() {
+	public boolean isUpdate() {
 		return isUpdate;
 	}
 
-	public void setIsUpdate(boolean isUpdate) {
+	public void setUpdate(boolean isUpdate) {
 		this.isUpdate = isUpdate;
 	}
 
-	public boolean isIsDelete() {
+	public boolean isDelete() {
 		return isDelete;
 	}
 
-	public void setIsDelete(boolean isDelete) {
+	public void setDelete(boolean isDelete) {
 		this.isDelete = isDelete;
 	}
 
-	public boolean isIsInsert() {
+	public boolean isInsert() {
 		return isInsert;
 	}
 
-	public void setIsInsert(boolean isInsert) {
+	public void setInsert(boolean isInsert) {
 		this.isInsert = isInsert;
 	}
 
-	public boolean isIsRead() {
+	public boolean isRead() {
 		return isRead;
 	}
 
-	public void setIsRead(boolean isRead) {
+	public void setRead(boolean isRead) {
 		this.isRead = isRead;
-	}
-
-	public String getRoleName() {
-		return roleName;
-	}
-
-	public void setRoleName(String rolename) {
-		this.roleName = rolename;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setRoleName(Long id) {
-		this.id = id;
-	}
-
-	public String getPatternDispatcherUrl() {
-		return url;
-	}
-
-	public void setPatternDispatcherUrl(String patternDispatcherUrl) {
-		this.url = patternDispatcherUrl;
 	}
 
 	public AuthorizationDto(String patternDispatcherUrl, String roleName) {
@@ -124,9 +127,9 @@ public class AuthorizationDto extends Dto {
 
 	@Override
 	public String toString() {
-		return "SysAuthorizationDto [roleName=" + roleName + ", url=" + url + ", menuName=" + menuName + ", parentId="
-				+ parentId + ", id=" + id + ", isUpdate=" + isUpdate + ", isDelete=" + isDelete + ", isInsert="
-				+ isInsert + ", isRead=" + isRead + "]";
+		return "AuthorizationDto [roleName=" + roleName + ", url=" + url + ", menuName=" + menuName + ", parentId="
+				+ parentId + ", isUpdate=" + isUpdate + ", isDelete=" + isDelete + ", isInsert=" + isInsert
+				+ ", isRead=" + isRead + ", getId()=" + getId() + "]";
 	}
 
 }

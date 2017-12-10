@@ -36,7 +36,7 @@ public class UserRestController {
 
 	@RequestMapping(value = "/delete", method = RequestMethod.DELETE, produces = { "application/json",
 			"application/xml" }, consumes = { "application/json", "application/xml" })
-	public ResponseEntity<ResponseDto<Dto>> deleteUser(@RequestBody RequestDto<Dto> user) {
+	public ResponseEntity<ResponseDto<Dto>> deleteUser(@RequestBody @Valid RequestDto<Dto> user) {
 		Dto dto = new Dto();
 		dto.setId(user.getRequestData().getId());
 		ResponseDto<Dto> responseDto = new ResponseDto<Dto>();
@@ -51,7 +51,8 @@ public class UserRestController {
 
 	@RequestMapping(value = "/list", method = RequestMethod.POST, consumes = { "application/json",
 			"application/xml" }, produces = { "application/json", "application/xml" })
-	public Future<ResponseEntity<ResponseDto<UserHeaderDto>>> getListUser(@RequestBody RequestDto<RequestData> user) {
+	public Future<ResponseEntity<ResponseDto<UserHeaderDto>>> getListUser(
+			@RequestBody @Valid RequestDto<RequestData> user) {
 
 		return CompletableFuture.supplyAsync(() -> {
 			try {

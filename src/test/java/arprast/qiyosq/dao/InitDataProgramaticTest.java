@@ -5,22 +5,12 @@
  */
 package arprast.qiyosq.dao;
 
-import arprast.qiyosq.dao.AuthorizationDao;
-import arprast.qiyosq.dao.MenusDao;
-import arprast.qiyosq.dao.RolesDao;
-import arprast.qiyosq.dao.UserDao;
-import arprast.qiyosq.dao.UserRolesDao;
-import arprast.qiyosq.dto.AuthorizationDto;
-import arprast.qiyosq.model.AuthorizationModel;
-import arprast.qiyosq.model.MenusModel;
-import arprast.qiyosq.model.RolesModel;
-import arprast.qiyosq.model.UserModel;
-import arprast.qiyosq.model.UserRolesModel;
-
 import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import junit.framework.Assert;
+
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,6 +18,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
+
+import arprast.qiyosq.dto.AuthorizationDto;
+import arprast.qiyosq.model.AuthorizationModel;
+import arprast.qiyosq.model.MenusModel;
+import arprast.qiyosq.model.RolesModel;
+import arprast.qiyosq.model.UserModel;
+import arprast.qiyosq.model.UserRolesModel;
 
 /**
  *
@@ -303,7 +300,7 @@ public class InitDataProgramaticTest {
         Iterable<AuthorizationDto> sysAuthorizations = authorizationDao.listRolenameAndDispatcherUrl();
         for (AuthorizationDto sysAuthorization : sysAuthorizations) {
             System.out.print(sysAuthorization.getRoleName());
-            System.out.println(":" + sysAuthorization.getPatternDispatcherUrl());
+            System.out.println(":" + sysAuthorization.getUrl());
         }
 
 //        List<SysAuthorizationDto> sysAuthorizations = (List<SysAuthorizationDto>) em.createQuery("select a.patternDispatcherUrl as patternDispatcherUrl, b.roleName as roleName from SysAuthorization a left join a.sysRoles b ").getResultList();

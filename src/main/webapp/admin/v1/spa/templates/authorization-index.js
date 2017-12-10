@@ -1,4 +1,37 @@
 $(function() {
+
+	$("#modalMenuid").on(
+			'change',
+			function() {
+				if ($('#modalMenuid option:selected').text() == $(
+						'#modalParentMenuid option:selected').text()) {
+					// $('#modalDeleteUser').modal('show');
+					$("#infoSavaAuthorization").text(
+							"Menu and child menu couldn't same");
+					$("#infoSavaAuthorization")
+							.attr('class', 'warning-message');
+
+					// $('#myModal').modal('toggle');
+					// $('#myModal').modal('show');
+					// $('#myModal').modal('hide');
+					$('#modalMenuid').val("1");
+				}
+			});
+
+	$("#modalParentMenuid").on(
+			'change',
+			function() {
+				if ($('#modalMenuid option:selected').text() == $(
+						'#modalParentMenuid option:selected').text()) {
+					// $('#modalDeleteUser').modal('show');
+					$("#infoSavaAuthorization")
+							.attr('class', 'warning-message');
+					$("#infoSavaAuthorization").text(
+							"Menu and child menu couldn't same");
+					$('#modalParentMenuid').val("1");
+				}
+			});
+
 	$("#submitRoles").on("click", function() {
 		alert($('select[name=roles_id]').val());
 		viewAuthorizationList($('select[name=roles_id]').val());
@@ -18,10 +51,6 @@ $(function() {
 		}
 	});
 
-	if (roleForAdd != null) {
-		$("#idRoleAdd").val(roleForAdd);
-	}
-
 	$("#saveModalAddMenu").on(
 			"click",
 			function() {
@@ -33,11 +62,11 @@ $(function() {
 			});
 	$(".select2").select2();
 
-	// logic button if load page for DOM
+	// DELETE
 	$('#tableAuthorization').on('click', '.deleteButton', function() {
-		// $(".deleteButton").on("click", function () {
 		var id = $(this).attr('id').replace('deleteAuth', '');
-		deleteDataMenu($("#idTAU" + id).val());
+		var idMenu = $("#idData" + id).val();
+		deleteDataMenu(idMenu, _jsonRequestDeleteData(idMenu));
 		isEnableTriggerButtonSaveAndDelete(id);
 	});
 
@@ -45,30 +74,39 @@ $(function() {
 			'click',
 			'.editButton',
 			function() {
-				// $(".editButton").on("click", function () {
-
 				var idAuth = $(this).attr('id');
 				var id = idAuth.replace("editAuth", "");
 				var enabledButton = [ "#isInsert" + id, "#isDelete" + id,
 						"#isUpdate" + id, "#disabled" + id, "#saveAuth" + id,
 						"#deleteAuth" + id ];
 				var disableButton = [ "#editAuth" + id ];
-				enabledDisabledButton(enabledButton, disableButton);
+				_enabledDisabledButton(enabledButton, null);
+				_replaceText(disableButton, "Save");
+				_replaceClass(disableButton, "editButton", "saveButton");
+				_replaceId(disableButton, "saveAuth" + id);
+				_checkHighlightTr(this);
 			});
-	$('#tableAuthorization').on(
-			'click',
-			'.saveButton',
-			function() {
-				// $(".saveButton").on("click", function () {
-				var idSaveAuth = $(this).attr('id');
-				var id = idSaveAuth.replace('saveAuth', '');
-				var vInsert, vDelete, vUpdate, vDisable, idTAU;
-				idTAU = $("#idTAU" + id).val();
-				editData(idTAU, $("#isInsert" + id).is(':checked'), $(
-						"#isDelete" + id).is(':checked'), $("#isUpdate" + id)
-						.is(':checked'), $("#disabled" + id).is(':checked'));
-				isEnableTriggerButtonSaveAndDelete(id);
-			});
+
+	$('#tableAuthorization').on('click', '.saveButton', function() {
+		// $(".saveButton").on("click", function () {
+		var idSaveAuth = $(this).attr('id');
+		var id = idSaveAuth.replace('saveAuth', '');
+		var vInsert, vDelete, vUpdate, vDisable, idTAU;
+		idTAU = $("#idData" + id).val();
+		var saveAuth = [ "#saveAuth" + id ];
+
+		_replaceText(saveAuth, "Edit");
+		_replaceClass(saveAuth, "saveButton", "editButton");
+		_replaceId(saveAuth, "editAuth" + id);
+
+		var vInsert = $("#isInsert" + id).is(':checked');
+		var vDelete = $("#isDelete" + id).is(':checked');
+		var vUpdate = $("#isUpdate" + id).is(':checked');
+		var vDisable = $("#disabled" + id).is(':checked');
+
+		editData(idTAU, jsonRequestEdit(vInsert, vDelete, vUpdate, vDisable));
+		isEnableTriggerButtonSaveAndDelete(id);
+	});
 
 	function getLastNumberDataTables() {
 		var table = $('#tableAuthorization').DataTable();
@@ -77,36 +115,24 @@ $(function() {
 				.replace('</div>', '');
 		return result;
 	}
+
 	function isEnableTriggerButtonSaveAndDelete(id) {
 		var disableButton = [ "#isInsert" + id, "#isDelete" + id,
 				"#isUpdate" + id, "#disabled" + id, "#saveAuth" + id,
 				"#deleteAuth" + id ];
 		var enabledButton = [ "#editAuth" + id ];
-		enabledDisabledButton(enabledButton, disableButton);
+		_enabledDisabledButton(enabledButton, disableButton);
 	}
 
-	function enabledDisabledButton(idEnableButton, idDisableButton) {
-
-		if (idEnableButton !== null) {
-			for (var b = 0; b < idEnableButton.length; b++) {
-				$(idEnableButton[b]).removeAttr("disabled");
-			}
-		}
-
-		if (idDisableButton !== null) {
-			for (var a = 0; a < idDisableButton.length; a++) {
-				$(idDisableButton[a]).attr("disabled", true);
-			}
-		}
-	}
-
-	function deleteDataMenu(idMenu) {
+	function deleteDataMenu(idMenu, jsonRequest) {
 		$.ajax({
 			type : "POST",
-			url : "api/authorization/deleteMenu/" + idMenu,
+			url : "../api/authorization/deleteMenu/" + idMenu,
+			contentType : "application/json",
 			headers : {
-				'X-XSRF-TOKEN' : $("#csrf").val()
+				'X-XSRF-TOKEN' : $("#csrfToken").val()
 			},
+			data : jsonRequest,
 			dataType : "json",
 			success : function(data, textStatus, jqXHR) {
 				// alert(data.id);
@@ -144,15 +170,12 @@ $(function() {
 											url : "../api/authorization/list/"
 													+ idRole,
 											headers : {
-												'X-XSRF-TOKEN' : $("#csrf")
+												'X-XSRF-TOKEN' : $("#csrfToken")
 														.val()
 											},
-											data : {
-												limit : data.length,
-												offset : data.start,
-												search : data.search.value
-											},
+											data : _jsonRequestListData(data),
 											dataType : "json",
+											contentType : "application/json",
 											beforeSend : function() {
 											},
 											success : function(dataResponse,
@@ -161,30 +184,70 @@ $(function() {
 												var idUser = null;
 												function buttonAction(i, idUser) {
 													return '<input type = "hidden" name = "${_csrf.parameterName}" value = "${_csrf.token}" />'
-															+ '<input type = "hidden" id = "idData'
+															+ '<input type = "hidden" id ="idData'
+															+ i
+															+ '" value="'
 															+ idUser
-															+ '" class="idDataHide'
+															+ '" '
+															+ 'class="idDataHide'
 															+ i
 															+ '" /> '
 															+ '<button type = "submit" id = "editAuth'
 															+ i
 															+ '" class = "btn btn-primary editButton" > Edit </button> '
-															+ '<button type = "submit" id = "deleteAuth'
+															+ '<button type = "submit" disabled id = "deleteAuth'
 															+ i
 															+ '" class = "btn btn-primary deleteButton" > Delete </button>';
 												}
-												for (var i = 0, ien = dataResponse.length; i < ien; i++) {
-													idUser = dataResponse[i].id;
+												function checkBoxInsert(
+														numberRow, isCheck,
+														idCheckBox) {
+													var valCheck = "unchecked";
+													if (isCheck) {
+														valCheck = "checked";
+													}
+
+													return '<div class="center" >'
+															+ '<label class="containerChk" for="'
+															+ idCheckBox
+															+ numberRow
+															+ '"><input disabled type="checkbox" id="'
+															+ idCheckBox
+															+ numberRow
+															+ '" '
+															+ valCheck
+															+ '> <span class="checkmarkChk"></span>'
+															+ '</label></div>';
+												}
+
+												for (var i = 0, ien = dataResponse.responseData.jsonMessage.length; i < ien; i++) {
+													idUser = dataResponse.responseData.jsonMessage[i].id;
 													out
 															.push([
 																	i + 1,
-																	dataResponse[i].menuName,
-																	dataResponse[i].createdTime,
-																	dataResponse[i].modifiedTime,
-																	dataResponse[i].isInsert,
-																	dataResponse[i].isUpdate,
-																	dataResponse[i].isDelete,
-																	dataResponse[i].disabled,
+																	dataResponse.responseData.jsonMessage[i].menuName,
+																	dataResponse.responseData.jsonMessage[i].createdTime,
+																	dataResponse.responseData.jsonMessage[i].modifiedTime,
+																	checkBoxInsert(
+																			i,
+																			dataResponse.responseData.jsonMessage[i].isInsert,
+																			"isInsert"),
+																	checkBoxInsert(
+																			i,
+																			dataResponse.responseData.jsonMessage[i].isUpdate,
+																			"isUpdate"),
+																	checkBoxInsert(
+																			i,
+																			dataResponse.responseData.jsonMessage[i].isDelete,
+																			"isDelete"),
+																	checkBoxInsert(
+																			i,
+																			dataResponse.responseData.jsonMessage[i].disabled,
+																			"disabled"),/*
+																						 * dataResponse[i].isUpdate,
+																						 * dataResponse[i].isDelete,
+																						 * dataResponse[i].disabled,
+																						 */
 																	buttonAction(
 																			i,
 																			idUser) ]);
@@ -207,42 +270,16 @@ $(function() {
 											}
 										});
 							},
-							scrollY : 360,
+							scrollY : _getScreenDataTable(),
 							scroller : {
 								loadingIndicator : true
 							}
 						});
 	}
 
-	/*
-	 * function viewAuthorizationList(idRole){ $.ajax({ type: "POST", url:
-	 * "api/authorization/list/"+idRole, headers: {'X-XSRF-TOKEN':
-	 * $("#csrf").val()}, dataType: "json", success: function (dataResponse,
-	 * callback, jqXHR) { var out = []; var idUser = null;
-	 * 
-	 * function buttonAction(i, idUser) { return '<input type = "hidden" name =
-	 * "${_csrf.parameterName}" value = "${_csrf.token}" />' + '<input type =
-	 * "hidden" id = "idData' + idUser + '" class="idDataHide' + i + '" /> ' + '<button
-	 * type = "submit" id = "editAuth' + i + '" class = "btn btn-primary
-	 * editButton" > Edit </button> ' + '<button type = "submit" id =
-	 * "deleteAuth' + i + '" class = "btn btn-primary deleteButton" > Delete
-	 * </button>'; }
-	 * 
-	 * for (var i = 0, ien = dataResponse.length; i < ien; i++) { idUser =
-	 * dataResponse[i].id; out.push([i + 1, dataResponse[i].menuName,
-	 * dataResponse[i].createdTime, dataResponse[i].modifiedTime,
-	 * dataResponse[i].isInsert, dataResponse[i].isUpdate,
-	 * dataResponse[i].isDelete, dataResponse[i].isDisabled, buttonAction(i,
-	 * idUser) ]); }
-	 * 
-	 * setTimeout(function () { callback({ draw: data.draw, data: out,
-	 * recordsTotal: dataResponse.totalRecord, recordsFiltered:
-	 * dataResponse.totalRecord }); }, 50); } }); }
-	 */
-
 	function addDataMenu(id, vInsert, vDelete, vUpdate, vDisable, menuId,
 			parentId) {
-		var csrfToken = $("#csrf").val();
+		var csrfToken = $("#csrfToken").val();
 		if ((parentId == '') || (parentId == '-')) {
 			parentId = null;
 		}
@@ -265,11 +302,7 @@ $(function() {
 					},
 					dataType : "json",
 					beforeSend : function() {
-						ajaxindicatorstart('loading data.. please wait..');
-						window
-								.setTimeout(
-										ajaxindicatorstart('loading data.. please wait..'),
-										500);
+						startLoading();
 					},
 					success : function(data, textStatus, jqXHR) {
 
@@ -349,49 +382,49 @@ $(function() {
 						});
 					},
 					complete : function() {
-						timeout = setTimeout(ajaxindicatorstop(), 9000);
-						clearTimeout(timeout);
+						finishLoading();
 					},
 					error : function(jqXHR, textStatus, errorThrown) {
 					}
 				});
 	}
 
-	function editData(id, vInsert, vDelete, vUpdate, vDisable) {
-		var csrfToken = $("#csrf").val();
-		$
-				.ajax({
-					type : "POST",
-					url : "api/authorization/update/" + id,
-					headers : {
-						'X-XSRF-TOKEN' : csrfToken
-					},
-					data : {
-						vInsert : vInsert,
-						vDelete : vDelete,
-						vUpdate : vUpdate,
-						vDisable : vDisable
-					},
-					dataType : "json",
-					beforeSend : function() {
-						ajaxindicatorstart('loading data.. please wait..');
-						window
-								.setTimeout(
-										ajaxindicatorstart('loading data.. please wait..'),
-										500);
-					},
-					success : function(data, textStatus, jqXHR) {
+	function jsonRequestEdit(vInsert, vDelete, vUpdate, vDisable) {
+		var resultJson = {};
+		var requestData = {};
+		requestData["isUpdate"] = vUpdate;
+		requestData["isDelete"] = vDelete;
+		requestData["disabled"] = vDisable;
+		requestData["isInsert"] = vInsert;
+		resultJson["requestData"] = requestData;
+		return JSON.stringify(resultJson);
+	}
 
-					},
-					complete : function() {
-						timeout = setTimeout(ajaxindicatorstop(), 9000);
-						clearTimeout(timeout);
-					},
-					error : function(jqXHR, textStatus, errorThrown) {
-						// window.location.href =
-						// "http://localhost:8080/sitepat-satelit/";
-						// window.location.replace("logout.ari");
-					}
-				});
+	function editData(id, jsonRequest) {
+		var csrfToken = $("#csrfToken").val();
+		$.ajax({
+			type : "POST",
+			url : "../api/authorization/update/" + id,
+			contentType : "application/json",
+			headers : {
+				'X-XSRF-TOKEN' : csrfToken
+			},
+			data : jsonRequest,
+			dataType : "json",
+			beforeSend : function() {
+				startLoading();
+			},
+			success : function(data, textStatus, jqXHR) {
+
+			},
+			complete : function() {
+				finishLoading();
+			},
+			error : function(jqXHR, textStatus, errorThrown) {
+				// window.location.href =
+				// "http://localhost:8080/sitepat-satelit/";
+				// window.location.replace("logout.ari");
+			}
+		});
 	}
 });

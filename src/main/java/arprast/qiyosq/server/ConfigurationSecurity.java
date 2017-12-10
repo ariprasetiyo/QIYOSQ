@@ -65,7 +65,7 @@ public class ConfigurationSecurity extends WebSecurityConfigurerAdapter {
 
         MultiValueMap map = new MultiValueMap();
         for (AuthorizationDto sysAuthorization : sysAuthorizations) {
-            map.put(sysAuthorization.getPatternDispatcherUrl(), sysAuthorization.getRoleName());
+            map.put(sysAuthorization.getUrl(), sysAuthorization.getRoleName());
         }
 
         for (Object key : map.keySet()) {

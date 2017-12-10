@@ -9,18 +9,29 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+
 import arprast.qiyosq.dao.AuthorizationDao;
 import arprast.qiyosq.dao.MenusDao;
 import arprast.qiyosq.dao.RolesDao;
 import arprast.qiyosq.dto.AuthorizationDto;
 import arprast.qiyosq.model.AuthorizationModel;
 import arprast.qiyosq.model.MenusModel;
-import arprast.qiyosq.model.RolesModel;
+import arprast.qiyosq.ref.ActionType;
+import arprast.qiyosq.util.LogUtil;
 
 @Service
 public class AuthorizationServiceImpl implements AuthorizationService {
 
-	Logger logger = LoggerFactory.getLogger(this.getClass());
+	private static final Logger logger = LoggerFactory.getLogger(AuthorizationServiceImpl.class);
+	private static final ObjectMapper jsonMapper = new ObjectMapper();
+
+	private static final TypeReference<List<AuthorizationDto>> typeRef = new TypeReference<List<AuthorizationDto>>() {
+	};
+	private static final ObjectWriter authorizationWriter = jsonMapper.writerFor(typeRef);
 
 	@Autowired
 	AuthorizationDao authorizationDao;
@@ -31,32 +42,46 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 	@Autowired
 	MenusDao dsSysMenuDao;
 
-	public int updateAuthorization(Long id, boolean vInsert, boolean vUpdate, boolean vDelete, boolean vDisable) {
-		return authorizationDao.updateAuthorization(id, vInsert, vUpdate, vDelete, vDisable);
+	public int updateAuthorization(Long id, AuthorizationDto authorizationDto) {
+		LogUtil.logDebugType(logger, true, ActionType.VIEW, "{}", authorizationDto.toString());
+		return authorizationDao.updateAuthorization(id, authorizationDto.isInsert(), authorizationDto.isUpdate(),
+				authorizationDto.isDelete(), authorizationDto.isDisabled());
 	}
 
 	public void deleteAuthorization(Long id) {
+		LogUtil.logDebugType(logger, true, ActionType.DELETE, "Delete menu {}", id);
 		authorizationDao.delete(id);
 	}
 
-	public void viewSysRoles(Model model, Long idRoles) {
-		model.addAttribute("selectRoleValue", idRoles);
-		List<RolesModel> listAllSysRole = (List<RolesModel>) dsSysRoles.findAll();
-		model.addAttribute("listRoles", listAllSysRole);
+	public void viewSysRoles(Long idRoles) {
+		// model.addAttribute("selectRoleValue", idRoles);
+		// List<RolesModel> listAllSysRole = (List<RolesModel>)
+		// dsSysRoles.findAll();
+		// model.addAttribute("listRoles", listAllSysRole);
 	}
 
-	public void existingMenuInSysMenu(Model model) {
-		List<MenusModel> listAllMenu = (List<MenusModel>) dsSysMenuDao.findAll();
-		model.addAttribute("listAllMenu", listAllMenu);
+	public List<MenusModel> listMenu() {
+		return (List<MenusModel>) dsSysMenuDao.findAll();
 	}
 
-	public void existingMenuInAuthorization(Model model, Long idRole) {
-		List<AuthorizationModel> listParentMenuAuthorization = authorizationDao.getForScreenMenu(idRole);
-		model.addAttribute("listAllMenuAuthorization", listParentMenuAuthorization);
+	public List<AuthorizationModel> listMenuAuthorization(Long idRole) {
+		return authorizationDao.getForScreenMenu(idRole);
 	}
 
 	public AuthorizationDto getAuthorizationList(int offset, int limit, String keySearch) {
 		authorizationDao.findAll();
+		return null;
+	}
+
+	/**
+	 * @deprecated
+	 */
+	public String getAuthorizationJson(Long idRole) {
+		try {
+			return authorizationWriter.writeValueAsString(getAuthorizationList(idRole));
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 
@@ -75,10 +100,10 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 			sysAuthorizationDto.setMenuName(sysAuthorization.getSysMenu().getMenusName());
 			sysAuthorizationDto.setCreatedTime(sysAuthorization.getCreatedTime());
 			sysAuthorizationDto.setModifiedTime(sysAuthorization.getModifiedTime());
-			sysAuthorizationDto.setIsInsert(sysAuthorization.isIsInsert());
-			sysAuthorizationDto.setIsUpdate(sysAuthorization.isIsUpdate());
-			sysAuthorizationDto.setIsRead(sysAuthorization.isIsRead());
-			sysAuthorizationDto.setIsDelete(sysAuthorization.isIsDelete());
+			sysAuthorizationDto.setInsert(sysAuthorization.isIsInsert());
+			sysAuthorizationDto.setUpdate(sysAuthorization.isIsUpdate());
+			sysAuthorizationDto.setRead(sysAuthorization.isIsRead());
+			sysAuthorizationDto.setDelete(sysAuthorization.isIsDelete());
 			sysAuthorizationDto.setDisabled(sysAuthorization.isDisabled());
 			sysAuthorizationDtoList.add(sysAuthorizationDto);
 		}
@@ -100,8 +125,9 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 
 			idParent = (sysAuthority.getParent() == null) ? 0 : sysAuthority.getParent().getId();
 			levelMenu = recursifMethodCountParentId(sysAuthority.getId());
-			logger.debug("result count parent id : " + sysAuthority.getId() + ". Level menu :" + levelMenu + ". Id : "
-					+ idParent);
+
+			LogUtil.logDebugType(logger, true, ActionType.VIEW, "result count parent id={}, Level menu={}, Id={}",
+					sysAuthority.getId(), levelMenu, idParent);
 
 			parentSign.delete(0, parentSign.length());
 			for (int a = 0; a < levelMenu; a++) {
@@ -128,8 +154,14 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 			boolean vDisable, Long MenuId, Long parentMenuId) {
 
 		AuthorizationModel dataAuthorization = new AuthorizationModel();
-		logger.debug("-add new menu on id " + idRole + ", menuId : " + MenuId + ", parentId " + parentMenuId + " "
-				+ vInsert + " " + vUpdate + " " + vDelete + " " + vDisable);
+		/*
+		 * logger.debug("-add new menu on id " + idRole + ", menuId : " + MenuId
+		 * + ", parentId " + parentMenuId + " " + vInsert + " " + vUpdate + " "
+		 * + vDelete + " " + vDisable);
+		 */
+
+		LogUtil.logDebugType(logger, true, ActionType.SAVE, "{}", dataAuthorization.toString());
+
 		dataAuthorization.setSysMenu(MenuId);
 
 		if (parentMenuId == null) {
@@ -146,11 +178,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 		dataAuthorization.setIsRead(true);
 
 		dataAuthorization = authorizationDao.save(dataAuthorization);
-		logger.debug("new id menu after add : " + dataAuthorization.getId() + "--");
-
 		AuthorizationDto dataAuthorizations = authorizationDao.getDataAuthorizationById(dataAuthorization.getId());
-		logger.debug("new id menu after get :" + dataAuthorizations.getId() + "--");
-		logger.debug("menu name after add : " + dataAuthorizations.getMenuName());
 
 		return dataAuthorizations;
 	}

@@ -14,32 +14,39 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import arprast.qiyosq.services.AuthorizationService;
+import arprast.qiyosq.services.RolesService;
 
 @Controller
 @RequestMapping("/admin/v1/view/authorization")
 public class AuthorizationController {
 
-    Logger log = LoggerFactory.getLogger(this.getClass());
-    
-    @Autowired
-    AuthorizationService authorizationService;
+	Logger log = LoggerFactory.getLogger(this.getClass());
 
-    @RequestMapping(value = "", method = RequestMethod.GET)
-    public String index(Model model) {
-    	authorizationService.viewSysRoles(model, null);
-        //return "/admin/v1/pages/authorization-index";
-    	authorizationService.viewDataMenu(model,1L);
-    	return "/admin/v1/spa/templates/authorization-index";
-    }
+	@Autowired
+	RolesService rolesService;
 
-//    @RequestMapping(value = "", method = RequestMethod.POST)
-//    public String index(Model model, Pageable page,
-//            @RequestParam(value = "roles_id", required = false) Long idRole) {
-//    	authorizationService.viewSysRoles(model, idRole);
-//    	//authorizationService.viewDataMenu(model, idRole);
-//    	//authorizationService.existingMenuInSysMenu(model);
-//    	//authorizationService.existingMenuInAuthorization(model, idRole);
-//        //return "/admin/v1/pages/authorization-index";
-//        return "/admin/v1/spa/templates/authorization-index";
-//    }
+	@Autowired
+	AuthorizationService authorizationService;
+
+	@RequestMapping(value = "", method = RequestMethod.GET)
+	public String index(Model model) {
+		// authorizationService.viewSysRoles(model, null);
+		model.addAttribute("selectroles", rolesService.viewSysRoleAll());
+		model.addAttribute("listMenu", authorizationService.listMenu());
+		model.addAttribute("listMenuAuthorization", authorizationService.listMenuAuthorization(1L));
+		// return "/admin/v1/pages/authorization-index";
+		// authorizationService.viewDataMenu(model,1L);
+		return "/admin/v1/spa/templates/authorization-index";
+	}
+
+	// @RequestMapping(value = "", method = RequestMethod.POST)
+	// public String index(Model model, Pageable page,
+	// @RequestParam(value = "roles_id", required = false) Long idRole) {
+	// authorizationService.viewSysRoles(model, idRole);
+	// //authorizationService.viewDataMenu(model, idRole);
+	// //authorizationService.existingMenuInSysMenu(model);
+	// //authorizationService.existingMenuInAuthorization(model, idRole);
+	// //return "/admin/v1/pages/authorization-index";
+	// return "/admin/v1/spa/templates/authorization-index";
+	// }
 }

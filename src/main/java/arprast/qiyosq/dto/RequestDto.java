@@ -1,10 +1,12 @@
 package arprast.qiyosq.dto;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 public class RequestDto<T extends Dto> {
 
 	@Valid
+	@NotNull
 	private T requestData;
 	private String id;
 	private String key;

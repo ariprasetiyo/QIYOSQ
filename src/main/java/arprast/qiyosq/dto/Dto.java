@@ -23,7 +23,7 @@ public class Dto implements Serializable {
 
 	private static final long serialVersionUID = 1690600905679083387L;
 
-	private Long id;
+	protected Long id;
 
 	@JsonFormat(pattern = "dd-MM-yyyy hh:mm:ss")
 	private Date createdTime;
