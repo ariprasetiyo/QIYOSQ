@@ -1,3 +1,4 @@
+
 <!-- Main row -->
 <div class="row">
 	<!-- Left col -->
@@ -9,11 +10,11 @@
 					<div class="form-group">
 						<div class="col-sm-7" style="padding-right: 5%;">
 							<form method="POST" action="">
+								<input type="hidden" id="csrfToken"
+									name="${_csrf.parameterName}" value="${_csrf.token}" />
 								<div class="input-group">
 									<select class="form-control" name="roles_id">
-										<#list selectroles as a>
-										<option value="${a.id}">${a.roleName}</option>
-										</#list>
+										<option selected value="1"></option>
 									</select>
 									<div class="input-group-btn">
 										<button type="submit" class="btn btn-info btn-flat">Action</button>
@@ -22,7 +23,7 @@
 							</form>
 						</div>
 						<div class="col-sm-5 text-right text-left-customize-mobile"
-							style=" padding-right: 0%;">
+							style="padding-left: 0%; padding-right: 0%;">
 							<div class="btn-group">
 								<button type="button"
 									class="btn btn-success btn-sm dropdown-toggle"
@@ -31,7 +32,7 @@
 								</button>
 								<ul class="dropdown-menu pull-right" role="menu">
 									<li><a href="#" data-toggle="modal" data-target="#myModal"
-										class="buttonClose" id="addNewUser">Add new user</a></li>
+										class="buttonClose">Add new menu</a></li>
 									<li class="divider"></li>
 									<li><a href="#">View calendar</a></li>
 								</ul>
@@ -70,6 +71,21 @@
 							</tr>
 						</thead>
 						<tbody>
+							<#if usersMenu??> <#list usersMenu.listUser as listUserMenu>
+							<tr>
+								<td><div class="center">No</div></td>
+								<td><div class="center">Id</div></td>
+								<td><div class="center">Create Time</div></td>
+								<td><div class="center">Modify Time</div></td>
+								<td><div class="center">User Name</div></td>
+								<td><div class="center">Name</div></td>
+								<td><div class="center">Email</div></td>
+								<td><div class="center">No Hp</div></td>
+								<td><div class="center">Roles</div></td>
+								<td><div class="center">Is Active</div></td>
+								<td><div class="center">Action</div></td>
+							</tr>
+							</#list> </#if>
 						</tbody>
 					</table>
 				</div>
@@ -79,6 +95,7 @@
 	</section>
 </div>
 <!-- /.row (main row) -->
+<div class="control-sidebar-bg"></div>
 
 <div id="modalDeleteUser" class="modal modal-danger" role="dialog">
 	<div class="modal-dialog">
@@ -91,7 +108,7 @@
 				<h4 class="modal-title">Warning</h4>
 			</div>
 			<div class="modal-body">
-				<p id="messageDelete">Replace message here ?</p>
+				<p>Are you sure delete this data ?</p>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-outline pull-left"
@@ -117,35 +134,23 @@
 				<div class="modal-header">
 					<button type="button" class="close buttonClose"
 						data-dismiss="modal">&times;</button>
-					<h4 class="modal-title" id="formInputUser">Add new user</h4>
+					<h4 class="modal-title">
+						Add new user
+						<div id="infoSaveUser"></div>
+					</h4>
 				</div>
 				<div class="modal-body">
 					<div class="form-group">
 						<div style="padding: 0px 0px 0px 3%;">
 							<div class="row margin-bottom" style="width: 100%">
 								<label class="control-label col-sm-3" style="padding-left: 1%">Username</label>
-								<input disabled class="col-sm-9" type="text" id="TextUsername"
+								<input class="col-sm-9" type="text" id="TextUsername"
 									name="TextUsername" placeholder="Username">
 							</div>
-							<div id='oldPassword' hidden='true' class="row margin-bottom"
-								style="width: 100%">
-								<label class="control-label col-sm-3" style="padding-left: 1%">Old
-									Password</label> <input class="col-sm-9" type="password"
-									id="TextOldPassword" name="TextOldPassword"
-									placeholder="Old Password">
-							</div>
-							<div id='newPassword' class="row margin-bottom"
-								style="width: 100%">
-								<label class="control-label col-sm-3" style="padding-left: 1%">New
-									Password</label> <input class="col-sm-9" type="password"
-									id="TextNewPassword" name="TextNewPassword"
-									placeholder="New Password">
-							</div>
 							<div class="row margin-bottom" style="width: 100%">
-								<label class="control-label col-sm-3" style="padding-left: 1%">Verify
-									Password</label> <input class="col-sm-9" type="password"
-									id="TextVerifyPassword" name="TextVerifyPassword"
-									placeholder="Verify Password">
+								<label class="control-label col-sm-3" style="padding-left: 1%">Password</label>
+								<input class="col-sm-9" type="password" id="TextPassword"
+									name="TextPassword" placeholder="Password">
 							</div>
 							<div class="row margin-bottom" style="width: 100%">
 								<label class="control-label col-sm-3" style="padding-left: 1%">Name</label>
@@ -154,7 +159,7 @@
 							</div>
 							<div class="row margin-bottom" style="width: 100%">
 								<label class="control-label col-sm-3" style="padding-left: 1%">Email</label>
-								<input disabled class="col-sm-9" type="text" id="TextEmail"
+								<input class="col-sm-9" type="text" id="TextEmail"
 									name="TextEmail" placeholder="Email">
 							</div>
 							<div class="row margin-bottom" style="width: 100%">
@@ -162,15 +167,8 @@
 									Hp</label> <input class="col-sm-9" type="text" id="TextNoHp"
 									name="TextNoHp" placeholder="No Hp">
 							</div>
-							<!-- <div class="row margin-bottom" style="width: 100%"
-								id="select2RoleDiv">
-								<label class="control-label col-sm-3" style="padding-left: 1%">Role</label>
-								<select id="SelectRole" name="SelectRole"
-									class="role-select2-multiple" multiple="multiple">
-								</select>
-							</div> -->
 							<div class="row margin-bottom" style="width: 100%"
-								id="select2RoleDivv">
+								id="select2RoleDiv">
 								<label class="control-label col-sm-3" style="padding-left: 1%">Role</label>
 								<select id="SelectRole" name="SelectRole"
 									class="role-select2-multiple" multiple="multiple">
@@ -185,20 +183,20 @@
 									style="position: initial">
 							</div>
 						</div>
+
 					</div>
 				</div>
-				<div id="infoSaveUser"></div>
 				<div class="modal-footer">
-					<button type="button" id="saveModalAddMenu"
-						class="btn btn-info btn-flat">Save</button>
-					<button type="button" id="editUser" class="btn btn-info btn-flat">Edit</button>
-					<button type="button" class="btn btn-info btn-flat buttonClose"
+					<button type="button" id="saveModalAddMenu" class="btn btn-default" />
+					<!--data-dismiss="modal"-->
+					Save
+					</button>
+					<button type="button" class="btn btn-default buttonClose"
 						data-dismiss="modal">Close</button>
 				</div>
 			</form>
 		</div>
 	</div>
 </div>
-<script type="text/javascript"
-	src="/admin/v1/spa/templates/user-index.js"></script>
-
+</body>
+</html>

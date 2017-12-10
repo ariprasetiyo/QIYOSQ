@@ -33,12 +33,12 @@ public class GlobalExceptionHandler {
 	private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 	private static final String REQUEST_DATA_REGEX = "requestData\\.";
 	private static final String EMPTY_STRING = "";
+	private static final StringWriter st = new StringWriter();
 
 	@ExceptionHandler
 	@ResponseBody
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public Error handle(MissingServletRequestParameterException exception) {
-		StringWriter st = new StringWriter();
+	public final static Error handle(MissingServletRequestParameterException exception) {
 		exception.printStackTrace(new PrintWriter(st));
 		return errors(HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.toString(), st);
 	}
@@ -46,8 +46,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler
 	@ResponseBody
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-	public Error handle(Exception exception) {
-		StringWriter st = new StringWriter();
+	public final static Error handle(Exception exception) {
 		exception.printStackTrace(new PrintWriter(st));
 		return errors(HttpStatus.INTERNAL_SERVER_ERROR, HttpStatus.BAD_REQUEST.toString(), st);
 	}
@@ -55,8 +54,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler
 	@ResponseBody
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public Error handle(ConstraintViolationException exception) {
-		StringWriter st = new StringWriter();
+	public final static Error handle(ConstraintViolationException exception) {
 		exception.printStackTrace(new PrintWriter(st));
 		return errors(HttpStatus.BAD_REQUEST, exception.getConstraintViolations().stream()
 				.map(ConstraintViolation::getMessage).collect(Collectors.toList()), st);
@@ -65,8 +63,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler
 	@ResponseBody
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public Error handle(IllegalStateException exception) {
-		StringWriter st = new StringWriter();
+	public final static Error handle(IllegalStateException exception) {
 		exception.printStackTrace(new PrintWriter(st));
 		return errors(HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.toString(), st);
 	}
@@ -74,7 +71,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler
 	@ResponseBody
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public Error handle(MethodArgumentNotValidException exception) {
+	public final static Error handle(MethodArgumentNotValidException exception) {
 		BindingResult result = exception.getBindingResult();
 		List<FieldError> fieldErrors = result.getFieldErrors();
 		return processFieldErrors(HttpStatus.BAD_REQUEST, fieldErrors, "MethodArgumentNotValidException");
@@ -83,13 +80,13 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler
 	@ResponseBody
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public Error handle(BindException exception) {
+	public final static Error handle(BindException exception) {
 		BindingResult result = exception.getBindingResult();
 		List<FieldError> fieldErrors = result.getFieldErrors();
 		return processFieldErrors(HttpStatus.BAD_REQUEST, fieldErrors, "BindException");
 	}
 
-	private Error processFieldErrors(HttpStatus httpStatus, List<FieldError> fieldErrors, String message) {
+	private final static Error processFieldErrors(HttpStatus httpStatus, List<FieldError> fieldErrors, String message) {
 		Error error = new Error(httpStatus.value(), message);
 		for (FieldError fieldError : fieldErrors) {
 			error.addFieldError(fieldError.getField().replaceAll(REQUEST_DATA_REGEX, EMPTY_STRING).toUpperCase(),
@@ -100,7 +97,7 @@ public class GlobalExceptionHandler {
 		return error;
 	}
 
-	private Error errors(HttpStatus httpStatus, Object message, Object cause) {
+	private final static Error errors(HttpStatus httpStatus, Object message, Object cause) {
 		Error messageErrorMap = new Error(httpStatus.value(), message.toString());
 		LogUtil.logDebugType(logger, true, StatusType.API_REQ_RES_GLOBAL_ERROR, cause.toString());
 		return messageErrorMap;

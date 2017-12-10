@@ -1,4 +1,7 @@
-
+<script>
+	var roleForAdd = null;
+	var roleIdForAdd = null;
+</script>
 <!-- Main row -->
 <div class="row">
 	<!-- Left col -->
@@ -14,16 +17,20 @@
 								value="${_csrf.token}" />
 							<div class="input-group">
 								<select class="form-control" name="roles_id">
-									<#list listRoles as a> <#ifselectRoleValue??>
-									<#if a.id== selectRoleValue>
-									<option selected value="${a.id}">${a.roleName}</option>
-									<script>
-										roleForAdd = '${a.roleName}';
-										roleIdForAdd = '${a.id}';
-									</script> <#else>
-									<option value="${a.id}">${a.roleName}</option></#if> <#else>
-									<option value="${a.id}">${a.roleName}</option>
-									</#if></#list>
+									<#list listRoles as a> 
+										<#if selectRoleValue??>
+	                                    	<#if a.id == selectRoleValue>
+			                                    <option selected value="${a.id}">${a.roleName}</option>
+			                                    <script>
+			                                        roleForAdd = '${a.roleName}';
+			                                        roleIdForAdd = '${a.id}';
+			                                    </script>
+		                                    <#else> <option value="${a.id}">${a.roleName}</option>
+		                                    </#if>
+		                                    <#else>
+		                                    <option value="${a.id}">${a.roleName}</option>
+	                                    </#if>
+                                     </#list>
 								</select>
 								<div class="input-group-btn">
 									<button id="submitRoles" type="submit"
@@ -64,7 +71,7 @@
 			<div class="box-body">
 				<!-- /.box-header -->
 				<div class="box-body">
-					<table id="tableAuthorization"
+<!-- 					<table id="tableAuthorization"
 						class="table table-bordered table-striped">
 						<thead>
 							<tr>
@@ -82,78 +89,94 @@
 						<tbody>
 						</tbody>
 					</table>
+ -->
+					<table id="tableAuthorizationss" class="table table-bordered table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th><div class="center" >No</div></th>
+                                                    <th><div class="center" >Name menu</div></th>
+                                                    <th><div class="center" >Create Time</div></th>
+                                                    <th><div class="center" >Modify Time</div></th>
+                                                    <th><div class="center" >Is Create</div></th>
+                                                    <th><div class="center" >Is Update</div></th>
+                                                    <th><div class="center" >Is Delete</div></th>
+                                                    <th><div class="center" >Is Disabled</div></th>
+                                                    <th><div class="center" >Action</div></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <#if authorities??>
+                                                <#list authorities as listAuthorities>
+                                                <tr id="rowId${listAuthorities.id}" accesskey="${listAuthorities_index+1}">
+                                                    <td><div class="center">${listAuthorities_index+1}</div></td>
+                                                    <td>${listAuthorities.sysMenu.menusName}</td>
+                                                    <td>
+                                                        <div class="center" >${listAuthorities.createdTime}</div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="center" >${listAuthorities.modifiedTime} </div>   
+                                                    </td>
+                                                    <td><div class="center" >
+                                                            <#if listAuthorities.isInsert == true>
+                                                            <input  type="checkbox" id="isInsert${listAuthorities_index}" disabled checked>
+                                                            <label for="isInsert${listAuthorities_index}"></label>
+                                                            <#else>
+                                                            <input  type="checkbox" id="isInsert${listAuthorities_index}" disabled>
+                                                            <label for="isInsert${listAuthorities_index}"></label>
+                                                            </#if>
+                                                        </div>
+                                                    </td>
+                                                    <td><div class="center" >
+                                                            <#if listAuthorities.isUpdate == true>
+                                                            <input type="checkbox"  id="isUpdate${listAuthorities_index}" disabled checked>
+                                                            <label for="isUpdate${listAuthorities_index}"></label>
+                                                            <#else>
+                                                            <input type="checkbox"  id="isUpdate${listAuthorities_index}" disabled>
+                                                            <label for="isUpdate${listAuthorities_index}"></label>
+                                                            </#if>
+                                                        </div>
+                                                    </td>
+                                                    <td><div class="center" >
+                                                            <#if listAuthorities.isDelete == true>
+                                                            <input type="checkbox"  id="isDelete${listAuthorities_index}" disabled checked>
+                                                            <label for="isDelete${listAuthorities_index}"></label>
+                                                            <#else>
+                                                            <input type="checkbox"  id="isDelete${listAuthorities_index}" disabled>
+                                                            <label for="isDelete${listAuthorities_index}"></label>
+                                                            </#if>
+                                                        </div>
+                                                    </td>
+                                                    <td><div class="center" >
+                                                            <#if listAuthorities.disabled>
+                                                            <input type="checkbox"  id="disabled${listAuthorities_index}" disabled checked>
+                                                            <label for="disabled${listAuthorities_index}"></label>
+                                                            <#else>
+                                                            <input type="checkbox"  id="disabled${listAuthorities_index}" disabled>
+                                                            <label for="disabled${listAuthorities_index}"></label>
+                                                            </#if>
+                                                        </div>
+                                                    <td><div style="white-space: nowrap;">
+                                                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                                                        <input type="hidden" id="idTAU${listAuthorities_index}" value="${listAuthorities.id}"/>
+                                                        <button type="submit" id="editAuth${listAuthorities_index}" class="btn btn-primary editButton">Edit</button>
+                                                        <button type="submit" id="saveAuth${listAuthorities_index}" class="btn btn-primary saveButton" disabled>Save</button>
+                                                        <button type="submit" id="deleteAuth${listAuthorities_index}" class="btn btn-primary deleteButton" disabled>Delete</button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                </#list>
+                                                <#else>
+                                                </#if>
+                                            </tbody>
+                                        </table>
 				</div>
 				<!-- /.box-body -->
 			</div>
 		</div>
+
 	</section>
 </div>
 <!-- /.row (main row) -->
-<div class="control-sidebar-bg"></div>
-<!-- Modal -->
-<div id="myModal" class="modal fade" role="dialog">
-	<div class="modal-dialog">
 
-		<!-- Modal content-->
-		<div class="modal-content col-sm-8 col-md-offset-3">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				<h4 class="modal-title">Add new menu</h4>
-			</div>
-			<div class="modal-body">
-				<div class="form-group">
-					<label for="recipient-name" class="form-control-label">Role
-						Name:</label> <input type="text" id="idRoleAdd" disabled
-						class="form-control" style="width: 100%;">
-				</div>
-				<div class="form-group">
-					<label for="recipient-name" class="form-control-label">Menu:</label>
-					<select id="modalMenuid" class="form-control select2"
-						style="width: 100%;">
-						<#iflistAllMenu?? > <#list listAllMenu as
-							listMenu>
-						<option value="${listMenu.id}">${listMenu.menusName}</option>
-						</#list> </#if>
-					</select>
-				</div>
-				<div class="form-group">
-					<label for="recipient-name" class="form-control-label">Parent
-						menu:</label> <select id="modalParentMenuid" class="form-control select2"
-						style="width: 100%;">
-						<option>-</option>
-						<#iflistAllMenuAuthorization?? > <#list
-							listAllMenuAuthorization as listMenuAuthorization>
-						<option value="${listMenuAuthorization.id}">${listMenuAuthorization.sysMenu.menusName}</option>
-						</#list> </#if>
-					</select>
-				</div>
-				<div class="form-group">
-					<div style="padding: 0px 0px 0px 3%;">
-						<div class="row">
-							<label class="form-control-label">Access Role:</label>
-						</div>
-						<div class="row">
-							<input type="checkbox" id="modalIsCreate" class="form-control"
-								checked> <label for="modalIsCreate">Is Create</label> <input
-								type="checkbox" id="modalIsUpdate" checked> <label
-								for="modalIsUpdate">Is Update</label> <input type="checkbox"
-								id="modalIsDelete" checked> <label for="modalIsDelete">Is
-								Delete</label> <input type="checkbox" id="modalIsDisabled" checked>
-							<label for="modalIsDisabled">Is Disabled</label>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" id="saveModalAddMenu" class="btn btn-default"
-					data-dismiss="modal">Save</button>
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-			</div>
-		</div>
-	</div>
-</div>
-<!-- ./wrapper -->
-
-<script type="text/javascript" src="/admin/v1/spa/js/util.js"></script>
 <script type="text/javascript"
 	src="/admin/v1/spa/templates/authorization-index.js"></script>

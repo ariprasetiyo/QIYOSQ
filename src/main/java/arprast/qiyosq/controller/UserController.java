@@ -18,7 +18,9 @@ public class UserController {
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String index(Model model) {
         model.addAttribute("selectroles", rolesService.viewSysRoleAll());
-        return "/admin/v1/pages/user-index";
+//        model.addAttribute("usersMenu", userService.listUser(0, 10, ""));
+        //return "/admin/v1/pages/user-index";
+        return "/admin/v1/spa/templates/user-index";
     }
 
 }

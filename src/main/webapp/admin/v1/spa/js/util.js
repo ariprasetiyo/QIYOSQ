@@ -10,3 +10,15 @@ function getScreenDataTable() {
 	return $(window).height() - 200;
 }
 
+/*initDataTable();
+function initDataTable() {
+	$('#tableUser').DataTable({
+		//responsive : true,
+		ordering : false,
+		searching : true,
+		scrollY : getScreenDataTable(),
+		scroller : {
+			loadingIndicator : true
+		}
+	});
+}*/

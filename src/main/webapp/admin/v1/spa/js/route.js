@@ -25,22 +25,26 @@
 		this.get('#/sample-spa/', function(context) {
 			var str = location.href.toLowerCase();
 			context.app.swap('');
-			context.render('/admin/v1/spa/templates/user-index.html', {})
+			context.render('../../../admin/v1/view/basicwebspa/', {})
 					.appendTo(context.$element());
 		});
 		
 		this.get('#/user/', function(context) {
 			var str = location.href.toLowerCase();
 			context.app.swap('');
-			context.render('/admin/v1/spa/templates/user-index.html', {})
+			context.render('../../../admin/v1/view/user/', {})
 					.appendTo(context.$element());
 		});
 		
 		this.get('#/authorization/', function(context) {
 			var str = location.href.toLowerCase();
 			context.app.swap('');
-			context.render('/admin/v1/spa/templates/authorization-index.html', {})
-					.appendTo(context.$element());
+//			../../../admin/v1/view/main#/authorization/
+//			context.render('/admin/v1/spa/templates/authorization-index.html', {})
+//					.appendTo(context.$element());
+			context.render('../../../admin/v1/view/authorization/', {})
+			.appendTo(context.$element());
+
 		});
 
 		this.get('#/article/:id', function(context) {

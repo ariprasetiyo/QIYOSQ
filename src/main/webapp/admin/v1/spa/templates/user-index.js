@@ -330,16 +330,15 @@ $(function() {
 		});
 	}
 
-	getRoleList();
-	function getRoleList() {
-		$.get("/admin/v1/api/role/list", function(data) {
-			for (var a = 0; a < data.length; a++) {
-				$("#SelectRole").append(
-						"<option value=" + data[a].id + ">" + data[a].roleName
-								+ "</option>");
-			}
-		});
-	}
+	/*
+	 * Handle by ftl
+	 */
+	// getRoleList();
+	/*
+	 * function getRoleList() { $.get("/admin/v1/api/role/list", function(data) {
+	 * for (var a = 0; a < data.length; a++) { $("#SelectRole").append( "<option
+	 * value=" + data[a].id + ">" + data[a].roleName + "</option>"); } }); }
+	 */
 
 	// Add new user
 	$("#addNewUser").on('click', function() {

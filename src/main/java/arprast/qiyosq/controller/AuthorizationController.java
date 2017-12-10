@@ -8,12 +8,10 @@ package arprast.qiyosq.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import arprast.qiyosq.services.AuthorizationService;
 
@@ -29,16 +27,19 @@ public class AuthorizationController {
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String index(Model model) {
     	authorizationService.viewSysRoles(model, null);
-        return "/admin/v1/pages/authorization-index";
+        //return "/admin/v1/pages/authorization-index";
+    	authorizationService.viewDataMenu(model,1L);
+    	return "/admin/v1/spa/templates/authorization-index";
     }
 
-    @RequestMapping(value = "", method = RequestMethod.POST)
-    public String index(Model model, Pageable page,
-            @RequestParam(value = "roles_id", required = false) Long idRole) {
+//    @RequestMapping(value = "", method = RequestMethod.POST)
+//    public String index(Model model, Pageable page,
+//            @RequestParam(value = "roles_id", required = false) Long idRole) {
 //    	authorizationService.viewSysRoles(model, idRole);
-//    	authorizationService.viewDataMenu(model, idRole);
-//    	authorizationService.existingMenuInSysMenu(model);
-//    	authorizationService.existingMenuInAuthorization(model, idRole);
-        return "/admin/v1/pages/authorization-index";
-    }
+//    	//authorizationService.viewDataMenu(model, idRole);
+//    	//authorizationService.existingMenuInSysMenu(model);
+//    	//authorizationService.existingMenuInAuthorization(model, idRole);
+//        //return "/admin/v1/pages/authorization-index";
+//        return "/admin/v1/spa/templates/authorization-index";
+//    }
 }

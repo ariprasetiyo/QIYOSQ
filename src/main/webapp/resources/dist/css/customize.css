@@ -3,6 +3,7 @@ Copyright © 2014-2016 Almsaeed Studio & Arprast-Soft. All rights reserved.
 */
 .modal-body {
 	/* padding-bottom: 0px; */
+	
 }
 /*
 message 
@@ -58,8 +59,8 @@ message end
 	margin-left: 180px;
 	padding-left: 10px;
 	margin-top: 0px;
-	padding-bottom:1px;
- 	padding-top: 1px; 
+	padding-bottom: 1px;
+	padding-top: 1px;
 }
 
 .btn-default {
@@ -377,6 +378,22 @@ label {
     }
 
 }*/
+@media ( min-width : 768px) {
+	.form-inline .input-group>.form-control {
+		width: auto;
+	}
+}
+
+@media ( min-width : 768px) {
+	.form-inline .form-group {
+		display: inline-block;
+		margin-bottom: 0;
+		vertical-align: middle;
+		width: auto;
+		margin-right:10px;
+	}
+}
+
 @media ( max-width :1000px) {
 	.box-header {
 		/* padding: 10px 10px 0px 10px; */
@@ -416,7 +433,7 @@ label {
 	}
 	.text-left-customize-mobile {
 		text-align: left;
-		margin-left: 2%;
+		/* margin-left: 2%; */
 		margin-top: 1%;
 	}
 	.dropdown-menu.pull-right {
