@@ -1,5 +1,7 @@
 package arprast.qiyosq.controller.rest;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -8,7 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,7 +31,7 @@ public class AuthorizationRestController {
 			MediaType.APPLICATION_XML_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE,
 					MediaType.APPLICATION_XML_VALUE })
 	@ResponseBody
-	public ResponseEntity<ResponseDto<ResponseData>> index(@PathVariable("id") Long id,
+	public ResponseEntity<ResponseDto<ResponseData>> authorizationUpdate(@PathVariable("id") Long id,
 			@RequestBody RequestDto<AuthorizationDto> requestDto) {
 
 		int inUpdate = authorizationService.updateAuthorization(id, requestDto.getRequestData());
@@ -44,24 +45,46 @@ public class AuthorizationRestController {
 		return new ResponseEntity<ResponseDto<ResponseData>>(responseDto, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/addMenu/{idRoles}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public AuthorizationDto authorizationAddMenu(@PathVariable("idRoles") Long idRole,
-			@RequestParam("vInsert") boolean vInsert, @RequestParam("vUpdate") boolean vUpdate,
-			@RequestParam("vDelete") boolean vDelete, @RequestParam("vDisable") boolean vDisable,
-			@RequestParam("modelMenuId") Long MenuId, @RequestParam("modelParentMenuId") Long parentMenuId) {
-		return authorizationService.saveDataMenu(idRole, vInsert, vUpdate, vDelete, vDisable, MenuId, parentMenuId);
+	/*
+	 * @RequestMapping(value = "/addMenu/{idRoles}", method =
+	 * RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes
+	 * = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_JSON_VALUE })
+	 * public AuthorizationDto authorizationAddMenu(@PathVariable("idRoles")
+	 * Long idRole,
+	 * 
+	 * @RequestParam("vInsert") boolean vInsert, @RequestParam("vUpdate")
+	 * boolean vUpdate,
+	 * 
+	 * @RequestParam("vDelete") boolean vDelete, @RequestParam("vDisable")
+	 * boolean vDisable,
+	 * 
+	 * @RequestParam("modelMenuId") Long
+	 * MenuId, @RequestParam("modelParentMenuId") Long parentMenuId) { return
+	 * authorizationService.saveDataMenu(idRole, vInsert, vUpdate, vDelete,
+	 * vDisable, MenuId, parentMenuId); }
+	 */
+
+	@RequestMapping(value = "/addMenu", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE,
+			MediaType.APPLICATION_XML_VALUE }, consumes = { MediaType.APPLICATION_JSON_VALUE,
+					MediaType.APPLICATION_XML_VALUE })
+	public AuthorizationDto authorizationSave(@RequestBody RequestDto<AuthorizationDto> requestDto) {
+		AuthorizationDto authorizationDto = new AuthorizationDto();
+		authorizationDto = requestDto.getRequestData();
+		return authorizationService.saveMenu(authorizationDto);
 	}
 
 	@RequestMapping(value = "/list/{idRole}", method = RequestMethod.POST, consumes = {
 			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE }, produces = {
 					MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-	public ResponseEntity<ResponseDto<ResponseData>> viewAuthorizationList(@PathVariable("idRole") Long idRole,
+	public ResponseEntity<ResponseDto<ResponseData>> authorizationList(@PathVariable("idRole") Long idRole,
 			@RequestBody RequestDto<RequestData> requestDto) {
 
 		ResponseDto<ResponseData> responseDto = new ResponseDto<ResponseData>();
 		ResponseData responseData = new ResponseData();
-		responseData.setJsonMessage(authorizationService.getAuthorizationList(idRole));
-		responseData.setTotalRecord(0);
+		
+		List<AuthorizationDto>  authorizationDto =  authorizationService.getAuthorizationList(requestDto.getRequestData());
+		responseData.setJsonMessage(authorizationDto);
+		responseData.setTotalRecord(authorizationDto.size());
 		responseDto.setResponseData(responseData);
 		return new ResponseEntity<ResponseDto<ResponseData>>(responseDto, HttpStatus.OK);
 	}
@@ -69,7 +92,7 @@ public class AuthorizationRestController {
 	@RequestMapping(value = "/deleteMenu/{idAuthorization}", method = RequestMethod.POST, consumes = {
 			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE }, produces = {
 					MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-	public ResponseEntity<ResponseDto<ResponseData>> deleteMenu(@PathVariable("idAuthorization") Long id,
+	public ResponseEntity<ResponseDto<ResponseData>> authorizationDelete(@PathVariable("idAuthorization") Long id,
 			@RequestBody RequestDto<AuthorizationDto> requestDto) {
 
 		authorizationService.deleteAuthorization(requestDto.getRequestData().getId());

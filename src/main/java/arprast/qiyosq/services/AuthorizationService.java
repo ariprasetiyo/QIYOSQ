@@ -1,8 +1,9 @@
 package arprast.qiyosq.services;
 
 import java.util.List;
-import org.springframework.ui.Model;
+
 import arprast.qiyosq.dto.AuthorizationDto;
+import arprast.qiyosq.dto.RequestData;
 import arprast.qiyosq.model.AuthorizationModel;
 import arprast.qiyosq.model.MenusModel;
 
@@ -18,14 +19,15 @@ public interface AuthorizationService {
 
 	public String getAuthorizationJson(Long idRole);
 	
-	public List<AuthorizationDto> getAuthorizationList(Long idRole);
+	public List<AuthorizationDto> getAuthorizationList(RequestData requestData);
 
-	public void viewDataMenu(Model model, Long idRole);
+/*	public void viewDataMenu(Model model, Long idRole);*/
 
-	public AuthorizationDto saveDataMenu(Long idRole, boolean vInsert, boolean vUpdate, boolean vDelete,
-			boolean vDisable, Long MenuId, Long parentMenuId);
+	public AuthorizationDto saveMenu(AuthorizationDto authorizationDto);
 
 	int updateAuthorization(Long id, AuthorizationDto authorizationDto);
 
 	void deleteAuthorization(Long id);
+	
+	long countAuthorization();
 }

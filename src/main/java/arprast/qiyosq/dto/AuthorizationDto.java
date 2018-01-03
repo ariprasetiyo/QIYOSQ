@@ -18,6 +18,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 /**
  *
  * @author ari-prasetiyo
+ * @category These attribute fasterXML for set JSON message in class
+ *           authorization method authorizationList
  */
 @JsonInclude(NON_EMPTY)
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -41,6 +43,8 @@ public class AuthorizationDto extends Dto {
 	private boolean isInsert;
 
 	private boolean isRead;
+
+	private Long roleId;
 
 	public String getRoleName() {
 		return roleName;
@@ -106,6 +110,14 @@ public class AuthorizationDto extends Dto {
 		this.isRead = isRead;
 	}
 
+	public Long getRoleId() {
+		return roleId;
+	}
+
+	public void setRoleId(Long roleId) {
+		this.roleId = roleId;
+	}
+
 	public AuthorizationDto(String patternDispatcherUrl, String roleName) {
 		this.roleName = roleName;
 		this.url = patternDispatcherUrl;
@@ -129,7 +141,6 @@ public class AuthorizationDto extends Dto {
 	public String toString() {
 		return "AuthorizationDto [roleName=" + roleName + ", url=" + url + ", menuName=" + menuName + ", parentId="
 				+ parentId + ", isUpdate=" + isUpdate + ", isDelete=" + isDelete + ", isInsert=" + isInsert
-				+ ", isRead=" + isRead + ", getId()=" + getId() + "]";
+				+ ", isRead=" + isRead + ", roleId=" + roleId + ", id=" + id + ", isDisabled()=" + isDisabled() + "]";
 	}
-
 }

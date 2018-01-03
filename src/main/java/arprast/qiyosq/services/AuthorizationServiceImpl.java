@@ -7,20 +7,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
+import arprast.qiyosq.beans.AuthorizationMapper;
 import arprast.qiyosq.dao.AuthorizationDao;
+import arprast.qiyosq.dao.AuthorizationDaoImpl;
 import arprast.qiyosq.dao.MenusDao;
 import arprast.qiyosq.dao.RolesDao;
 import arprast.qiyosq.dto.AuthorizationDto;
+import arprast.qiyosq.dto.RequestData;
 import arprast.qiyosq.model.AuthorizationModel;
 import arprast.qiyosq.model.MenusModel;
 import arprast.qiyosq.ref.ActionType;
+import arprast.qiyosq.ref.StatusType;
 import arprast.qiyosq.util.LogUtil;
 
 @Service
@@ -28,13 +31,18 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 
 	private static final Logger logger = LoggerFactory.getLogger(AuthorizationServiceImpl.class);
 	private static final ObjectMapper jsonMapper = new ObjectMapper();
-
 	private static final TypeReference<List<AuthorizationDto>> typeRef = new TypeReference<List<AuthorizationDto>>() {
 	};
 	private static final ObjectWriter authorizationWriter = jsonMapper.writerFor(typeRef);
 
 	@Autowired
+	AuthorizationMapper authorizationMapper;
+
+	@Autowired
 	AuthorizationDao authorizationDao;
+	
+	@Autowired
+	AuthorizationDaoImpl authorizationDaoImpl;
 
 	@Autowired
 	RolesDao dsSysRoles;
@@ -77,19 +85,21 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 	 * @deprecated
 	 */
 	public String getAuthorizationJson(Long idRole) {
+		RequestData requestData = new RequestData();
+		requestData.setId(idRole);
 		try {
-			return authorizationWriter.writeValueAsString(getAuthorizationList(idRole));
+			return authorizationWriter.writeValueAsString(getAuthorizationList(requestData));
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
 
-	public List<AuthorizationDto> getAuthorizationList(Long idRole) {
-		if (idRole == null) {
+	public List<AuthorizationDto> getAuthorizationList(RequestData requestData) {
+		if (requestData == null || requestData.getId() == null) {
 			return null;
 		}
-		List<AuthorizationModel> sysAuthorizationList = getDataMenu(idRole);
+		List<AuthorizationModel> sysAuthorizationList = getDataMenu(requestData);
 		if (sysAuthorizationList == null) {
 			return null;
 		}
@@ -110,12 +120,9 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 		return sysAuthorizationDtoList;
 	}
 
-	public void viewDataMenu(Model model, Long idRole) {
-		model.addAttribute("authorities", getDataMenu(idRole));
-	}
 
-	private List<AuthorizationModel> getDataMenu(long idRole) {
-		List<AuthorizationModel> SysAuthorities = (List<AuthorizationModel>) authorizationDao.getForScreenMenu(idRole);
+	private List<AuthorizationModel> getDataMenu(RequestData requestData) {
+		List<AuthorizationModel> SysAuthorities = (List<AuthorizationModel>) authorizationDaoImpl.listAllAuthorizationMenu(requestData);
 		List<AuthorizationModel> SysAuthoritiesNew = new ArrayList<>();
 
 		StringBuilder parentSign = new StringBuilder();
@@ -126,8 +133,13 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 			idParent = (sysAuthority.getParent() == null) ? 0 : sysAuthority.getParent().getId();
 			levelMenu = recursifMethodCountParentId(sysAuthority.getId());
 
-			LogUtil.logDebugType(logger, true, ActionType.VIEW, "result count parent id={}, Level menu={}, Id={}",
-					sysAuthority.getId(), levelMenu, idParent);
+			/*LogUtil.logDebugType(logger, true, ActionType.VIEW, "result count parent id={}, Level menu={}, Id={}",
+					sysAuthority.getId(), levelMenu, idParent);*/
+			
+			if (logger.isDebugEnabled()) {
+				logger.debug("result count parent id={}, Level menu={}, Id={}", sysAuthority.getId(), levelMenu,
+						idParent);
+			}
 
 			parentSign.delete(0, parentSign.length());
 			for (int a = 0; a < levelMenu; a++) {
@@ -150,36 +162,34 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 		return recursifMethodCountParentId(a) + 1;
 	}
 
-	public AuthorizationDto saveDataMenu(Long idRole, boolean vInsert, boolean vUpdate, boolean vDelete,
-			boolean vDisable, Long MenuId, Long parentMenuId) {
+	public AuthorizationDto saveMenu(AuthorizationDto authorizationDto) {
 
-		AuthorizationModel dataAuthorization = new AuthorizationModel();
-		/*
-		 * logger.debug("-add new menu on id " + idRole + ", menuId : " + MenuId
-		 * + ", parentId " + parentMenuId + " " + vInsert + " " + vUpdate + " "
-		 * + vDelete + " " + vDisable);
-		 */
-
-		LogUtil.logDebugType(logger, true, ActionType.SAVE, "{}", dataAuthorization.toString());
-
-		dataAuthorization.setSysMenu(MenuId);
-
-		if (parentMenuId == null) {
-			dataAuthorization.setParent(null);
-		} else {
-			dataAuthorization.setParent(parentMenuId);
+		LogUtil.logDebugType(logger, true, ActionType.SAVE, "{}", authorizationDto.toString());
+		if (authorizationDto.getRoleId() == null) {
+			authorizationDto.setStatusType(StatusType.SAVE_ERROR);
+			authorizationDto.setMessage(StatusType.NULL_VALUE.stringValue);
+			return authorizationDto;
 		}
 
-		dataAuthorization.setSysRoles(idRole);
-		dataAuthorization.setIsDelete(vDelete);
-		dataAuthorization.setIsInsert(vInsert);
-		dataAuthorization.setIsUpdate(vUpdate);
-		dataAuthorization.setDisabled(vDisable);
-		dataAuthorization.setIsRead(true);
+		AuthorizationModel authorizationModel = authorizationMapper.asAuthorizationModel(authorizationDto);
+		authorizationModel = authorizationDao.save(authorizationModel);
 
-		dataAuthorization = authorizationDao.save(dataAuthorization);
-		AuthorizationDto dataAuthorizations = authorizationDao.getDataAuthorizationById(dataAuthorization.getId());
+		if (authorizationModel == null || authorizationModel.getId() == null) {
+			authorizationDto.setStatusType(StatusType.SAVE_ERROR);
+			authorizationDto.setMessage(StatusType.SAVE_AUTHORIZATION_ERROR.stringValue);
+			return authorizationDto;
+		}
 
-		return dataAuthorizations;
+		authorizationDto.setId(authorizationModel.getId());
+		authorizationDto.setStatusType(StatusType.SAVE_SUCCEED);
+		authorizationDto.setMessage(StatusType.SAVE_SUCCEED.stringValue);
+
+		return authorizationDto;
+	}
+
+	@Override
+	public long countAuthorization() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }

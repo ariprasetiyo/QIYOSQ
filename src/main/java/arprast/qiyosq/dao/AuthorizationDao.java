@@ -46,7 +46,10 @@ public interface AuthorizationDao extends PagingAndSortingRepository<Authorizati
 	@Query("update AuthorizationModel a set a.parent.id = :nparentId where a.sysRoles.id = :nId")
 	public  void updateSysRoleId(@Param("nId") long id, @Param("nparentId") Long parentId);
 
-	/* Query untuk ambil data SysAuthorization */
+	/* Query untuk ambil data SysAuthorization 
+	 * reference other AuthorizationDaoImpl method listAllAuthorizationMenu
+	 */
+	@Deprecated
 	@Query("from AuthorizationModel  where sysRoles.id = :nsysRolesId and sysMenu.menusName is not null")
 	public  List<AuthorizationModel> getForScreenMenu(@Param("nsysRolesId") long idSysRole);
 

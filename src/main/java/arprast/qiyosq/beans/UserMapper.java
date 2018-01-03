@@ -30,9 +30,9 @@ import fr.xebia.extras.selma.Maps;
 		"arprast.qiyosq.dto.UserDto.message",
 		"arprast.qiyosq.dto.UserDto.oldpassword",
 		"arprast.qiyosq.dto.UserDto.statusType",
-		"arprast.qiyosq.model.UserRolesModel.id",
 		"arprast.qiyosq.dto.RolesDto.message",
-		"arprast.qiyosq.dto.RolesDto.statusType"
+		"arprast.qiyosq.dto.RolesDto.statusType",
+		"arprast.qiyosq.model.UserRolesModel.id"
 		},
 		withCustomFields = {
 				@Field({"userRolesModel","roles"}),

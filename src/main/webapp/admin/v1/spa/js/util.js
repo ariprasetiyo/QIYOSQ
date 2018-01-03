@@ -54,12 +54,12 @@ function _checkHighlightTr(thisVar) {
 	$(thisVar).closest("tr").addClass('checkTr');
 }
 
-function startLoading() {
+function _startLoading() {
 	ajaxindicatorstart('Please wait..');
 	window.setTimeout(ajaxindicatorstart('Please wait..'), 500);
 }
 
-function finishLoading() {
+function _finishLoading() {
 	timeout = setTimeout(ajaxindicatorstop(), 9000);
 	clearTimeout(timeout);
 }
@@ -67,6 +67,17 @@ function finishLoading() {
 function _jsonRequestListData(data) {
 	var jsonRequest = {};
 	var request = {};
+	request["limit"] = data.length;
+	request["offset"] = data.start;
+	request["search"] = data.search.value;
+	jsonRequest["requestData"] = request;
+	return JSON.stringify(jsonRequest);
+}
+
+function _jsonRequestListData(data, id) {
+	var jsonRequest = {};
+	var request = {};
+	request["id"] = id;
 	request["limit"] = data.length;
 	request["offset"] = data.start;
 	request["search"] = data.search.value;

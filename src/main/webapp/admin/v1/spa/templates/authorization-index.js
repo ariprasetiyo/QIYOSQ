@@ -32,10 +32,11 @@ $(function() {
 				}
 			});
 
-	$("#submitRoles").on("click", function() {
-		alert($('select[name=roles_id]').val());
-		viewAuthorizationList($('select[name=roles_id]').val());
-	});
+	/*
+	 * $("#submitRoles").on("click", function() {
+	 * alert($('select[name=roles_id]').val());
+	 * viewAuthorizationList($('select[name=roles_id]').val()); });
+	 */
 
 	$("#tableAuthorizationa").DataTable({
 		"sDom" : '<"top"fl>rt<"bottom"p><"clear">',
@@ -52,14 +53,20 @@ $(function() {
 	});
 
 	$("#saveModalAddMenu").on(
-			"click",
+			'click',
 			function() {
-				addDataMenu(roleIdForAdd, $('#modalIsCreate').is(':checked'),
-						$('#modalIsUpdate').is(':checked'), $('#modalIsDelete')
-								.is(':checked'), $('#modalIsDisabled').is(
-								':checked'), $('#modalMenuid').val(), $(
-								'#modalParentMenuid').val());
+				var vInsert = $('#isCreateAddMenu').is(':checked');
+				var vUpdate = $('#isUpdateAddMenu').is(':checked');
+				var vDelete = $('#isDeleteAddMenu').is(':checked');
+				var vDisable = $('#isDisableAddMenu').is(':checked');
+				var menuId = $('#modalMenuid').val();
+				var parentId = $('#modalParentMenuid').val();
+				var roleId = $('select[name=roles_id]').val();
+
+				addDataMenu(jsonAddData(vInsert, vDelete, vUpdate, vDisable,
+						menuId, parentId, roleId));
 			});
+
 	$(".select2").select2();
 
 	// DELETE
@@ -173,7 +180,7 @@ $(function() {
 												'X-XSRF-TOKEN' : $("#csrfToken")
 														.val()
 											},
-											data : _jsonRequestListData(data),
+											data : _jsonRequestListData(data, idRole),
 											dataType : "json",
 											contentType : "application/json",
 											beforeSend : function() {
@@ -258,8 +265,8 @@ $(function() {
 															callback({
 																draw : data.draw,
 																data : out,
-																recordsTotal : dataResponse.totalRecord,
-																recordsFiltered : dataResponse.totalRecord
+																recordsTotal : dataResponse.responseData.totalRecord,
+																recordsFiltered : dataResponse.responseData.totalRecord
 															});
 														}, 50);
 											},
@@ -277,36 +284,38 @@ $(function() {
 						});
 	}
 
-	function addDataMenu(id, vInsert, vDelete, vUpdate, vDisable, menuId,
-			parentId) {
+	function jsonAddData(vInsert, vDelete, vUpdate, vDisable, menuId, parentId,
+			roleId) {
+		var jsonRequest = {};
+		var request = {};
+		request["isUpdate"] = vUpdate;
+		request["isDelete"] = vDelete;
+		request["isInsert"] = vInsert;
+		request["roleId"] = roleId;
+		request["parentId"] = parentId;
+		request["disabled"] = vDisable;
+		request["id"] = menuId;
+		jsonRequest["requestData"] = request;
+		return JSON.stringify(jsonRequest);
+	}
+
+	function addDataMenu(jsonRequest) {
 		var csrfToken = $("#csrfToken").val();
-		if ((parentId == '') || (parentId == '-')) {
-			parentId = null;
-		}
-		// alert(parentId);
 		$
 				.ajax({
 					type : "POST",
-					url : "api/authorization/addMenu/" + id,
+					url : "../api/authorization/addMenu/",
 					headers : {
 						'X-XSRF-TOKEN' : csrfToken
 					},
-					data : {
-						modelMenuId : menuId,
-						modelParentMenuId : parentId,
-						parentId : parentId,
-						vInsert : vInsert,
-						vDelete : vDelete,
-						vUpdate : vUpdate,
-						vDisable : vDisable
-					},
+					contentType : 'application/json',
+					data : jsonRequest,
 					dataType : "json",
 					beforeSend : function() {
-						startLoading();
+						_startLoading();
 					},
 					success : function(data, textStatus, jqXHR) {
 
-						// $('#tableAuthorization').add("<tr><td>sasa</td></tr>");
 						var numberRow = getLastNumberDataTables();
 						var table = $("#tableAuthorization").DataTable();
 						var rowNode = table.row
@@ -382,7 +391,7 @@ $(function() {
 						});
 					},
 					complete : function() {
-						finishLoading();
+						_finishLoading();
 					},
 					error : function(jqXHR, textStatus, errorThrown) {
 					}
@@ -412,13 +421,13 @@ $(function() {
 			data : jsonRequest,
 			dataType : "json",
 			beforeSend : function() {
-				startLoading();
+				_startLoading();
 			},
 			success : function(data, textStatus, jqXHR) {
 
 			},
 			complete : function() {
-				finishLoading();
+				_finishLoading();
 			},
 			error : function(jqXHR, textStatus, errorThrown) {
 				// window.location.href =

@@ -23,25 +23,25 @@
 		});
 
 		this.get('#/sample-spa/', function(context) {
-			startLoading();
+			_startLoading();
 			var str = location.href.toLowerCase();
 			context.app.swap('');
 			context.render('../../../admin/v1/view/basicwebspa/', {}).appendTo(
 					context.$element());
-			finishLoading();
+			_finishLoading();
 		});
 
 		this.get('#/user/', function(context) {
-			startLoading();
+			_startLoading();
 			var str = location.href.toLowerCase();
 			context.app.swap('');
 			context.render('../../../admin/v1/view/user/', {}).appendTo(
 					context.$element());
-			finishLoading();
+			_finishLoading();
 		});
 
 		this.get('#/authorization/', function(context) {
-			startLoading();
+			_startLoading();
 			var str = location.href.toLowerCase();
 			context.app.swap('');
 			// ../../../admin/v1/view/main#/authorization/
@@ -50,7 +50,7 @@
 			// .appendTo(context.$element());
 			context.render('../../../admin/v1/view/authorization/', {})
 					.appendTo(context.$element());
-			finishLoading();
+			_finishLoading();
 		});
 
 		this.get('#/article/:id', function(context) {
