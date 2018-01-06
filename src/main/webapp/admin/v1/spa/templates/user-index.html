@@ -10,6 +10,7 @@
 						<div class="col-sm-7" style="padding-right: 5%;">
 							<div class="input-group">
 								<select class="form-control" name="roles_id">
+									<option value="0">All</option>
 									<#list selectroles as a>
 									<option value="${a.id}">${a.roleName}</option>
 									</#list>

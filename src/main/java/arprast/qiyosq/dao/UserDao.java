@@ -53,6 +53,16 @@ public interface UserDao extends JpaRepository<UserModel, Long> {
 	@Modifying
 	@Query("delete from UserModel where id =:nId ")
 	public int deleteUser(@Param("nId") long id);
+	
+	/**
+	 * 
+	 * @param idRole
+	 * @return
+	 */
+	@Query(value = "select count(UM.id) from UserModel UM "
+			+ "LEFT JOIN UM.userRolesModel URM where URM.sysRoles.id = :idRole  ")
+	public long countUserByRoleId(@Param("idRole") Long idRole);
+	
 	/*
 	 * @Autowired
 	 * 
@@ -86,4 +96,5 @@ public interface UserDao extends JpaRepository<UserModel, Long> {
 	 * public UserModel saveUser(UserModel user) { user = save(user); return
 	 * user; }
 	 */
+
 }

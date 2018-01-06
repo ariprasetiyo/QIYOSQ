@@ -16,6 +16,7 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
+import arprast.qiyosq.dto.RequestData;
 import arprast.qiyosq.model.UserModel;
 
 /**
@@ -34,17 +35,77 @@ public class UserDaoImpl {
 	@Autowired
 	private UserDao userDao;
 
+	/**
+	 * 
+	 * @param requestData
+	 * @return
+	 */
 	@SuppressWarnings("unchecked")
-	public List<UserModel> listAllUser(int offset, int limit) {
-		return em.createQuery("from UserModel order by username asc").setFirstResult(offset).setMaxResults(limit)
-				.getResultList();
-	}
+	public List<UserModel> listUser(RequestData requestData) {
 
-	@SuppressWarnings("unchecked")
-	public List<UserModel> listUserSearchByUserName(int offset, int limit, String keySearch) {
-		return em.createQuery("from UserModel where username like :searchUserName order by username asc")
-				.setParameter("searchUserName", "%" + keySearch + "%").setFirstResult(offset).setMaxResults(limit)
-				.getResultList();
+		if ((requestData.getSearch() == null || requestData.getSearch().isEmpty()) && requestData.getId() == 0) {
+			return em.createQuery("from UserModel order by username asc")
+					.setFirstResult(requestData.getOffset())
+					.setMaxResults(requestData.getLimit())
+					.getResultList();
+		} else if ((requestData.getSearch() == null || requestData.getSearch().isEmpty()) && requestData.getId() != 0) {
+			return em
+					.createQuery("SELECT UM from UserModel UM " 
+							+ "LEFT JOIN UM.userRolesModel URM "
+							+ "LEFT JOIN URM.sysRoles SR "
+							+ "WHERE SR.id = :roleId order by UM.username asc")
+					.setParameter("roleId", requestData.getId())
+					.setFirstResult(requestData.getOffset())
+					.setMaxResults(requestData.getLimit()).getResultList();
+		} else if (requestData.getId() == 0) {
+			return em.createQuery("from UserModel where username like :searchUserName order by username asc")
+					.setParameter("searchUserName", "%" + requestData.getSearch() + "%")
+					.setFirstResult(requestData.getOffset())
+					.setMaxResults(requestData.getLimit()).getResultList();
+		} else {
+			return em
+					.createQuery("SELECT UM from UserModel UM " 
+							+ "LEFT JOIN  UM.userRolesModel URM "
+							+ "LEFT JOIN URM.sysRoles SR "
+							+ "WHERE SR.id = :roleId AND UM.username like :searchUserName order by UM.username asc")
+					.setParameter("searchUserName", "%" + requestData.getSearch() + "%")
+					.setParameter("roleId", requestData.getId()).setFirstResult(requestData.getOffset())
+					.setMaxResults(requestData.getLimit()).getResultList();
+		}		
+	}
+	
+	/**
+	 * 
+	 * @param requestData
+	 * @return
+	 */
+	public long countUser(RequestData requestData) {		
+		if ((requestData.getSearch() == null || requestData.getSearch().isEmpty()) && requestData.getId() == 0) {
+			return userDao.count();
+		} else if ((requestData.getSearch() == null || requestData.getSearch().isEmpty()) &&  requestData.getId() != 0) {
+			return em
+					.createQuery("select count(UM.id) from UserModel UM " 
+							+ "LEFT JOIN UM.userRolesModel URM "
+							+ "LEFT JOIN URM.sysRoles SR "
+							+ "where SR.id = :idRole  ")
+					.setParameter("idRole", requestData.getId())
+					.getFirstResult();
+		} else if( requestData.getId() == 0){
+			return em
+					.createQuery("select count(UM.id) from UserModel UM " 
+							+ " WHERE UM.username like :searchUserName ")
+					.setParameter("searchUserName", requestData.getId())
+					.getFirstResult();
+		} else{
+			return em
+					.createQuery("select count(UM.id) from UserModel UM " 
+							+ "LEFT JOIN UM.userRolesModel URM "
+							+ "LEFT JOIN URM.sysRoles SR "
+							+ "where SR.id = :idRole AND UM.username like :searchUserName ")
+					.setParameter("idRole", requestData.getId())
+					.setParameter("searchUserName", "%" + requestData.getSearch() + "%")
+					.getFirstResult();
+		}
 	}
 
 	@Modifying

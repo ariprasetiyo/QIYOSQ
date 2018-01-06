@@ -12,15 +12,15 @@ package arprast.qiyosq.dto;
 public class ResponseData extends Dto {
 
 	private static final long serialVersionUID = 3315233291686431211L;
-	private Object jsonMessage;
+	private Object data;
 	private long totalRecord;
 
-	public Object getJsonMessage() {
-		return jsonMessage;
+	public Object getData() {
+		return data;
 	}
 
-	public void setJsonMessage(Object jsonMessage) {
-		this.jsonMessage = jsonMessage;
+	public void setData(Object data) {
+		this.data = data;
 	}
 
 	public long getTotalRecord() {
@@ -33,7 +33,7 @@ public class ResponseData extends Dto {
 
 	@Override
 	public String toString() {
-		return "ResponseData [jsonMessage=" + jsonMessage + ", totalRecord=" + totalRecord + ", id=" + id + "]";
+		return "ResponseData [data=" + data + ", totalRecord=" + totalRecord + "]";
 	}
 
 }

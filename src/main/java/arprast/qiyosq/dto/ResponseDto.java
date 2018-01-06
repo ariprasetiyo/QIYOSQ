@@ -2,7 +2,9 @@ package arprast.qiyosq.dto;
 
 import arprast.qiyosq.ref.StatusType;
 
-public class ResponseDto<T extends Dto> {
+public class ResponseDto extends Dto {
+
+	private static final long serialVersionUID = -191184234025791265L;
 
 	/*
 	 * protected Class<T> clazz;
@@ -16,7 +18,7 @@ public class ResponseDto<T extends Dto> {
 
 	private String message;
 
-	private T responseData;
+	private Object responseData;
 
 	public ResponseDto() {
 
@@ -28,7 +30,7 @@ public class ResponseDto<T extends Dto> {
 	 * @param message
 	 * @param responseData
 	 */
-	public ResponseDto(StatusType statusType, String message, T responseData) {
+	public ResponseDto(StatusType statusType, String message, Object responseData) {
 		this.message = message;
 		this.statusType = statusType;
 		this.responseData = responseData;
@@ -50,11 +52,11 @@ public class ResponseDto<T extends Dto> {
 		this.statusType = statusType;
 	}
 
-	public T getResponseData() {
+	public Object getResponseData() {
 		return responseData;
 	}
 
-	public void setResponseData(T responseData) {
+	public void setResponseData(Object responseData) {
 		this.responseData = responseData;
 	}
 

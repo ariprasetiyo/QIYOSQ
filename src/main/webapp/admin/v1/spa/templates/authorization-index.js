@@ -202,29 +202,29 @@ $(function() {
 									+ '</label></div>';
 						}
 
-						for (var i = 0, ien = dataResponse.responseData.jsonMessage.length; i < ien; i++) {
-							idUser = dataResponse.responseData.jsonMessage[i].id;
+						for (var i = 0, ien = dataResponse.responseData.data.length; i < ien; i++) {
+							idUser = dataResponse.responseData.data[i].id;
 							out
 									.push([
 											_getNumberOfRow(data.start, i),
-											dataResponse.responseData.jsonMessage[i].menuName,
-											dataResponse.responseData.jsonMessage[i].createdTime,
-											dataResponse.responseData.jsonMessage[i].modifiedTime,
+											dataResponse.responseData.data[i].menuName,
+											dataResponse.responseData.data[i].createdTime,
+											dataResponse.responseData.data[i].modifiedTime,
 											checkBoxInsert(
 													i,
-													dataResponse.responseData.jsonMessage[i].isInsert,
+													dataResponse.responseData.data[i].isInsert,
 													"isInsert"),
 											checkBoxInsert(
 													i,
-													dataResponse.responseData.jsonMessage[i].isUpdate,
+													dataResponse.responseData.data[i].isUpdate,
 													"isUpdate"),
 											checkBoxInsert(
 													i,
-													dataResponse.responseData.jsonMessage[i].isDelete,
+													dataResponse.responseData.data[i].isDelete,
 													"isDelete"),
 											checkBoxInsert(
 													i,
-													dataResponse.responseData.jsonMessage[i].disabled,
+													dataResponse.responseData.data[i].disabled,
 													"disabled"),/*
 																 * dataResponse[i].isUpdate,
 																 * dataResponse[i].isDelete,
@@ -272,8 +272,6 @@ $(function() {
 	$("#submitAction").on('click', function() {
 		table.ajax.reload();
 	});
-
-	table.ajax.reload();
 
 	function jsonAddData(vInsert, vDelete, vUpdate, vDisable, menuId, parentId,
 			roleId) {

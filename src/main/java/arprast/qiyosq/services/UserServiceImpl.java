@@ -2,6 +2,8 @@ package arprast.qiyosq.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,8 +16,9 @@ import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import arprast.qiyosq.beans.UserMapper;
 import arprast.qiyosq.dao.UserDao;
 import arprast.qiyosq.dao.UserDaoImpl;
+import arprast.qiyosq.dto.RequestData;
+import arprast.qiyosq.dto.ResponseData;
 import arprast.qiyosq.dto.UserDto;
-import arprast.qiyosq.dto.UserHeaderDto;
 import arprast.qiyosq.model.UserModel;
 import arprast.qiyosq.ref.ActionType;
 import arprast.qiyosq.ref.MessageType;
@@ -97,23 +100,23 @@ public class UserServiceImpl implements UserService {
 		return userDto;
 	}
 
-	public UserHeaderDto listUser(int offset, int limit, String keySearch) {
+	public ResponseData listUser(RequestData requestData) {
 
-		LogUtil.logDebug(logger, true, "offset={}, limit={}, search={}", offset, limit, keySearch);
-
-		List<UserModel> listSysUser = new ArrayList<UserModel>();
-		if (keySearch == null || keySearch.isEmpty()) {
-			listSysUser = userDaoImpl.listAllUser(offset, limit);
-		} else {
-			listSysUser = userDaoImpl.listUserSearchByUserName(offset, limit, keySearch);
+		if (logger.isDebugEnabled()) {
+			logger.debug("{}", requestData.toString());
 		}
 
-		UserHeaderDto sysUserHeader = new UserHeaderDto();
+		ResponseData responseData = new ResponseData();
+		ExecutorService executorService = Executors.newSingleThreadExecutor();
+		executorService.submit(() -> {
+			responseData.setTotalRecord(userDaoImpl.countUser(requestData));
+		});
 
-		sysUserHeader.setListUser(userMapper.asUserDTO(listSysUser));
-		sysUserHeader.setTotalRecord(userDao.count());
-		LogUtil.logDebug(logger, true, sysUserHeader.toString());
-		return sysUserHeader;
+		List<UserModel> listSysUser = new ArrayList<UserModel>();
+		listSysUser = userDaoImpl.listUser(requestData);
+		responseData.setData(userMapper.asUserDTO(listSysUser));
+
+		return responseData;
 	}
 
 	@Transactional(rollbackFor = { Exception.class, Throwable.class, IllegalArgumentException.class }, readOnly = false)

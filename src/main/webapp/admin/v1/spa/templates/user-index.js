@@ -173,20 +173,20 @@ $(function() {
 									+ '" class = "btn btn-primary deleteButton" > Delete </button>';
 						}
 
-						for (var i = 0, ien = dataResponse.responseData.listUser.length; i < ien; i++) {
-							idUser = dataResponse.responseData.listUser[i].id;
+						for (var i = 0, ien = dataResponse.responseData.data.length; i < ien; i++) {
+							idUser = dataResponse.responseData.data[i].id;
 							out
 									.push([
 											_getNumberOfRow(data.start, i),
-											dataResponse.responseData.listUser[i].id,
-											dataResponse.responseData.listUser[i].createdTime,
-											dataResponse.responseData.listUser[i].modifiedTime,
-											dataResponse.responseData.listUser[i].username,
-											dataResponse.responseData.listUser[i].name,
-											dataResponse.responseData.listUser[i].email,
-											dataResponse.responseData.listUser[i].noHp,
-											rolesName(dataResponse.responseData.listUser[i].roles),
-											dataResponse.responseData.listUser[i].isActive,
+											dataResponse.responseData.data[i].id,
+											dataResponse.responseData.data[i].createdTime,
+											dataResponse.responseData.data[i].modifiedTime,
+											dataResponse.responseData.data[i].username,
+											dataResponse.responseData.data[i].name,
+											dataResponse.responseData.data[i].email,
+											dataResponse.responseData.data[i].noHp,
+											rolesName(dataResponse.responseData.data[i].roles),
+											dataResponse.responseData.data[i].isActive,
 											buttonAction(i, idUser) ]);
 						}
 
@@ -226,8 +226,6 @@ $(function() {
 			loadingIndicator : true
 		}
 	});
-
-	tableUserr.ajax.reload();
 
 	$("#submitAction").on('click', function() {
 		tableUserr.ajax.reload();
