@@ -3,6 +3,8 @@ package arprast.qiyosq.services;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,6 +98,11 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 	}
 
 	public List<AuthorizationDto> getAuthorizationList(RequestData requestData) {
+		
+		if (logger.isDebugEnabled()) {
+			logger.debug("{}", requestData.toString());
+		}
+		
 		if (requestData == null || requestData.getId() == null) {
 			return null;
 		}
@@ -188,8 +195,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 	}
 
 	@Override
-	public long countAuthorization() {
-		// TODO Auto-generated method stub
-		return 0;
+	public long countAuthorization(long roleId) {
+		return authorizationDao.countByRole(roleId);
 	}
 }

@@ -30,7 +30,10 @@ public class AuthorizationDaoImpl {
 	public List<AuthorizationModel> listAllAuthorizationMenu(RequestData requestData) {
 		return em
 				.createQuery(
-						"from AuthorizationModel where sysRoles.id = :nsysRolesId and sysMenu.menusName is not null")
+						"from AuthorizationModel am "
+						+ "JOIN FETCH am.sysRoles sr "
+						+ "JOIN FETCH am.sysMenu sm "
+						+ "where sr.id = :nsysRolesId and sm.menusName is not null")
 				.setParameter("nsysRolesId", requestData.getId()).setFirstResult(requestData.getOffset())
 				.setMaxResults(requestData.getLimit()).getResultList();
 	}

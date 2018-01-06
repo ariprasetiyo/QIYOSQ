@@ -85,4 +85,7 @@ public interface AuthorizationDao extends PagingAndSortingRepository<Authorizati
 	@Query(value = "select new  arprast.qiyosq.dto.AuthorizationDto( SA.createdTime as createTime, SA.modifiedTime as modifyTime, SA.id as id, SA.sysMenu.menusName as menuName,  SA.parent.id as parentId,  SA.isUpdate as isUpdate,  SA.isDelete as isDelete,  SA.isInsert as isInsert,  SA.isRead as isRead ) from AuthorizationModel SA  where SA.id =:nidMenu ")
 	public  AuthorizationDto getDataAuthorizationById(@Param("nidMenu") Long idMenu);
 
+	@Query(value = "select count(id) from AuthorizationModel where  sysRoles.id = :idRole ")
+	public long countByRole(@Param("idRole") Long idRole);
+
 }

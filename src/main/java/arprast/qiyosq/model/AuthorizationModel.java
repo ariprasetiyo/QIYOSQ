@@ -5,6 +5,7 @@
  */
 package arprast.qiyosq.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ColumnResult;
 import javax.persistence.ConstructorResult;

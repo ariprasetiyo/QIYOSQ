@@ -24,6 +24,10 @@ function _enabledDisabledButton(idEnableButton, idDisableButton) {
 		}
 	}
 }
+
+function _idRole() {
+	return $('select[name=roles_id]').val();
+}
 /**
  * Replace text
  * 

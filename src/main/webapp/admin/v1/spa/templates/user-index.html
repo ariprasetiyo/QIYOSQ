@@ -8,18 +8,17 @@
 				<div class="pull-right form-inline">
 					<div class="form-group">
 						<div class="col-sm-7" style="padding-right: 5%;">
-							<form method="POST" action="">
-								<div class="input-group">
-									<select class="form-control" name="roles_id">
-										<#list selectroles as a>
-										<option value="${a.id}">${a.roleName}</option>
-										</#list>
-									</select>
-									<div class="input-group-btn">
-										<button type="submit" class="btn btn-info btn-flat">Action</button>
-									</div>
+							<div class="input-group">
+								<select class="form-control" name="roles_id">
+									<#list selectroles as a>
+									<option value="${a.id}">${a.roleName}</option>
+									</#list>
+								</select>
+								<div class="input-group-btn">
+									<button type="submit" id="submitAction"
+										class="btn btn-info btn-flat">Action</button>
 								</div>
-							</form>
+							</div>
 						</div>
 						<div class="col-sm-5 text-right text-left-customize-mobile"
 							style=" padding-right: 0%;">

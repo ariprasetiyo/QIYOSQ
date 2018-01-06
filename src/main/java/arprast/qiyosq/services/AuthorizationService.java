@@ -29,5 +29,5 @@ public interface AuthorizationService {
 
 	void deleteAuthorization(Long id);
 	
-	long countAuthorization();
+	long countAuthorization(long roleId);
 }

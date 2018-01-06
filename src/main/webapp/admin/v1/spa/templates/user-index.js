@@ -135,106 +135,108 @@ $(function() {
 		});
 	}
 
-	// dataTables ajax logic
-	$('#tableUser')
-			.DataTable(
-					{
-						/*
-						 * l - Length changing f - Filtering input t - The
-						 * table! i - Information p - Pagination r - pRocessing <
-						 * and > - div elements <"class" and > - div with a
-						 * class Examples: <"wrapper"flipt>, <lf<t>ip>
-						 */
-						"sDom" : '<"top"fl>rt<"bottom"p><"clear">',
-						serverSide : true,
-						ordering : false,
-						searching : true,
-						ajax : function(data, callback, settings) {
-							$
-									.ajax({
-										async : true,
-										type : 'POST',
-										contentType : 'application/json',
-										url : '/admin/v1/api/user/list',
-										headers : {
-											'X-XSRF-TOKEN' : csrfToken
-										},
-										/*
-										 * data : { limit : data.length, offset :
-										 * data.start, search :
-										 * data.search.value },
-										 */
-										data : _jsonRequestListData(data),
-										dataType : "json",
-										beforeSend : function() {
+	function listDataTable(data, callback, settings) {
+		$
+				.ajax({
+					async : true,
+					type : 'POST',
+					contentType : 'application/json',
+					url : '/admin/v1/api/user/list',
+					headers : {
+						'X-XSRF-TOKEN' : csrfToken
+					},
+					/*
+					 * data : { limit : data.length, offset : data.start, search :
+					 * data.search.value },
+					 */
+					data : _jsonRequestListData(data, _idRole()),
+					dataType : "json",
+					beforeSend : function() {
 
-										},
-										success : function(dataResponse,
-												textStatus, jqXHR) {
-											var out = [];
-											var idUser = null;
+					},
+					success : function(dataResponse, textStatus, jqXHR) {
+						var out = [];
+						var idUser = null;
 
-											function buttonAction(i, idUser) {
-												return '<input type = "hidden" name = "${_csrf.parameterName}" value = "${_csrf.token}" />'
-														+ '<input type = "hidden" id = "idData'
-														+ idUser
-														+ '" class="idDataHide'
-														+ i
-														+ '" /> '
-														+ '<button type = "submit" id = "editAuth'
-														+ i
-														+ '" class = "btn btn-primary editButton" > Edit </button> '
-														+ '<button type = "submit" id = "deleteAuth'
-														+ i
-														+ '" class = "btn btn-primary deleteButton" > Delete </button>';
-											}
-
-											for (var i = 0, ien = dataResponse.responseData.listUser.length; i < ien; i++) {
-												idUser = dataResponse.responseData.listUser[i].id;
-												out
-														.push([
-																_getNumberOfRow(
-																		data.start,
-																		i),
-																dataResponse.responseData.listUser[i].id,
-																dataResponse.responseData.listUser[i].createdTime,
-																dataResponse.responseData.listUser[i].modifiedTime,
-																dataResponse.responseData.listUser[i].username,
-																dataResponse.responseData.listUser[i].name,
-																dataResponse.responseData.listUser[i].email,
-																dataResponse.responseData.listUser[i].noHp,
-																rolesName(dataResponse.responseData.listUser[i].roles),
-																dataResponse.responseData.listUser[i].isActive,
-																buttonAction(i,
-																		idUser) ]);
-											}
-
-											setTimeout(
-													function() {
-														callback({
-															draw : data.draw,
-															data : out,
-															recordsTotal : dataResponse.responseData.totalRecord,
-															recordsFiltered : dataResponse.responseData.totalRecord
-														});
-													}, 50);
-										},
-										complete : function() {
-										},
-										error : function(jqXHR, textStatus,
-												errorThrown) {
-										}
-									});
-						},
-						scrollY : _getScreenDataTable(),
-						scroller : {
-							loadingIndicator : true
+						function buttonAction(i, idUser) {
+							return '<input type = "hidden" name = "${_csrf.parameterName}" value = "${_csrf.token}" />'
+									+ '<input type = "hidden" id = "idData'
+									+ idUser
+									+ '" class="idDataHide'
+									+ i
+									+ '" /> '
+									+ '<button type = "submit" id = "editAuth'
+									+ i
+									+ '" class = "btn btn-primary editButton" > Edit </button> '
+									+ '<button type = "submit" id = "deleteAuth'
+									+ i
+									+ '" class = "btn btn-primary deleteButton" > Delete </button>';
 						}
-					});
 
-	$('#tableUser').on('search.dt', function() {
-		var value = $('.dataTables_filter input').val();
+						for (var i = 0, ien = dataResponse.responseData.listUser.length; i < ien; i++) {
+							idUser = dataResponse.responseData.listUser[i].id;
+							out
+									.push([
+											_getNumberOfRow(data.start, i),
+											dataResponse.responseData.listUser[i].id,
+											dataResponse.responseData.listUser[i].createdTime,
+											dataResponse.responseData.listUser[i].modifiedTime,
+											dataResponse.responseData.listUser[i].username,
+											dataResponse.responseData.listUser[i].name,
+											dataResponse.responseData.listUser[i].email,
+											dataResponse.responseData.listUser[i].noHp,
+											rolesName(dataResponse.responseData.listUser[i].roles),
+											dataResponse.responseData.listUser[i].isActive,
+											buttonAction(i, idUser) ]);
+						}
+
+						setTimeout(
+								function() {
+									callback({
+										draw : data.draw,
+										data : out,
+										recordsTotal : dataResponse.responseData.totalRecord,
+										recordsFiltered : dataResponse.responseData.totalRecord
+									});
+								}, 50);
+					},
+					complete : function() {
+					},
+					error : function(jqXHR, textStatus, errorThrown) {
+					}
+				});
+	}
+
+	// dataTables ajax logic
+	var tableUserr = $('#tableUser').DataTable({
+		/*
+		 * l - Length changing f - Filtering input t - The table! i -
+		 * Information p - Pagination r - pRocessing < and > - div elements
+		 * <"class" and > - div with a class Examples: <"wrapper"flipt>, <lf<t>ip>
+		 */
+		"sDom" : '<"top"fl>rt<"bottom"p><"clear">',
+		serverSide : true,
+		ordering : false,
+		searching : true,
+		ajax : function(data, callback, settings) {
+			listDataTable(data, callback, settings);
+		},
+		scrollY : _getScreenDataTable(),
+		scroller : {
+			loadingIndicator : true
+		}
 	});
+
+	tableUserr.ajax.reload();
+
+	$("#submitAction").on('click', function() {
+		tableUserr.ajax.reload();
+	});
+
+	/*
+	 * $('#tableUser').on('search.dt', function() { var value =
+	 * $('.dataTables_filter input').val(); });
+	 */
 
 	var idUserForDelete = null;
 	$("#tableUser").on(

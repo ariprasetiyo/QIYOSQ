@@ -13,7 +13,7 @@ public class ResponseData extends Dto {
 
 	private static final long serialVersionUID = 3315233291686431211L;
 	private Object jsonMessage;
-	private int totalRecord;
+	private long totalRecord;
 
 	public Object getJsonMessage() {
 		return jsonMessage;
@@ -23,11 +23,11 @@ public class ResponseData extends Dto {
 		this.jsonMessage = jsonMessage;
 	}
 
-	public int getTotalRecord() {
+	public long getTotalRecord() {
 		return totalRecord;
 	}
 
-	public void setTotalRecord(int totalRecord) {
+	public void setTotalRecord(long totalRecord) {
 		this.totalRecord = totalRecord;
 	}
 

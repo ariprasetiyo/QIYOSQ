@@ -153,136 +153,127 @@ $(function() {
 			}
 		});
 	}
-	viewAuthorizationList(1);
 
-	function viewAuthorizationList(idRole) {
-		// dataTables ajax logic
-		$('#tableAuthorization')
-				.DataTable(
-						{
-							/*
-							 * l - Length changing f - Filtering input t - The
-							 * table! i - Information p - Pagination r -
-							 * pRocessing < and > - div elements <"class" and > -
-							 * div with a class Examples: <"wrapper"flipt>, <lf<t>ip>
-							 */
-							"sDom" : '<"top"fl>rt<"bottom"p><"clear">',
-							serverSide : true,
-							ordering : false,
-							searching : false,
-							ajax : function(data, callback, settings) {
-								$
-										.ajax({
-											type : "POST",
-											url : "../api/authorization/list/"
-													+ idRole,
-											headers : {
-												'X-XSRF-TOKEN' : $("#csrfToken")
-														.val()
-											},
-											data : _jsonRequestListData(data, idRole),
-											dataType : "json",
-											contentType : "application/json",
-											beforeSend : function() {
-											},
-											success : function(dataResponse,
-													textStatus, jqXHR) {
-												var out = [];
-												var idUser = null;
-												function buttonAction(i, idUser) {
-													return '<input type = "hidden" name = "${_csrf.parameterName}" value = "${_csrf.token}" />'
-															+ '<input type = "hidden" id ="idData'
-															+ i
-															+ '" value="'
-															+ idUser
-															+ '" '
-															+ 'class="idDataHide'
-															+ i
-															+ '" /> '
-															+ '<button type = "submit" id = "editAuth'
-															+ i
-															+ '" class = "btn btn-primary editButton" > Edit </button> '
-															+ '<button type = "submit" disabled id = "deleteAuth'
-															+ i
-															+ '" class = "btn btn-primary deleteButton" > Delete </button>';
-												}
-												function checkBoxInsert(
-														numberRow, isCheck,
-														idCheckBox) {
-													var valCheck = "unchecked";
-													if (isCheck) {
-														valCheck = "checked";
-													}
-
-													return '<div class="center" >'
-															+ '<label class="containerChk" for="'
-															+ idCheckBox
-															+ numberRow
-															+ '"><input disabled type="checkbox" id="'
-															+ idCheckBox
-															+ numberRow
-															+ '" '
-															+ valCheck
-															+ '> <span class="checkmarkChk"></span>'
-															+ '</label></div>';
-												}
-
-												for (var i = 0, ien = dataResponse.responseData.jsonMessage.length; i < ien; i++) {
-													idUser = dataResponse.responseData.jsonMessage[i].id;
-													out
-															.push([
-																	i + 1,
-																	dataResponse.responseData.jsonMessage[i].menuName,
-																	dataResponse.responseData.jsonMessage[i].createdTime,
-																	dataResponse.responseData.jsonMessage[i].modifiedTime,
-																	checkBoxInsert(
-																			i,
-																			dataResponse.responseData.jsonMessage[i].isInsert,
-																			"isInsert"),
-																	checkBoxInsert(
-																			i,
-																			dataResponse.responseData.jsonMessage[i].isUpdate,
-																			"isUpdate"),
-																	checkBoxInsert(
-																			i,
-																			dataResponse.responseData.jsonMessage[i].isDelete,
-																			"isDelete"),
-																	checkBoxInsert(
-																			i,
-																			dataResponse.responseData.jsonMessage[i].disabled,
-																			"disabled"),/*
-																						 * dataResponse[i].isUpdate,
-																						 * dataResponse[i].isDelete,
-																						 * dataResponse[i].disabled,
-																						 */
-																	buttonAction(
-																			i,
-																			idUser) ]);
-												}
-
-												setTimeout(
-														function() {
-															callback({
-																draw : data.draw,
-																data : out,
-																recordsTotal : dataResponse.responseData.totalRecord,
-																recordsFiltered : dataResponse.responseData.totalRecord
-															});
-														}, 50);
-											},
-											complete : function() {
-											},
-											error : function(jqXHR, textStatus,
-													errorThrown) {
-											}
-										});
-							},
-							scrollY : _getScreenDataTable(),
-							scroller : {
-								loadingIndicator : true
+	function listDataTable(data, callback, settings) {
+		$
+				.ajax({
+					type : "POST",
+					url : "../api/authorization/list/" + _idRole(),
+					headers : {
+						'X-XSRF-TOKEN' : $("#csrfToken").val()
+					},
+					data : _jsonRequestListData(data, _idRole()),
+					dataType : "json",
+					contentType : "application/json",
+					beforeSend : function() {
+					},
+					success : function(dataResponse, textStatus, jqXHR) {
+						var out = [];
+						var idUser = null;
+						function buttonAction(i, idUser) {
+							return '<input type = "hidden" name = "${_csrf.parameterName}" value = "${_csrf.token}" />'
+									+ '<input type = "hidden" id ="idData'
+									+ i
+									+ '" value="'
+									+ idUser
+									+ '" '
+									+ 'class="idDataHide'
+									+ i
+									+ '" /> '
+									+ '<button type = "submit" id = "editAuth'
+									+ i
+									+ '" class = "btn btn-primary editButton" > Edit </button> '
+									+ '<button type = "submit" disabled id = "deleteAuth'
+									+ i
+									+ '" class = "btn btn-primary deleteButton" > Delete </button>';
+						}
+						function checkBoxInsert(numberRow, isCheck, idCheckBox) {
+							var valCheck = "unchecked";
+							if (isCheck) {
+								valCheck = "checked";
 							}
-						});
+
+							return '<div class="center" >'
+									+ '<label class="containerChk" for="'
+									+ idCheckBox + numberRow
+									+ '"><input disabled type="checkbox" id="'
+									+ idCheckBox + numberRow + '" ' + valCheck
+									+ '> <span class="checkmarkChk"></span>'
+									+ '</label></div>';
+						}
+
+						for (var i = 0, ien = dataResponse.responseData.jsonMessage.length; i < ien; i++) {
+							idUser = dataResponse.responseData.jsonMessage[i].id;
+							out
+									.push([
+											_getNumberOfRow(data.start, i),
+											dataResponse.responseData.jsonMessage[i].menuName,
+											dataResponse.responseData.jsonMessage[i].createdTime,
+											dataResponse.responseData.jsonMessage[i].modifiedTime,
+											checkBoxInsert(
+													i,
+													dataResponse.responseData.jsonMessage[i].isInsert,
+													"isInsert"),
+											checkBoxInsert(
+													i,
+													dataResponse.responseData.jsonMessage[i].isUpdate,
+													"isUpdate"),
+											checkBoxInsert(
+													i,
+													dataResponse.responseData.jsonMessage[i].isDelete,
+													"isDelete"),
+											checkBoxInsert(
+													i,
+													dataResponse.responseData.jsonMessage[i].disabled,
+													"disabled"),/*
+																 * dataResponse[i].isUpdate,
+																 * dataResponse[i].isDelete,
+																 * dataResponse[i].disabled,
+																 */
+											buttonAction(i, idUser) ]);
+						}
+
+						setTimeout(
+								function() {
+									callback({
+										draw : data.draw,
+										data : out,
+										recordsTotal : dataResponse.responseData.totalRecord,
+										recordsFiltered : dataResponse.responseData.totalRecord
+									});
+								}, 50);
+					},
+					complete : function() {
+					},
+					error : function(jqXHR, textStatus, errorThrown) {
+					}
+				});
 	}
+
+	var table = $('#tableAuthorization').DataTable({
+		/*
+		 * l - Length changing f - Filtering input t - The table! i -
+		 * Information p - Pagination r - pRocessing < and > - div elements
+		 * <"class" and > - div with a class Examples: <"wrapper"flipt>, <lf<t>ip>
+		 */
+		"sDom" : '<"top"fl>rt<"bottom"p><"clear">',
+		serverSide : true,
+		ordering : false,
+		searching : false,
+		ajax : function(data, callback, settings) {
+			listDataTable(data, callback, settings);
+		},
+		scrollY : _getScreenDataTable(),
+		scroller : {
+			loadingIndicator : true
+		}
+	});
+
+	$("#submitAction").on('click', function() {
+		table.ajax.reload();
+	});
+
+	table.ajax.reload();
 
 	function jsonAddData(vInsert, vDelete, vUpdate, vDisable, menuId, parentId,
 			roleId) {

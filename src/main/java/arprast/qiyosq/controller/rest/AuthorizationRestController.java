@@ -1,6 +1,11 @@
 package arprast.qiyosq.controller.rest;
 
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -73,6 +78,38 @@ public class AuthorizationRestController {
 		return authorizationService.saveMenu(authorizationDto);
 	}
 
+	/*@RequestMapping(value = "/list/{idRole}", method = RequestMethod.POST, consumes = {
+			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE }, produces = {
+					MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+	public ResponseEntity<ResponseDto<ResponseData>> authorizationList(@PathVariable("idRole") Long idRole,
+			@RequestBody RequestDto<RequestData> requestDto) {
+
+		ResponseDto<ResponseData> responseDto = new ResponseDto<ResponseData>();
+		ResponseData responseData = new ResponseData();
+
+		ExecutorService executorService =  Executors.newSingleThreadExecutor();
+		executorService.submit(() -> {
+			responseData.setTotalRecord(authorizationService.countAuthorization());
+		});
+		
+		executorService.submit(() -> {
+			System.out.println("mulai---------------");
+			List<AuthorizationDto>  authorizationDto =  authorizationService.getAuthorizationList(requestDto.getRequestData());
+			responseData.setJsonMessage(authorizationDto);
+			System.out.println(responseData.toString());
+		});
+		
+		try {
+			executorService.awaitTermination(3, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		responseDto.setResponseData(responseData);
+		return new ResponseEntity<ResponseDto<ResponseData>>(responseDto, HttpStatus.OK);
+	}*/
+	
 	@RequestMapping(value = "/list/{idRole}", method = RequestMethod.POST, consumes = {
 			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE }, produces = {
 					MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
@@ -81,10 +118,16 @@ public class AuthorizationRestController {
 
 		ResponseDto<ResponseData> responseDto = new ResponseDto<ResponseData>();
 		ResponseData responseData = new ResponseData();
-		
-		List<AuthorizationDto>  authorizationDto =  authorizationService.getAuthorizationList(requestDto.getRequestData());
-		responseData.setJsonMessage(authorizationDto);
-		responseData.setTotalRecord(authorizationDto.size());
+
+		ExecutorService executorService = Executors.newSingleThreadExecutor();
+		executorService.submit(() -> {
+			responseData.setTotalRecord(authorizationService.countAuthorization(requestDto.getRequestData().getId()));
+		});
+
+		List<AuthorizationDto> authorizationList = authorizationService
+				.getAuthorizationList(requestDto.getRequestData());
+		responseData.setJsonMessage(authorizationList);
+
 		responseDto.setResponseData(responseData);
 		return new ResponseEntity<ResponseDto<ResponseData>>(responseDto, HttpStatus.OK);
 	}
