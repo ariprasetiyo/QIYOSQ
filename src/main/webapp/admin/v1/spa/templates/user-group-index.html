@@ -1,0 +1,101 @@
+<!-- Main row -->
+<div class="row">
+	<!-- Left col -->
+	<section class="col-lg-12 connectedSortable">
+		<!-- /.box -->
+		<div class="box box-solid">
+			<div class="nav-tabs-custom">
+				<!-- Tabs within a box -->
+				<ul class="nav nav-tabs pull-right">
+					<li class="active"><a href="#user-group-tab" data-toggle="tab">User
+							Group</a></li>
+					<li><a href="#menu-tab" data-toggle="tab">Menu</a></li>
+					<li class="pull-left header"><i class="fa fa-inbox"></i>
+						Application Setting</li>
+				</ul>
+				<div class="tab-content no-padding">
+					<!-- Morris chart - Sales -->
+					<div class="chart tab-pane active screen-tab" id="user-group-tab"
+						style="position: relative; height: 900px;">
+						<div class="col-lg-6 col-xs-12 col-sm-12">
+							<div class="box-body">
+								<table id="tableUser" class="table table-bordered">
+									<thead>
+										<tr>
+											<th><div class="center_header">No</div></th>
+											<th><div class="center_header">Id</div></th>
+											<th><div class="center_header">Create Time</div></th>
+											<th><div class="center_header">Modify Time</div></th>
+											<th><div class="center_header">Role Name</div></th>
+											<th><div class="center_header">Is Active</div></th>
+											<th><div class="center_header">Action</div></th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<div class="col-lg-6 col-xs-12 col-sm-12">
+							<div class="box-header">
+								<!-- 								<div class="pull-right form-inline">
+									<div class="form-group">
+										<div class="col-sm-5 text-right text-left-customize-mobile"
+											style="padding-right: 0%;">
+											<div class="btn-group">
+												<button type="button"
+													class="btn btn-success btn-sm dropdown-toggle"
+													data-toggle="dropdown">
+													<i class="fa fa-bars"></i>
+												</button>
+												<ul class="dropdown-menu pull-right" role="menu">
+													<li><a href="#" data-toggle="modal"
+														data-target="#myModal" class="buttonClose" id="addNewUser">Add
+															new user</a></li>
+													<li class="divider"></li>
+													<li><a href="#">View calendar</a></li>
+												</ul>
+											</div>
+										</div>
+									</div>
+
+								</div> -->
+								<!-- /. tools -->
+							</div>
+							<div class="form-horizontal box-body-split-tab"
+								style="background-color: white;">
+								<form method="post" id="saveRole" action="">
+									<div class="form-group">
+										<label class="col-sm-3 control-label">Role name</label>
+										<div class="col-sm-9">
+											<input class="form-control" id="inputRoleName"
+												placeholder="Role Name" name="inputRoleName">
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="control-label col-sm-3" style="padding-left: 1%">Is
+											Active</label><label style="margin-left: 3%;" class="containerChk">
+											<input id="checkBoxIsActive" type="checkbox"
+											checked="checked"> <span class="checkmarkChk"></span>
+										</label>
+									</div>
+									<div class="modal-footer" style="padding: 0px">
+										<button type="button" id="cancelEdit"
+											class="btn btn-info btn-flat" disabled>Cancel Edit</button>
+										<button type="button" id="saveUserGroup"
+											class="btn btn-info btn-flat">Save</button>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+					<div class="chart tab-pane screen-tab" id="menu-tab"
+						style="position: relative; height: 300px;">BBBBBBBB</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</div>
+<script type="text/javascript"
+	src="/admin/v1/spa/templates/user-group-index.js"></script>
+

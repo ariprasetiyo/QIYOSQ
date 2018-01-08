@@ -53,6 +53,24 @@
 			_finishLoading();
 		});
 
+		this.get('#/user-group/', function(context) {
+			_startLoading();
+			var str = location.href.toLowerCase();
+			context.app.swap('');
+			context.render('../../../admin/v1/view/user-group/', {}).appendTo(
+					context.$element());
+			_finishLoading();
+		});
+
+		this.get('#/menu/', function(context) {
+			_startLoading();
+			var str = location.href.toLowerCase();
+			context.app.swap('');
+			context.render('../../../admin/v1/view/menu/', {}).appendTo(
+					context.$element());
+			_finishLoading();
+		});
+
 		this.get('#/article/:id', function(context) {
 			this.item = this.items[this.params['id']];
 			if (!this.item) {

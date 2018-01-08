@@ -10,6 +10,29 @@ function _getScreenDataTable() {
 	return $(window).height() - 175;
 }
 
+function _getScreenDataTableTab() {
+	return $(window).height() - 218;
+}
+
+function _screenTabSize(){
+	$(".screen-tab").css("height", "100%");
+}
+
+function _checkBoxCustom(numberRow, isCheck, idCheckBox) {
+	var valCheck = "unchecked";
+	if (isCheck) {
+		valCheck = "checked";
+	}
+
+	return '<div class="center" >'
+			+ '<label class="containerChk" for="'
+			+ idCheckBox + numberRow
+			+ '"><input disabled type="checkbox" id="'
+			+ idCheckBox + numberRow + '" ' + valCheck
+			+ '> <span class="checkmarkChk"></span>'
+			+ '</label></div>';
+}
+
 function _enabledDisabledButton(idEnableButton, idDisableButton) {
 
 	if (idEnableButton !== null) {

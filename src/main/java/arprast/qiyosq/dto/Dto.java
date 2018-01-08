@@ -8,6 +8,8 @@ package arprast.qiyosq.dto;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.validation.constraints.NotNull;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -35,6 +37,7 @@ public class Dto implements Serializable {
 
 	private String version;
 
+	@NotNull
 	private boolean disabled;
 
 	private String createdBy;

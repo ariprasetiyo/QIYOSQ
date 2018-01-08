@@ -187,20 +187,6 @@ $(function() {
 									+ i
 									+ '" class = "btn btn-primary deleteButton" > Delete </button>';
 						}
-						function checkBoxInsert(numberRow, isCheck, idCheckBox) {
-							var valCheck = "unchecked";
-							if (isCheck) {
-								valCheck = "checked";
-							}
-
-							return '<div class="center" >'
-									+ '<label class="containerChk" for="'
-									+ idCheckBox + numberRow
-									+ '"><input disabled type="checkbox" id="'
-									+ idCheckBox + numberRow + '" ' + valCheck
-									+ '> <span class="checkmarkChk"></span>'
-									+ '</label></div>';
-						}
 
 						for (var i = 0, ien = dataResponse.responseData.data.length; i < ien; i++) {
 							idUser = dataResponse.responseData.data[i].id;
@@ -210,19 +196,19 @@ $(function() {
 											dataResponse.responseData.data[i].menuName,
 											dataResponse.responseData.data[i].createdTime,
 											dataResponse.responseData.data[i].modifiedTime,
-											checkBoxInsert(
+											_checkBoxCustom(
 													i,
 													dataResponse.responseData.data[i].isInsert,
 													"isInsert"),
-											checkBoxInsert(
+											_checkBoxCustom(
 													i,
 													dataResponse.responseData.data[i].isUpdate,
 													"isUpdate"),
-											checkBoxInsert(
+											_checkBoxCustom(
 													i,
 													dataResponse.responseData.data[i].isDelete,
 													"isDelete"),
-											checkBoxInsert(
+											_checkBoxCustom(
 													i,
 													dataResponse.responseData.data[i].disabled,
 													"disabled"),/*

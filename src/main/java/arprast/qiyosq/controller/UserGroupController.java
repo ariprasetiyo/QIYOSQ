@@ -13,20 +13,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import arprast.qiyosq.services.RolesService;
 
-/**
- *
- * @author ari-prasetiyo
- */
 @Controller
-@RequestMapping("/admin/v1/view/menu")
-public class MenuController {
-
+@RequestMapping("/admin/v1/view/user-group")
+public class UserGroupController {
+	
 	@Autowired
 	RolesService rolesService;
 
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	public String index(Model model) {
 		model.addAttribute("selectroles", rolesService.viewSysRoleAll());
-		return "/admin/v1/spa/templates/menu-index";
+		return "/admin/v1/spa/templates/user-group-index";
 	}
 }

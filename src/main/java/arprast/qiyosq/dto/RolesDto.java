@@ -5,6 +5,9 @@
  */
 package arprast.qiyosq.dto;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 /**
  *
  * @author ari-prasetiyo
@@ -12,6 +15,9 @@ package arprast.qiyosq.dto;
 public class RolesDto extends Dto {
 
 	private static final long serialVersionUID = 7283833745054615419L;
+
+	@Size(min = 3, max = 30)
+	@NotNull
 	private String roleName;
 
 	public String getRoleName() {
