@@ -29,3 +29,5 @@ bin
 .classpath
 .project
 
+#log out server.sh
+nohup.out
