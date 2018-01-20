@@ -17,23 +17,32 @@ $(function() {
 	var isEdit = false;
 	$("#tableUser").on('click', '.editButton', function() {
 		if (idTmpUserGroupButtonEdit != null) {
+			_showModalMessage("Attention", "Couldn't edit before another process saved or cancelled");
 			return;
 		}
 
-		$("#inputRoleName").attr("disabled", "disabled");
+		$("#inputRoleInput").attr("disabled", "disabled");
 		$("#cancelEdit").removeAttr("disabled");
 		$(this).attr("disabled", "disabled");
-		idTmpUserGroupButtonEdit = $(this).attr("id");
+		idTmpUserGroupButtonEdit = $(this).attr("id").replace("editAuth", "");
+		var isActive = $("#disabled"+idTmpUserGroupButtonEdit).is(":checked");
+	
+		$("#checkBoxIsActive").prop("checked", isActive);
+		
 		getDataOnTable(this);
 		isEdit = true;
 	});
 
-	// save user button
+	// save or edit button
 	$("#saveUserGroup").on('click', function() {
+		var url;
+		if (!isEdit) {
+			url = '/admin/v1/api/userGroup/saveUserGroup';
+		} else {
+			url = '/admin/v1/api/userGroup/editUserGroup';
+		}
+		saveEditUser(idTmpUserGroupButtonEdit, url);
 		resetTagHtml();
-		var url = '/admin/v1/api/userGroup/saveUserGroup';
-		saveEditUser(isEdit, url);
-
 	});
 
 	// cancel button
@@ -43,32 +52,31 @@ $(function() {
 	});
 
 	function resetTagHtml() {
-		$("#inputRoleName").val("");
-		$("#CheckBoxIsActive").prop("checked", false);
+		$("#inputRoleInput").val("");
+		$("#checkBoxIsActive").prop("checked", false);
 		$("#cancelEdit").attr("disabled", "disabled");
-		$("#inputRoleName").removeAttr("disabled");
-		$("#" + idTmpUserGroupButtonEdit).removeAttr("disabled");
+		$("#inputRoleInput").removeAttr("disabled");
+		$("#editAuth" + idTmpUserGroupButtonEdit).removeAttr("disabled");
 		idTmpUserGroupButtonEdit = null;
 		isEdit = false;
 	}
 
 	function jsonRequestDataEditSaver(id) {
 		var roleName, isActive;
-		roleName = $("#inputRoleName").val();
+		roleName = $("#inputRoleInput").val();
 		isActive = $("#checkBoxIsActive").is(':checked');
-		
-		alert(roleName + " "+isActive);
 
 		var jsonRequest = {};
 		var jsonData = {};
 
+		jsonData["id"] = id;
 		jsonData["roleName"] = roleName;
 		jsonData["disabled"] = isActive;
 		jsonRequest["requestData"] = jsonData;
 		return JSON.stringify(jsonRequest);
 	}
 
-	function saveEditUser(id, url, message) {
+	function saveEditUser(id, url) {
 		$.ajax({
 			type : 'POST',
 			url : url,
@@ -144,7 +152,7 @@ $(function() {
 									+ i
 									+ '" /> '
 									+ '<button type = "submit" id = "editAuth'
-									+ i
+									+ idUser
 									+ '" class = "btn btn-primary editButton" > Edit </button> ';
 						}
 
@@ -153,12 +161,11 @@ $(function() {
 							out
 									.push([
 											_getNumberOfRow(data.start, i),
-											dataResponse.responseData.data[i].id,
 											dataResponse.responseData.data[i].createdTime,
 											dataResponse.responseData.data[i].modifiedTime,
 											dataResponse.responseData.data[i].roleName,
 											_checkBoxCustom(
-													i,
+													idUser,
 													dataResponse.responseData.data[i].disabled,
 													"disabled"),
 											buttonAction(i, idUser) ]);
@@ -280,18 +287,9 @@ $(function() {
 
 		// loop the column of per row
 		$.each($tds, function() {
-			if (loopColumn === 5) {
-				$("#inputRoleName").val($(this).text());
-			} else if (loopColumn === 6) {
-				if ($(this).text() === '') {
-					$("#CheckBoxIsActive").prop("checked", true);
-				} else {
-					$("#CheckBoxIsActive").prop('checked', false);
-				}
+			 if (loopColumn === 4) {
+				$("#inputRoleInput").val($(this).text());
 			}
-
-			// Password not show
-			$("#TextNewPassword").val("");
 			loopColumn += 1;
 		});
 	}

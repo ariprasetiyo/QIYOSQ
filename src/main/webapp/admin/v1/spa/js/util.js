@@ -33,6 +33,12 @@ function _checkBoxCustom(numberRow, isCheck, idCheckBox) {
 			+ '</label></div>';
 }
 
+function _showModalMessage(title, message){
+	$("#messageTitleReplace").text(title);
+	$("#messageReplace").text(message);
+	$("#modalAllMessage").modal("show");
+}
+
 function _enabledDisabledButton(idEnableButton, idDisableButton) {
 
 	if (idEnableButton !== null) {

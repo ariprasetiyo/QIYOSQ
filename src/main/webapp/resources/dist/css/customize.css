@@ -18,20 +18,18 @@ TAB
 	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
 	border-radius: 3px;
 } */
-
 .nav-tabs-custom>.nav-tabs {
-    margin: 0;
-    border-bottom-color: #f9fcfd;
-    border-top-right-radius: 3px;
-    border-top-left-radius: 3px;
+	margin: 0;
+	border-bottom-color: #f9fcfd;
+	border-top-right-radius: 3px;
+	border-top-left-radius: 3px;
 }
 
-
 .nav-tabs-custom {
-    margin-bottom: 0px;
-    background: rgba(204, 216, 222, 0.28);
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
-    border-radius: 3px;
+	margin-bottom: 0px;
+	background: rgba(204, 216, 222, 0.28);
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+	border-radius: 3px;
 }
 
 /*
@@ -618,6 +616,19 @@ label {
 		vertical-align: middle;
 		width: auto;
 		margin-right: 10px;
+	}
+}
+
+@media ( min-width : 1200px) {
+	/*
+	Vertical line
+	*/
+	.vertical {
+		border-left: 1px solid green;
+		height: 90%;
+		position: absolute;
+		margin-left: 50%;
+		margin-top:2%;
 	}
 }
 

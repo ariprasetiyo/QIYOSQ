@@ -53,11 +53,11 @@
 			_finishLoading();
 		});
 
-		this.get('#/user-group/', function(context) {
+		this.get('#/usergroup/', function(context) {
 			_startLoading();
 			var str = location.href.toLowerCase();
 			context.app.swap('');
-			context.render('../../../admin/v1/view/user-group/', {}).appendTo(
+			context.render('../../../admin/v1/view/usergroup/', {}).appendTo(
 					context.$element());
 			_finishLoading();
 		});

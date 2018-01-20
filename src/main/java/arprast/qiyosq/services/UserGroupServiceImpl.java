@@ -50,15 +50,23 @@ public class UserGroupServiceImpl implements UserGroupService {
 	public ResponseData saveUserGroup(RolesDto rolesDto) {
 		logger.debug("Start save user group {}", rolesDto.toString());
 
+		ResponseData responseData = new ResponseData();
+		int countUserGroup = userGroupDao.countUserGroupByRoleName(rolesDto.getRoleName());
+		if (countUserGroup > 0) {
+			responseData.setStatusType(StatusType.DUPLICATE_DATA_ERROR);
+			responseData.setMessage(StatusType.DUPLICATE_DATA_ERROR.stringValue);
+			return responseData;
+		}
+
 		RolesModel rolesModel = new RolesModel();
 		rolesModel.setRoleName(rolesDto.getRoleName());
+		rolesModel.setDisabled(rolesDto.isDisabled());
 		rolesModel = userGroupDao.save(rolesModel);
-		ResponseData responseData = new ResponseData();
 		responseData.setData(rolesModel);
 
 		if (rolesModel.getId() == null) {
-			responseData.setStatusType(StatusType.SAVE_USER_GROUP_ERROR);
-			responseData.setMessage(StatusType.SAVE_USER_GROUP_ERROR.stringValue);
+			responseData.setStatusType(StatusType.SAVE_ERROR);
+			responseData.setMessage(StatusType.NULL_POINTER_ERROR.stringValue);
 		} else {
 			responseData.setStatusType(StatusType.SAVE_SUCCEED);
 		}
@@ -68,6 +76,31 @@ public class UserGroupServiceImpl implements UserGroupService {
 	}
 
 	public ResponseData editUserGroup(RolesDto rolesDto) {
-		return null;
+		logger.debug("Edit user group {}", rolesDto.toString());
+
+		ResponseData responseData = new ResponseData();
+		if (rolesDto.getId() == null || rolesDto.getId() <= 0) {
+			responseData.setStatusType(StatusType.UPDATE_ERROR);
+			responseData.setMessage(StatusType.NULL_VALUE.stringValue);
+			return responseData;
+		}
+
+		RolesModel rolesModel = new RolesModel();
+		rolesModel.setId(rolesDto.getId());
+		rolesModel.setRoleName(rolesDto.getRoleName());
+		rolesModel.setDisabled(rolesDto.isDisabled());
+		rolesModel = userGroupDao.save(rolesModel);
+		responseData.setData(rolesModel);
+
+		if (rolesModel.getId() == null) {
+			responseData.setStatusType(StatusType.UPDATE_ERROR);
+			responseData.setMessage(StatusType.NULL_POINTER_ERROR.stringValue);
+		} else {
+			responseData.setStatusType(StatusType.UPDATE_SUCCEED);
+		}
+
+		logger.debug("Final edit user group {}", responseData.toString());
+		return responseData;
 	}
+
 }

@@ -14,11 +14,17 @@ mvn clean package spring-boot:run -DskipTests
 - Run application with skip test and remote debug :
 mvn spring-boot:run -DskipTests -Drun.jvmArguments="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005"
 
+- Or Run application with server.sh in directory server :
+./server.sh start
+
 - Access link url :
 http://localhost:8181/login
 
 - Git ignore file mode :
 git config core.fileMode false
+
+- Git ignore file remove cache :
+git rm --cached FILENAME. Example git rm --cached server.sh
 
 - Root folder
 	* webapp
