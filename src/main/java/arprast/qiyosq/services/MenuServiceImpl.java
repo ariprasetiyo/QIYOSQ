@@ -3,18 +3,30 @@ package arprast.qiyosq.services;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
+
 import arprast.qiyosq.dao.AuthorizationDao;
 import arprast.qiyosq.dao.MenusDao;
 import arprast.qiyosq.dao.MenusDaoImpl;
+import arprast.qiyosq.dto.MenuDto;
+import arprast.qiyosq.dto.RequestData;
+import arprast.qiyosq.dto.ResponseData;
 import arprast.qiyosq.dto.ScreenMenuDto;
 import arprast.qiyosq.model.MenusModel;
 import arprast.qiyosq.model.RolesModel;
+import arprast.qiyosq.ref.StatusType;
 
 @Service
 public class MenuServiceImpl implements MenuService {
 
+	private static final Logger logger = LoggerFactory.getLogger(MenuServiceImpl.class);
+	
 	private static final String HTML_0 = "<li class=\"treeview\">\n<a href=\"";
 	private static final String HTML_1 = "\">\n<i class=\"fa fa-share\"></i> <span>";
 	private static final String HTML_2 = "</span>\n<span class=\"pull-right-container\">\n<i class=\"fa fa-angle-left pull-right\"></i>\n</span>\n</a>\n";
@@ -36,10 +48,6 @@ public class MenuServiceImpl implements MenuService {
 
 	@Autowired
 	private AuthorizationDao authorizationDao;
-
-	public MenusModel saveMenu(MenusModel menus) {
-		return menusDao.save(menus);
-	}
 
 	public String getScreenMenu(List<String> listAuthoritiesString) {
 		// Looking for id from sys_roles
@@ -90,9 +98,19 @@ public class MenuServiceImpl implements MenuService {
 		return tmpScript;
 	}
 
-	public List<MenusModel> listOfMenus(String keySearch, int offset, int limit) {
-		return menusDaoEM.listOfMenus(keySearch, offset, limit);
+	public ResponseData listOfMenus(RequestData requestData) {
+		ResponseData responseData = new ResponseData();
+		List<MenusModel> listMenu = menusDaoEM.listOfMenus(requestData);
+		long countMenu = menusDaoEM.countMenu(requestData);
+		responseData.setData(listMenu);
+		responseData.setTotalRecord(countMenu);
+		return responseData;
 	}
+
+	/*
+	 * public List<MenusModel> listOfMenus(RequestData requestData) { return
+	 * menusDaoEM.listOfMenus(requestData); }
+	 */
 
 	private List<Long> getListAuthorities(List<RolesModel> listRoles) {
 		List<Long> listId = new ArrayList<>();
@@ -100,6 +118,71 @@ public class MenuServiceImpl implements MenuService {
 			listId.add(sysRole.getId());
 		}
 		return listId;
+	}
+
+	public MenuDto validateSaveMenu(MenuDto menuDto) {
+
+		logger.debug("Validate save menu {}", menuDto.toString());
+		
+		MenusModel sysMenus = new MenusModel();
+		sysMenus.setMenusName(menuDto.getMenusName());
+		sysMenus.setUrl(menuDto.getUrl());
+		sysMenus.setDisabled(menuDto.isDisabled());
+
+		int countMenuById = menusDao.countMenuById(menuDto.getId());
+		int countMenuByName = menusDao.countMenuByMenuName(menuDto.getMenusName());
+		if (countMenuByName > 0 || countMenuById > 0) {
+			menuDto.setStatusType(StatusType.DUPLICATE_DATA_ERROR);
+			menuDto.setMessage(StatusType.DUPLICATE_DATA_ERROR.stringValue);
+			return menuDto;
+		}
+
+		return saveMenu(sysMenus);
+	}
+
+	public MenuDto validateEditMenu(MenuDto menuDto) {
+
+		logger.debug("Validate edit menu {}", menuDto.toString());
+		
+		MenusModel sysMenus = new MenusModel();
+		sysMenus.setMenusName(menuDto.getMenusName());
+		sysMenus.setUrl(menuDto.getUrl());
+		sysMenus.setDisabled(menuDto.isDisabled());
+		sysMenus.setId(menuDto.getId());
+
+		int countMenuById = menusDao.countMenuById(menuDto.getId());
+		if (countMenuById == 0) {
+			menuDto.setStatusType(StatusType.DATA_NOT_FOUND);
+			menuDto.setMessage(StatusType.DATA_NOT_FOUND.stringValue);
+			return menuDto;
+		}
+		
+		return saveMenu(sysMenus);
+	}
+
+	private MenuDto saveMenu(MenusModel menuModel) {
+
+		MenuDto menuDto = new MenuDto();
+		MenusModel sysMenus = menusDao.save(menuModel);
+
+		if (sysMenus.getId() == null) {
+			menuDto.setStatusType(StatusType.SAVE_ERROR);
+			menuDto.setMessage(StatusType.SAVE_ERROR.stringValue);
+			return menuDto;
+		}
+
+		menuDto.setStatusType(StatusType.SAVE_SUCCEED);
+		menuDto.setMessage(StatusType.SAVE_SUCCEED.stringValue);
+		return menuDto;
+	}
+	
+	@Transactional(rollbackFor = { Exception.class, Throwable.class, IllegalArgumentException.class }, readOnly = false)
+	public boolean validateDeleteMenu(long idMenu) {
+		TransactionStatus TransactionStatus = TransactionAspectSupport.currentTransactionStatus();
+		int countDeleteMenu = menusDao.deleteMenu(idMenu);
+		logger.debug("Delete menu id {}={}. Transaction status ={}", idMenu, countDeleteMenu,
+				TransactionStatus.isCompleted());
+		return (countDeleteMenu > 0 ? true : false);
 	}
 
 }

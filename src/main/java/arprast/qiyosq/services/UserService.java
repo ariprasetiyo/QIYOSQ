@@ -13,4 +13,6 @@ public interface UserService {
 
 	ResponseData listUser(RequestData requestData);
 
+	UserDto getUser();
+
 }

@@ -5,7 +5,7 @@ $(function() {
 	$("#saveRole").validate({
 		rules : {
 			inputRoleName : {
-				minlength : 8,
+				minlength : 3,
 				required : true
 			}
 		}
@@ -15,23 +15,30 @@ $(function() {
 	// Edit data
 	var idTmpUserGroupButtonEdit = null;
 	var isEdit = false;
-	$("#tableUser").on('click', '.editButton', function() {
-		if (idTmpUserGroupButtonEdit != null) {
-			_showModalMessage("Attention", "Couldn't edit before another process saved or cancelled");
-			return;
-		}
+	$("#tableUserGroup")
+			.on(
+					'click',
+					'.editButton',
+					function() {
+						if (idTmpUserGroupButtonEdit != null) {
+							_showModalMessage("Attention",
+									"Couldn't edit before another process saved or cancelled");
+							return;
+						}
 
-		$("#inputRoleInput").attr("disabled", "disabled");
-		$("#cancelEdit").removeAttr("disabled");
-		$(this).attr("disabled", "disabled");
-		idTmpUserGroupButtonEdit = $(this).attr("id").replace("editAuth", "");
-		var isActive = $("#disabled"+idTmpUserGroupButtonEdit).is(":checked");
-	
-		$("#checkBoxIsActive").prop("checked", isActive);
-		
-		getDataOnTable(this);
-		isEdit = true;
-	});
+						$("#inputRoleInput").attr("disabled", "disabled");
+						$("#cancelEdit").removeAttr("disabled");
+						$(this).attr("disabled", "disabled");
+						idTmpUserGroupButtonEdit = $(this).attr("id").replace(
+								"editAuth", "");
+						var isActive = $("#disabled" + idTmpUserGroupButtonEdit)
+								.is(":checked");
+
+						$("#checkBoxIsActive").prop("checked", isActive);
+
+						getDataOnTable(this);
+						isEdit = true;
+					});
 
 	// save or edit button
 	$("#saveUserGroup").on('click', function() {
@@ -65,6 +72,11 @@ $(function() {
 		var roleName, isActive;
 		roleName = $("#inputRoleInput").val();
 		isActive = $("#checkBoxIsActive").is(':checked');
+		if(isActive == true){
+			isActive = false;
+		}else{
+			isActive = true
+		}
 
 		var jsonRequest = {};
 		var jsonData = {};
@@ -98,7 +110,7 @@ $(function() {
 				}
 				$("#infoSaveUser").text(messageInfo);
 				$("#infoSaveUser").attr('class', 'success-message');
-				$('#tableUser').DataTable().ajax.reload();
+				$('#tableUserGroup').DataTable().ajax.reload();
 			},
 			complete : function() {
 			},
@@ -189,7 +201,7 @@ $(function() {
 	}
 
 	// dataTables ajax logic
-	var tableUserr = $('#tableUser').DataTable({
+	var tableUserGroup = $('#tableUserGroup').DataTable({
 		/*
 		 * l - Length changing f - Filtering input t - The table! i -
 		 * Information p - Pagination r - pRocessing < and > - div elements
@@ -209,74 +221,8 @@ $(function() {
 	});
 
 	$("#submitAction").on('click', function() {
-		tableUserr.ajax.reload();
+		tableUserGroup.ajax.reload();
 	});
-
-	/*
-	 * $('#tableUser').on('search.dt', function() { var value =
-	 * $('.dataTables_filter input').val(); });
-	 */
-
-	var idUserForDelete = null;
-	$("#tableUser").on(
-			"click",
-			".deleteButton",
-			function() {
-				// get value table with spesific tr and td
-				// var val1 =$(t).find('tr:eq(2) td:eq(4)').text();
-				var idButtonDelete = $(this).attr("id").replace("deleteAuth",
-						"").trim();
-				var userName;
-				// loop the column of per row
-				var $row = $(this).closest("tr");
-				var $tds = $row.find("td");
-				var loopColumn = 1;
-				$.each($tds, function() {
-					if (loopColumn === 6) {
-						userName = $(this).text();
-						return false;
-					}
-					loopColumn += 1;
-				});
-				idUserForDelete = $(".idDataHide" + idButtonDelete).attr("id");
-				idUserForDelete = idUserForDelete.replace("idData", "").trim();
-				$("#modalDeleteUser").modal('show');
-				$("#messageDelete").text(
-						"Are you sure delete this data username " + userName
-								+ " ?");
-			});
-
-	$("#deleteUser").on("click", function() {
-		if (idUserForDelete !== null) {
-			deleteDataUser(idUserForDelete);
-		}
-		idUserForDelete = null;
-	});
-
-	function deleteDataUser(idMenu) {
-		$.ajax({
-			type : "DELETE",
-			contentType : "application/json",
-			url : "/admin/v1/api/user/delete",
-			headers : {
-				'X-XSRF-TOKEN' : csrfToken
-			},
-			data : _jsonRequestDeleteData(idMenu),
-			dataType : "json",
-			success : function(data, textStatus, jqXHR) {
-				// alert(data.id);
-				// $('rowId'+data.id).remove();
-				var tr = $('#rowId' + data.id).closest('tr');
-				tr.css("background-color", "#00acd6");
-				tr.fadeOut(400, function() {
-					tr.remove();
-				});
-				$("#modalDeleteUser").modal('hide');
-				$('#tableUser').DataTable().ajax.reload();
-				return false;
-			}
-		});
-	}
 
 	function getDataOnTable(varThis) {
 
@@ -287,7 +233,7 @@ $(function() {
 
 		// loop the column of per row
 		$.each($tds, function() {
-			 if (loopColumn === 4) {
+			if (loopColumn === 4) {
 				$("#inputRoleInput").val($(this).text());
 			}
 			loopColumn += 1;

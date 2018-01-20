@@ -8,6 +8,8 @@ import java.util.concurrent.Executors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
@@ -124,6 +126,22 @@ public class UserServiceImpl implements UserService {
 		TransactionStatus TransactionStatus = TransactionAspectSupport.currentTransactionStatus();
 		userDao.delete(idUser);
 		return TransactionStatus.isCompleted();
+	}
+	
+	public UserDto getUser() {
+		UserDto userDto = new UserDto();
+		UserModel userModel = userDao.findUserByUserName(getAuthentication().getName());
+
+		if (userModel == null) {
+			return userDto;
+		}
+
+		return userMapper.asUserDTO(userModel);
+	}
+	
+	private Authentication getAuthentication() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		return authentication;
 	}
 
 }

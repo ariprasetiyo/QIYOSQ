@@ -1,5 +1,6 @@
 function _getNumberOfRow(offset, count) {
-	return offset + 1 + count;
+	var number = offset + 1 + count;
+	return '<div style="margin-left:20%;">'+number+'</div>';
 }
 
 function _getAlert() {
@@ -18,10 +19,10 @@ function _screenTabSize(){
 	$(".screen-tab").css("height", "100%");
 }
 
-function _checkBoxCustom(numberRow, isCheck, idCheckBox) {
-	var valCheck = "unchecked";
-	if (isCheck) {
-		valCheck = "checked";
+function _checkBoxCustom(numberRow, isUncheck, idCheckBox) {
+	var valCheck = "checked";
+	if (isUncheck) {
+		valCheck = "unchecked";
 	}
 
 	return '<div class="center" >'
@@ -37,6 +38,24 @@ function _showModalMessage(title, message){
 	$("#messageTitleReplace").text(title);
 	$("#messageReplace").text(message);
 	$("#modalAllMessage").modal("show");
+}
+
+function _showModalDelete(paramValue) {
+	$("#messageDelete").text(
+			"Are you sure delete this data " + paramValue + " ?");
+	$("#modalDeleteRow").modal('show');
+}
+
+function _replaceModalDelete(paramValue) {
+	if (paramValue != null) {
+		$("#messageDelete").text("Delete data had been problem");
+	} else {
+		$("#messageDelete").text(paramValue);
+	}
+}
+
+function _hideModalDelete(){
+	$("#modalDeleteRow").modal('hide');
 }
 
 function _enabledDisabledButton(idEnableButton, idDisableButton) {
@@ -125,3 +144,4 @@ function _jsonRequestDeleteData(id) {
 	jsonRequest["requestData"] = request;
 	return JSON.stringify(jsonRequest);
 }
+

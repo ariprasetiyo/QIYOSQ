@@ -43,8 +43,9 @@ thead>tr>th {
 	overflow: hidden;
 	position: relative;
 	border: 0px;
-	width: 100%;
-	background-color: rgba(52, 142, 100, 0.84) !important;
+	width: 100%;  
+	/*background-color: rgba(52, 142, 100, 0.84) !important; */
+	background-color : rgb(19, 185, 147) !important;
 	color: #fff !important;
 	z-index: 1;
 	/* color: #4d4f54!important;  */
@@ -320,13 +321,13 @@ Button
 
 .center {
 	text-align: center;
-	margin-left: 20%;
+	margin-left: 40%;
 }
 
 .center_header {
 	text-align: center;
 	margin-left: 20%;
-	margin-top: 4%;
+	margin-top: 3%;
 }
 
 td {
@@ -334,9 +335,18 @@ td {
 }
 
 /*TABLE padding */
-.table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th,
+.table>tbody>tr>td, .table>tbody>tr>th {
+	/* padding: 5px 0px 0px 5px; */
+	padding :2px 0px 0px 2px;
+	line-height: 1.42857143;
+	vertical-align: initial;
+	border-top: 1px solid #ddd;
+}
+
+.table>tfoot>tr>td, .table>tfoot>tr>th,
 	.table>thead>tr>td, .table>thead>tr>th {
-	padding: 5px 0px 0px 5px;
+	/* padding: 5px 0px 0px 5px; */
+	padding :0px 0px 0px 0px;
 	line-height: 1.42857143;
 	vertical-align: initial;
 	border-top: 1px solid #ddd;
@@ -544,9 +554,15 @@ label {
 .btn-primary {
 	/* background-color: #3498db;
 	border-color: #3498db; */
-	background-color: #36a3f7;
+	/* background-color: #36a3f7; */
+	background-color: #36c6d3;
 	color: #ffffff;
 	border: none;
+}
+
+.btn-danger {
+	background-color: rgba(221, 111, 57, 0.72);
+	border-color: rgba(241, 37, 11, 0.23);
 }
 
 .pagination>.active>a, .pagination>.active>a:focus, .pagination>.active>a:hover,
@@ -628,7 +644,7 @@ label {
 		height: 90%;
 		position: absolute;
 		margin-left: 50%;
-		margin-top:2%;
+		margin-top: 2%;
 	}
 }
 

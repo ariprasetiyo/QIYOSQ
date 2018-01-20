@@ -5,7 +5,6 @@ $(function() {
 			function() {
 				if ($('#modalMenuid option:selected').text() == $(
 						'#modalParentMenuid option:selected').text()) {
-					// $('#modalDeleteUser').modal('show');
 					$("#infoSavaAuthorization").text(
 							"Menu and child menu couldn't same");
 					$("#infoSavaAuthorization")
@@ -23,7 +22,6 @@ $(function() {
 			function() {
 				if ($('#modalMenuid option:selected').text() == $(
 						'#modalParentMenuid option:selected').text()) {
-					// $('#modalDeleteUser').modal('show');
 					$("#infoSavaAuthorization")
 							.attr('class', 'warning-message');
 					$("#infoSavaAuthorization").text(
@@ -31,26 +29,6 @@ $(function() {
 					$('#modalParentMenuid').val("1");
 				}
 			});
-
-	/*
-	 * $("#submitRoles").on("click", function() {
-	 * alert($('select[name=roles_id]').val());
-	 * viewAuthorizationList($('select[name=roles_id]').val()); });
-	 */
-
-	$("#tableAuthorizationa").DataTable({
-		"sDom" : '<"top"fl>rt<"bottom"p><"clear">',
-		"iDisplayLength" : 25,
-		scrollY : 360,
-		"scrollX" : "100%",
-		"columnDefs" : [ {
-			"width" : "130px",
-			"targets" : 8
-		} ],
-		scroller : {
-			loadingIndicator : true
-		}
-	});
 
 	$("#saveModalAddMenu").on(
 			'click',
@@ -70,17 +48,36 @@ $(function() {
 	$(".select2").select2();
 
 	// DELETE
+	var idMenuDelete = null;
+	var idElement = null;
 	$('#tableAuthorization').on('click', '.deleteButton', function() {
 		var id = $(this).attr('id').replace('deleteAuth', '');
-		var idMenu = $("#idData" + id).val();
-		deleteDataMenu(idMenu, _jsonRequestDeleteData(idMenu));
-		isEnableTriggerButtonSaveAndDelete(id);
+		idElement = id;
+		idMenuDelete = $("#idData" + id).val();
+		_showModalDelete("");
+	});
+
+	$("#deleteTableRowCancel").on("click", function() {
+		var idElementSave = "#saveAuth" + idElement;
+		_replaceText(idElementSave, "Edit");
+		_replaceClass(idElementSave, "saveButton", "editButton");
+		_replaceId(idElementSave, "editAuth" + idMenuDelete);
+		isEnableTriggerButtonSaveAndDelete(idElementSave);
+	});
+
+	$("#deleteTableRow").on("click", function() {
+		if (idMenuDelete !== null && idMenuDelete !== undefined) {
+			deleteDataMenu(idMenuDelete, _jsonRequestDeleteData(idMenuDelete));
+		}
+		_hideModalDelete();
+		tableAuthorization.ajax.reload();
 	});
 
 	$('#tableAuthorization').on(
 			'click',
 			'.editButton',
 			function() {
+
 				var idAuth = $(this).attr('id');
 				var id = idAuth.replace("editAuth", "");
 				var enabledButton = [ "#isInsert" + id, "#isDelete" + id,
@@ -142,16 +139,19 @@ $(function() {
 			data : jsonRequest,
 			dataType : "json",
 			success : function(data, textStatus, jqXHR) {
-				// alert(data.id);
-				// $('rowId'+data.id).remove();
-				var tr = $('#rowId' + data.id).closest('tr');
-				tr.css("background-color", "#00acd6");
-				tr.fadeOut(400, function() {
-					tr.remove();
-				});
+				tableAuthorization.ajax.reload();
 				return false;
 			}
 		});
+	}
+
+	function checkBoxHandle(i, booleanParam, idOrClass) {
+		if (booleanParam) {
+			booleanParam = false;
+		} else {
+			booleanParam = true;
+		}
+		return _checkBoxCustom(i, booleanParam, idOrClass);
 	}
 
 	function listDataTable(data, callback, settings) {
@@ -185,7 +185,7 @@ $(function() {
 									+ '" class = "btn btn-primary editButton" > Edit </button> '
 									+ '<button type = "submit" disabled id = "deleteAuth'
 									+ i
-									+ '" class = "btn btn-primary deleteButton" > Delete </button>';
+									+ '" class = "btn btn-danger deleteButton" > Delete </button>';
 						}
 
 						for (var i = 0, ien = dataResponse.responseData.data.length; i < ien; i++) {
@@ -196,19 +196,19 @@ $(function() {
 											dataResponse.responseData.data[i].menuName,
 											dataResponse.responseData.data[i].createdTime,
 											dataResponse.responseData.data[i].modifiedTime,
-											_checkBoxCustom(
+											checkBoxHandle(
 													i,
 													dataResponse.responseData.data[i].isInsert,
 													"isInsert"),
-											_checkBoxCustom(
+											checkBoxHandle(
 													i,
 													dataResponse.responseData.data[i].isUpdate,
 													"isUpdate"),
-											_checkBoxCustom(
+											checkBoxHandle(
 													i,
 													dataResponse.responseData.data[i].isDelete,
 													"isDelete"),
-											_checkBoxCustom(
+											checkBoxHandle(
 													i,
 													dataResponse.responseData.data[i].disabled,
 													"disabled"),/*
@@ -236,7 +236,7 @@ $(function() {
 				});
 	}
 
-	var table = $('#tableAuthorization').DataTable({
+	var tableAuthorization = $('#tableAuthorization').DataTable({
 		/*
 		 * l - Length changing f - Filtering input t - The table! i -
 		 * Information p - Pagination r - pRocessing < and > - div elements
@@ -252,11 +252,12 @@ $(function() {
 		scrollY : _getScreenDataTable(),
 		scroller : {
 			loadingIndicator : true
-		}
+		},
+		pageLength : 25
 	});
 
 	$("#submitAction").on('click', function() {
-		table.ajax.reload();
+		tableAuthorization.ajax.reload();
 	});
 
 	function jsonAddData(vInsert, vDelete, vUpdate, vDisable, menuId, parentId,
@@ -276,101 +277,27 @@ $(function() {
 
 	function addDataMenu(jsonRequest) {
 		var csrfToken = $("#csrfToken").val();
-		$
-				.ajax({
-					type : "POST",
-					url : "../api/authorization/addMenu/",
-					headers : {
-						'X-XSRF-TOKEN' : csrfToken
-					},
-					contentType : 'application/json',
-					data : jsonRequest,
-					dataType : "json",
-					beforeSend : function() {
-						_startLoading();
-					},
-					success : function(data, textStatus, jqXHR) {
-
-						var numberRow = getLastNumberDataTables();
-						var table = $("#tableAuthorization").DataTable();
-						var rowNode = table.row
-								.add(
-										[
-												function() {
-													return '<div class="center">'
-															+ (parseInt(numberRow) + 1)
-															+ '</div>';
-												},
-												data.menuName,
-												function() {
-													return '<div class="center">'
-															+ data.createTime
-															+ '</div>';
-												},
-												function() {
-													return '<div class="center">'
-															+ data.modifyTime
-															+ '</div>';
-												},
-												function() {
-													return '<div class="center" ><input type="checkbox"  id="isInsert'
-															+ numberRow
-															+ '" disabled checked>'
-															+ ' <label for="isInsert'
-															+ numberRow
-															+ '"></label>   </div>';
-												},
-												function() {
-													return '<div class="center" ><input type="checkbox"  id="isUpdate'
-															+ numberRow
-															+ '" disabled checked>'
-															+ ' <label for="isUpdate'
-															+ numberRow
-															+ '"></label>   </div>';
-												},
-												function() {
-													return '<div class="center" ><input type="checkbox"  id="isDelete'
-															+ numberRow
-															+ '" disabled checked>'
-															+ ' <label for="isDelete'
-															+ numberRow
-															+ '"></label>   </div>';
-												},
-												function() {
-													return '<div class="center" ><input type="checkbox"  id="disabled'
-															+ numberRow
-															+ '" disabled checked>'
-															+ ' <label for="disabled'
-															+ numberRow
-															+ '"></label>   </div>';
-												},
-												function() {
-													return '<div style="white-space: nowrap;"><input type = "hidden" name = "${_csrf.parameterName}" value = "${_csrf.token}" />'
-															+ '<input type = "hidden" id = "idTAU'
-															+ numberRow
-															+ '" value = "'
-															+ data.id
-															+ '" />'
-															+ '<button type = "submit" id = "editAuth'
-															+ numberRow
-															+ '" class = "btn btn-primary editButton" > Edit </button>'
-															+ ' <button type = "submit" id = "saveAuth'
-															+ numberRow
-															+ '" class = "btn btn-primary saveButton" disabled > Save </button>'
-															+ ' <button type = "submit" id = "deleteAuth'
-															+ numberRow
-															+ '" class = "btn btn-primary deleteButton" disabled > Delete </button></div>';
-												} ]).draw().node();
-						$(rowNode).css('color', 'red').animate({
-							color : 'black'
-						});
-					},
-					complete : function() {
-						_finishLoading();
-					},
-					error : function(jqXHR, textStatus, errorThrown) {
-					}
-				});
+		$.ajax({
+			type : "POST",
+			url : "../api/authorization/addMenu/",
+			headers : {
+				'X-XSRF-TOKEN' : csrfToken
+			},
+			contentType : 'application/json',
+			data : jsonRequest,
+			dataType : "json",
+			beforeSend : function() {
+				_startLoading();
+			},
+			success : function(data, textStatus, jqXHR) {
+				tableAuthorization.ajax.reload();
+			},
+			complete : function() {
+				_finishLoading();
+			},
+			error : function(jqXHR, textStatus, errorThrown) {
+			}
+		});
 	}
 
 	function jsonRequestEdit(vInsert, vDelete, vUpdate, vDisable) {

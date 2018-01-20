@@ -34,6 +34,9 @@
 										class="buttonClose" id="addNewUser">Add new user</a></li>
 									<li class="divider"></li>
 									<li><a href="#">View calendar</a></li>
+									<li>
+									<a data-toggle="contactAdmin" data-title="help" data-url="http:/www.mydomain.com/some-url" href="#">Contact Web team</a>
+									</li>
 								</ul>
 							</div>
 							<button type="button" class="btn btn-success btn-sm"
@@ -79,30 +82,6 @@
 	</section>
 </div>
 <!-- /.row (main row) -->
-
-<div id="modalDeleteUser" class="modal modal-danger" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"
-					aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-				<h4 class="modal-title">Warning</h4>
-			</div>
-			<div class="modal-body">
-				<p id="messageDelete">Replace message here ?</p>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-outline pull-left"
-					data-dismiss="modal">Cancel</button>
-				<button type="button" id="deleteUser" class="btn btn-outline">Delete</button>
-			</div>
-		</div>
-		<!-- /.modal-content -->
-	</div>
-	<!-- /.modal-dialog -->
-</div>
 
 <!-- Modal -->
 <div id="myModal" class="modal fade" role="dialog">
@@ -206,5 +185,5 @@
 	</div>
 </div>
 <script type="text/javascript"
-	src="/admin/v1/spa/templates/user-index.js"></script>
+	src="/admin/v1/spa/templates/user-index-spa.js"></script>
 

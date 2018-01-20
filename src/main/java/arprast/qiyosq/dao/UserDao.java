@@ -38,6 +38,14 @@ public interface UserDao extends JpaRepository<UserModel, Long> {
 
 	/**
 	 * 
+	 * @param userName
+	 * @return
+	 */
+	@Query("from UserModel where username = :nUserName ")
+	public UserModel findUserByUserName(@Param("nUserName") String userName);
+
+	/**
+	 * 
 	 * @param email
 	 * @param userName
 	 * @param password

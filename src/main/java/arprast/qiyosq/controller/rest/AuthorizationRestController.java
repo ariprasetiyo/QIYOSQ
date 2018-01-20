@@ -47,25 +47,6 @@ public class AuthorizationRestController {
 		return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
 	}
 
-	/*
-	 * @RequestMapping(value = "/addMenu/{idRoles}", method =
-	 * RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes
-	 * = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_JSON_VALUE })
-	 * public AuthorizationDto authorizationAddMenu(@PathVariable("idRoles")
-	 * Long idRole,
-	 * 
-	 * @RequestParam("vInsert") boolean vInsert, @RequestParam("vUpdate")
-	 * boolean vUpdate,
-	 * 
-	 * @RequestParam("vDelete") boolean vDelete, @RequestParam("vDisable")
-	 * boolean vDisable,
-	 * 
-	 * @RequestParam("modelMenuId") Long
-	 * MenuId, @RequestParam("modelParentMenuId") Long parentMenuId) { return
-	 * authorizationService.saveDataMenu(idRole, vInsert, vUpdate, vDelete,
-	 * vDisable, MenuId, parentMenuId); }
-	 */
-
 	@RequestMapping(value = "/addMenu", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE,
 			MediaType.APPLICATION_XML_VALUE }, consumes = { MediaType.APPLICATION_JSON_VALUE,
 					MediaType.APPLICATION_XML_VALUE })
@@ -74,39 +55,6 @@ public class AuthorizationRestController {
 		authorizationDto = requestDto.getRequestData();
 		return authorizationService.saveMenu(authorizationDto);
 	}
-
-	/*
-	 * @RequestMapping(value = "/list/{idRole}", method = RequestMethod.POST,
-	 * consumes = { MediaType.APPLICATION_JSON_VALUE,
-	 * MediaType.APPLICATION_XML_VALUE }, produces = {
-	 * MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-	 * public ResponseEntity<ResponseDto<ResponseData>>
-	 * authorizationList(@PathVariable("idRole") Long idRole,
-	 * 
-	 * @RequestBody RequestDto<RequestData> requestDto) {
-	 * 
-	 * ResponseDto<ResponseData> responseDto = new ResponseDto<ResponseData>();
-	 * ResponseData responseData = new ResponseData();
-	 * 
-	 * ExecutorService executorService = Executors.newSingleThreadExecutor();
-	 * executorService.submit(() -> {
-	 * responseData.setTotalRecord(authorizationService.countAuthorization());
-	 * });
-	 * 
-	 * executorService.submit(() -> {
-	 * System.out.println("mulai---------------"); List<AuthorizationDto>
-	 * authorizationDto =
-	 * authorizationService.getAuthorizationList(requestDto.getRequestData());
-	 * responseData.setJsonMessage(authorizationDto);
-	 * System.out.println(responseData.toString()); });
-	 * 
-	 * try { executorService.awaitTermination(3, TimeUnit.SECONDS); } catch
-	 * (InterruptedException e) { // TODO Auto-generated catch block
-	 * e.printStackTrace(); }
-	 * 
-	 * responseDto.setResponseData(responseData); return new
-	 * ResponseEntity<ResponseDto<ResponseData>>(responseDto, HttpStatus.OK); }
-	 */
 
 	@RequestMapping(value = "/list/{idRole}", method = RequestMethod.POST, consumes = {
 			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE }, produces = {

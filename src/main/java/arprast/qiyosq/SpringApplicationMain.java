@@ -11,12 +11,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication
-/*
- * Enable proxyTargetClass=true in @EnableTransactionManagement if 
- * there isn't have class interface
- * E.g cases UserDaoImpl
+/**
+ * Enable proxyTargetClass=true in @EnableTransactionManagement if there isn't
+ * have class interface E.g cases UserDaoImpl
+ * 
+ * @see {https://github.com/spring-projects/spring-boot/issues/5423} 
+ * We should use @EnableTransactionManagement(proxyTargetClass = true) to
+ * prevent nasty proxy issues when people aren't using interfaces.
  */
-@EnableTransactionManagement
+@EnableTransactionManagement(proxyTargetClass = true)
 @ImportResource("classpath:app-config.xml")
 public class SpringApplicationMain {
 

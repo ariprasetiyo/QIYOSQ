@@ -22,7 +22,7 @@
 							</div>
 						</div>
 						<div class="col-sm-5 text-right text-left-customize-mobile"
-							style=" padding-right: 0%;">
+							style="padding-right: 0%;">
 							<div class="btn-group">
 								<button type="button"
 									class="btn btn-success btn-sm dropdown-toggle"
@@ -95,49 +95,99 @@
 						data-dismiss="modal">&times;</button>
 					<h4 class="modal-title" id="formInputUser">Add new user</h4>
 				</div>
-				<div class="modal-body">
+				<div class="modal-body" style="margin-bottom: 3%;">
 					<div class="form-group">
 						<div style="padding: 0px 0px 0px 3%;">
-							<div class="row margin-bottom" style="width: 100%">
+							<div class="form-group">
+								<label for="recipient-name" class="form-control-label">Username</label>
+								<input disabled class="form-control" type="text"
+									id="TextUsername" name="TextUsername" placeholder="Username"
+									style="width: 100%;" />
+							</div>
+
+							<!-- <div class="row margin-bottom" style="width: 100%">
 								<label class="control-label col-sm-3" style="padding-left: 1%">Username</label>
 								<input disabled class="col-sm-9" type="text" id="TextUsername"
 									name="TextUsername" placeholder="Username">
+							</div> -->
+
+							<div class="form-group" id='oldPassword' hidden='true'>
+								<label for="recipient-name" class="form-control-label">Entry
+									Old Password</label> <input class="form-control" type="password"
+									id="TextOldPassword" name="TextOldPassword"
+									placeholder="Old Password" style="width: 100%;" />
 							</div>
-							<div id='oldPassword' hidden='true' class="row margin-bottom"
+							<!-- <div id='oldPassword' hidden='true' class="row margin-bottom"
 								style="width: 100%">
 								<label class="control-label col-sm-3" style="padding-left: 1%">Old
 									Password</label> <input class="col-sm-9" type="password"
 									id="TextOldPassword" name="TextOldPassword"
 									placeholder="Old Password">
+							</div> -->
+
+							<div id='newPassword' class="form-group">
+								<label for="recipient-name" class="form-control-label">New
+									Password</label> <input class="form-control" type="password"
+									id="TextNewPassword" name="TextNewPassword"
+									placeholder="New Password" style="width: 100%;" />
 							</div>
-							<div id='newPassword' class="row margin-bottom"
+							<!-- <div id='newPassword' class="row margin-bottom"
 								style="width: 100%">
 								<label class="control-label col-sm-3" style="padding-left: 1%">New
 									Password</label> <input class="col-sm-9" type="password"
 									id="TextNewPassword" name="TextNewPassword"
 									placeholder="New Password">
+							</div> -->
+
+							<div class="form-group">
+								<label for="recipient-name" class="form-control-label">Verify
+									Password</label> <input class="form-control" type="password"
+									id="TextVerifyPassword" name="TextVerifyPassword"
+									placeholder="Verify Password" style="width: 100%;" />
 							</div>
-							<div class="row margin-bottom" style="width: 100%">
+
+							<!-- <div class="row margin-bottom" style="width: 100%">
 								<label class="control-label col-sm-3" style="padding-left: 1%">Verify
 									Password</label> <input class="col-sm-9" type="password"
 									id="TextVerifyPassword" name="TextVerifyPassword"
 									placeholder="Verify Password">
+							</div> -->
+
+							<div class="form-group">
+								<label for="recipient-name" class="form-control-label">Name</label>
+								<input class="form-control" type="text" id="TextName"
+									name="TextName" placeholder="Name" style="width: 100%;" />
 							</div>
-							<div class="row margin-bottom" style="width: 100%">
+
+							<!-- <div class="row margin-bottom" style="width: 100%">
 								<label class="control-label col-sm-3" style="padding-left: 1%">Name</label>
 								<input class="col-sm-9" type="text" id="TextName"
 									placeholder="Name">
+							</div> -->
+
+							<div class="form-group">
+								<label for="recipient-name" class="form-control-label">Email</label>
+								<input class="form-control" type="text" id="TextEmail"
+									name="TextEmail" placeholder="Email" style="width: 100%;" />
 							</div>
-							<div class="row margin-bottom" style="width: 100%">
+
+							<!-- <div class="row margin-bottom" style="width: 100%">
 								<label class="control-label col-sm-3" style="padding-left: 1%">Email</label>
 								<input disabled class="col-sm-9" type="text" id="TextEmail"
 									name="TextEmail" placeholder="Email">
+							</div> -->
+							
+							<div class="form-group">
+								<label for="recipient-name" class="form-control-label">No Hp</label>
+								<input class="form-control" type="text" id="TextNoHp"
+									name="TextNoHp" placeholder="No Hp" style="width: 100%;" />
 							</div>
-							<div class="row margin-bottom" style="width: 100%">
+							<!-- <div class="row margin-bottom" style="width: 100%">
 								<label class="control-label col-sm-3" style="padding-left: 1%">No
 									Hp</label> <input class="col-sm-9" type="text" id="TextNoHp"
 									name="TextNoHp" placeholder="No Hp">
-							</div>
+							</div> -->
+							
 							<!-- <div class="row margin-bottom" style="width: 100%"
 								id="select2RoleDiv">
 								<label class="control-label col-sm-3" style="padding-left: 1%">Role</label>
@@ -145,17 +195,17 @@
 									class="role-select2-multiple" multiple="multiple">
 								</select>
 							</div> -->
-							<div class="row margin-bottom" style="width: 100%"
+							<div class="form-group"
 								id="select2RoleDivv">
 								<label class="control-label col-sm-3" style="padding-left: 1%">Role</label>
 								<select id="SelectRole" name="SelectRole"
-									class="role-select2-multiple" multiple="multiple">
+									class="role-select2-multiple" multiple="multiple"  style="width: 100%">
 									<#list selectroles as a>
 									<option value="${a.id}">${a.roleName}</option>
 									</#list>
 								</select>
 							</div>
-							<div class="row margin-bottom" style="width: 100%">
+							<div class="form-group" >
 								<label class="control-label col-sm-3" style="padding-left: 1%">Is
 									Active</label> <label class="containerChk"> <input
 									id="CheckBoxIsActive" type="checkbox" checked="checked">

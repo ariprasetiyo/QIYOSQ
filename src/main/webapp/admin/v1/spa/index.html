@@ -45,7 +45,7 @@
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
 	<#import "../../inc-sidebar.html" as inc_sidebar />
-	<#import "../../inc-header.html" as inc_header />
+	<#import "inc-header.html" as inc_header />
 
 	<input type="hidden" id="csrfToken" name="${_csrf.parameterName}"
 		value="${_csrf.token}" />
@@ -265,7 +265,7 @@
 		</aside>
 
 		<!--  common html -->
-		<div id="modalDeleteUser" class="modal modal-danger" role="dialog">
+		<div id="modalDeleteRow" class="modal modal-danger" role="dialog">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -280,8 +280,8 @@
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-outline pull-left"
-							data-dismiss="modal">Cancel</button>
-						<button type="button" id="deleteUser" class="btn btn-outline">Delete</button>
+							data-dismiss="modal" id="deleteTableRowCancel"  >Cancel</button>
+						<button type="button" id="deleteTableRow" class="btn btn-outline">Delete</button>
 					</div>
 				</div>
 			</div>
@@ -332,5 +332,7 @@
 		<script src="/admin/v1/spa/js/sammy.template.js"
 			type="text/javascript"></script>
 		<script src="/admin/v1/spa/js/route.js"></script>
+		<script src="../../../resources/dist/js/bootbox.js"></script>
+		
 </body>
 </html>

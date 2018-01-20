@@ -1,3 +1,95 @@
+$(document)
+		.on(
+				"click",
+				"[data-toggle=\"contactAdmin\"]",
+				function() {
+					bootbox
+							.dialog({
+								title : "Contact admin",
+								buttons : {
+									close : {
+										label : 'Close',
+										className : "btn btn-sm btn-danger",
+										callback : function() {
+										}
+									},
+									success : {
+										label : "Submit",
+										className : "btn btn-sm btn-primary",
+										callback : function() {
+											return $("#webteamContactForm")
+													.valid();
+										}
+									}
+								},
+								message : '<div class="row">  '
+										+ '<div class="col-md-12"> '
+										+ '<form id="webteamContactForm" class="form-horizontal" method="post"> '
+										+ '<p>Please get in touch if you wish to delete this content</p>'
+										+ '<div class="form-group"> '
+										+ '<div class="col-md-12"> '
+										+ '<textarea id="message" name="message" class="form-control input-md" rows="3" cols="50">This email is to notify you the creator is putting a request for the following item\n\n'
+										+ this.attributes
+												.getNamedItem("data-url").value
+										+ '\n\n'
+										+ '</textarea> '
+										+ '<span class="help-block">Feel free to change the message and add more information. Please ensure you always provide the link.</span> </div> '
+										+ '</div> '
+										+ '<div class="form-group requestTypeGroup"> '
+										+ '<label class="col-md-4 control-label" for="requestType">This request is for:</label> '
+										+ '<div class="col-md-4"> <div class="radio"> <label for="Edit"> '
+										+ '<input type="radio" name="requestType" id="requestType-0" value="Edit"> '
+										+ 'Editing </label> '
+										+ '</div><div class="radio"> <label for="Delete"> '
+										+ '<input type="radio" name="requestType" id="requestType-1" value="Delete"> Deletion</label> '
+										+ '</div> ' + '</div> </div>'
+										+ '</form> </div>  </div>'
+							});
+
+					$("#webteamContactForm")
+							.validate(
+									{
+										rules : {
+											requestType : {
+												required : true
+											}
+										},
+										messages : {
+											requestType : {
+												required : "Please specify what your request is for",
+											}
+										},
+										highlight : function(a) {
+											$(a).closest(".form-group")
+													.addClass("has-error");
+										},
+										unhighlight : function(a) {
+											$(a).closest(".form-group")
+													.removeClass("has-error");
+										},
+										errorElement : "span",
+										errorClass : "help-blocks",
+										errorPlacement : function(error,
+												element) {
+											if (element.is(":radio")) {
+												error
+														.appendTo(element
+																.parents('.requestTypeGroup'));
+											} else { // This is the default
+												// behavior
+												error.insertAfter(element);
+											}
+										},
+										submitHandler : function(form) {
+											// alert("Submitted!");
+											console.log("Submitted!");
+											var $form = $(form);
+											$form.submit();
+										}
+									});
+
+				});
+
 $(function() {
 	var csrfToken = $('#csrfToken').val();
 
@@ -231,6 +323,11 @@ $(function() {
 		tableUserr.ajax.reload();
 	});
 
+	/*
+	 * $('#tableUser').on('search.dt', function() { var value =
+	 * $('.dataTables_filter input').val(); });
+	 */
+
 	var idUserForDelete = null;
 	$("#tableUser").on(
 			"click",
@@ -254,10 +351,13 @@ $(function() {
 				});
 				idUserForDelete = $(".idDataHide" + idButtonDelete).attr("id");
 				idUserForDelete = idUserForDelete.replace("idData", "").trim();
-				_showModalDelete(userName);
+				$("#modalDeleteRow").modal('show');
+				$("#messageDelete").text(
+						"Are you sure delete this data username " + userName
+								+ " ?");
 			});
 
-	$("#deleteTableRow").on("click", function() {
+	$("#deleteUser").on("click", function() {
 		if (idUserForDelete !== null) {
 			deleteDataUser(idUserForDelete);
 		}

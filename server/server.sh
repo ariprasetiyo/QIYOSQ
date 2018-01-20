@@ -35,6 +35,7 @@ do_start_clean_package(){
 
 case "$1" in
 	clean)
+		do_stop
 		do_start_clean_package
 		;;
 	start)

@@ -1,100 +1,176 @@
 $(function() {
 	var csrfToken = $('#csrfToken').val();
+	_screenTabSize();
 
-	$(".role-select2-multiple").select2({
-		width : 75 + "%",
-		maximumSelectionLength : 3
-	});
-
-	// http://www.texotela.co.uk/code/jquery/numeric/
-	$("#TextNoHp").numeric();
-	$("#adduser").validate({
+	$("#addMenuPost").validate({
 		rules : {
-			TextOldPassword : {
-				minlength : 8
-			},
-			TextNewPassword : {
-				minlength : 8
-			},
-			TextVerifyPassword : {
-				minlength : 8,
-				equalTo : "#TextNewPassword"
-			},
-			TextEmail : {
-				required : true,
-				email : true
-			},
-			TextUsername : {
+			nameOfMenu : {
+				minlength : 3,
 				required : true
 			},
-			TextName : {
-				required : true
-			},
-			TextNoHp : {
-				required : true,
-				minlength : 10,
-				maxlength : 13
-			},
-			SelectRole : {
+			urlInput : {
+				minlength : 3,
 				required : true
 			}
+		},
+		messages : {
+			nameOfMenu : {
+				required : "Required"
+			},
+			nameOfMenu : {
+				urlInput : "Required"
+			}
+		},
+		highlight : function(a) {
+			$(a).closest(".form-group").addClass("has-error");
+		},
+		unhighlight : function(a) {
+			$(a).closest(".form-group").removeClass("has-error");
+		},
+		errorElement : "span",
+		errorClass : "help-blocks",
+		errorPlacement : function(error, element) {
+			if (element.is(":radio")) {
+				error.appendTo(element.parents('.requestTypeGroup'));
+			} else { // This is the default
+				// behavior
+				error.insertAfter(element);
+			}
+		},
+		submitHandler : function(form) {
+			buttonSubmitSaveEdit();
 		}
 	});
 
-	// edit user button
-	$("#editUser").on('click', function() {
-		var id = $("#idUserNya").val();
-		var url = '/admin/v1/api/user/editUser';
-		saveEditUser(id, url);
+	var isTabMenu = false;
+	var tableMenu = $('#tableMenu').DataTable({
+		"sDom" : '<"top"fl>rt<"bottom"p><"clear">',
+		serverSide : true,
+		ordering : false,
+		searching : true,
+		ajax : function(data, callback, settings) {
+			if (isTabMenu) {
+				listDataTableMenu(data, callback, settings);
+			}
+		},
+		scrollY : _getScreenDataTableTab(),
+		scroller : {
+			loadingIndicator : true
+		},
+		pageLength : 25
 	});
 
-	// save user button
-	$("#saveModalAddMenu").on('click', function() {
-		var url = '/admin/v1/api/user/saveUser';
-		saveEditUser(null, url);
+	$("#menuTab").on('click', function() {
+		isTabMenu = true;
+		tableMenu.ajax.reload();
 	});
 
-	function jsonRequestDataEditSaveUser(id) {
-		var textUsername, textName, textEmail, textNoHp, selectRole, checkBoxIsActive, textOldPassword, textNewPassword, idUSerNya;
-		textUsername = $("#TextUsername").val();
-		textName = $("#TextName").val();
-		textEmail = $("#TextEmail").val();
-		textNoHp = $("#TextNoHp").val();
-		selectRole = $("#SelectRole").select2('data');
-		var textSelectRole = $("#SelectRole").text();
-		textNewPassword = $("#TextNewPassword").val();
-		textOldPassword = $("#TextOldPassword").val();
-		checkBoxIsActive = $("#CheckBoxIsActive").is(':checked');
+	// Button Close
+	$('.buttonClose').on('click', function() {
+		resetFormInputData();
+	});
+
+	// Button edit
+	$('#tableMenu').on('click', ".editButton", function() {
+		resetFormInputData();
+		getDataOnTable(this);
+		$(".modal-title").text("Edit menu");
+	});
+	
+	// Button delete
+	var idDeleteMenu = null;
+	$('#tableMenu').on('click', ".deleteButton", function() {
+		var idDeleteButton = $(this).attr('id');
+		idDeleteMenu = idDeleteButton.replace("deleteRow", "");
+		_showModalDelete("");
+	});
+	
+	//Button delete after show modal
+	$("#deleteTableRow").on("click", function() {
+		if (idDeleteMenu !== null) {
+			deleteDataRow(idDeleteMenu, "#tableMenu");
+		}
+		idDeleteMenu = null;
+	});
+	
+	function getDataOnTable(varThis) {
+		var idEditButton = $(varThis).attr('id');
+		var id = idEditButton.replace("editRow", "");
+		idMenu = id;
+		var textMenuName, textUrl, CheckBoxIsActive;
+		// find the row
+		var $row = $(varThis).closest("tr");
+		var $tds = $row.find("td");
+		var loopColumn = 1;
+		// loop the column of per row
+		$.each($tds, function() {
+
+			if (loopColumn === 4) {
+				$("#nameOfMenuInput").val($(this).text());
+			} else if (loopColumn === 5) {
+				$("#urlInput").val($(this).text());
+			}
+			loopColumn += 1;
+		});
+
+		var isActive = $("#disabled" + id).is(':checked');
+		$("#isActiveInput").prop("checked", isActive);
+
+		enableFormModalInput(id);
+	}
+
+	function enableFormModalInput(id) {
+		$('#addNewMenuModal').modal('show');
+	}
+
+	function resetFormInputData() {
+		$("#urlInput").val("");
+		$("#nameOfMenuInput").val("");
+		$("#isActiveInput").prop("checked", false);
+		$("#infoRestMessage").attr('class', '').text("");
+		idMenu = null;
+		$(".modal-title").text("Add new menu");
+	}
+
+	var idMenu = null;
+	function buttonSubmitSaveEdit() {
+		var url = null;
+		if (!!idMenu) {
+			url = '/admin/v1/api/menu/editMenu';
+		} else {
+			url = '/admin/v1/api/menu/saveMenu';
+		}
+		saveEditMenu(idMenu, url);
+	}
+
+	function jsonRequestDataEditSaver(id) {
+		var nameOfMenu, urlInput, isActive;
+		nameOfMenu = $("#nameOfMenuInput").val();
+		urlInput = $("#urlInput").val();
+		isActive = $("#isActiveInput").is(':checked');
+		if(isActive == true){
+			isActive = false;
+		}else{
+			isActive = true
+		}
 
 		var jsonRequest = {};
 		var jsonData = {};
-		var jsonObj = [];
-		for (var a = 0; a < selectRole.length; a++) {
-			item = {}
-			item["id"] = selectRole[a].id;
-			item["roleName"] = selectRole[a].text;
-			jsonObj.push(item);
 
-		}
-		jsonData["username"] = textUsername;
-		jsonData["name"] = textName;
-		jsonData["email"] = textEmail;
-		jsonData["noHp"] = textNoHp;
-		jsonData["roles"] = jsonObj;
-		jsonData["isActive"] = checkBoxIsActive;
-		jsonData["oldPassword"] = textOldPassword;
-		jsonData["password"] = textNewPassword;
 		jsonData["id"] = id;
+		jsonData["menusName"] = nameOfMenu;
+		jsonData["url"] = urlInput;
+		jsonData["disabled"] = isActive;
 		jsonRequest["requestData"] = jsonData;
 		return JSON.stringify(jsonRequest);
 	}
 
-	function saveEditUser(id, url, message) {
+	function saveEditMenu(id, url) {
 		$.ajax({
 			type : 'POST',
 			url : url,
 			contentType : 'application/json',
-			data : jsonRequestDataEditSaveUser(id),
+			data : jsonRequestDataEditSaver(id),
 			headers : {
 				'X-XSRF-TOKEN' : csrfToken
 			},/*
@@ -104,15 +180,15 @@ $(function() {
 				 */
 			datatype : 'json',
 			success : function(data, textStatus, jqXHR) {
-				removeModalInputUser();
 				var message = data.message;
-				var messageInfo = data.statusType;
-				if (message != undefined) {
-					messageInfo += " " + message;
+
+				if (data.statusType != "SAVE_SUCCEED") {
+					$("#infoRestMessage").attr('class', 'warning-message');
+				} else {
+					$("#infoRestMessage").attr('class', 'success-message');
 				}
-				$("#infoSaveUser").text(messageInfo);
-				$("#infoSaveUser").attr('class', 'success-message');
-				$('#tableUser').DataTable().ajax.reload();
+				$("#infoRestMessage").text(message);
+				tableMenu.ajax.reload();
 			},
 			complete : function() {
 			},
@@ -129,19 +205,20 @@ $(function() {
 					}
 					errorMessage += ", ";
 				}
-				$("#infoSaveUser").attr('class', 'warning-message')
-				$("#infoSaveUser").text(errorMessage);
+				$("#infoRestMessage").attr('class', 'warning-message')
+				$("#infoRestMessage").text(errorMessage);
 			}
 		});
+		idMenu = null;
 	}
 
-	function listDataTable(data, callback, settings) {
+	function listDataTableMenu(data, callback, settings) {
 		$
 				.ajax({
 					async : true,
 					type : 'POST',
 					contentType : 'application/json',
-					url : '/admin/v1/api/user/list',
+					url : '/admin/v1/api/menu/list',
 					headers : {
 						'X-XSRF-TOKEN' : csrfToken
 					},
@@ -159,18 +236,18 @@ $(function() {
 						var idUser = null;
 
 						function buttonAction(i, idUser) {
-							return '<input type = "hidden" name = "${_csrf.parameterName}" value = "${_csrf.token}" />'
+							return '<div class="center" style="margin-left:0%;"><input type = "hidden" name = "${_csrf.parameterName}" value = "${_csrf.token}" />'
 									+ '<input type = "hidden" id = "idData'
 									+ idUser
 									+ '" class="idDataHide'
 									+ i
 									+ '" /> '
-									+ '<button type = "submit" id = "editAuth'
-									+ i
+									+ '<button type = "submit" id = "editRow'
+									+ idUser
 									+ '" class = "btn btn-primary editButton" > Edit </button> '
-									+ '<button type = "submit" id = "deleteAuth'
-									+ i
-									+ '" class = "btn btn-primary deleteButton" > Delete </button>';
+									+ '<button type = "submit" id = "deleteRow'
+									+ idUser
+									+ '" class = "btn btn-danger deleteButton" > Delete </button></div>';
 						}
 
 						for (var i = 0, ien = dataResponse.responseData.data.length; i < ien; i++) {
@@ -178,15 +255,14 @@ $(function() {
 							out
 									.push([
 											_getNumberOfRow(data.start, i),
-											dataResponse.responseData.data[i].id,
 											dataResponse.responseData.data[i].createdTime,
 											dataResponse.responseData.data[i].modifiedTime,
-											dataResponse.responseData.data[i].username,
-											dataResponse.responseData.data[i].name,
-											dataResponse.responseData.data[i].email,
-											dataResponse.responseData.data[i].noHp,
-											rolesName(dataResponse.responseData.data[i].roles),
-											dataResponse.responseData.data[i].isActive,
+											dataResponse.responseData.data[i].menusName,
+											dataResponse.responseData.data[i].url,
+											_checkBoxCustom(
+													idUser,
+													dataResponse.responseData.data[i].disabled,
+													"disabled"),
 											buttonAction(i, idUser) ]);
 						}
 
@@ -207,232 +283,35 @@ $(function() {
 				});
 	}
 
-	// dataTables ajax logic
-	var tableUserr = $('#tableUser').DataTable({
-		/*
-		 * l - Length changing f - Filtering input t - The table! i -
-		 * Information p - Pagination r - pRocessing < and > - div elements
-		 * <"class" and > - div with a class Examples: <"wrapper"flipt>, <lf<t>ip>
-		 */
-		"sDom" : '<"top"fl>rt<"bottom"p><"clear">',
-		serverSide : true,
-		ordering : false,
-		searching : true,
-		ajax : function(data, callback, settings) {
-			listDataTable(data, callback, settings);
-		},
-		scrollY : _getScreenDataTable(),
-		scroller : {
-			loadingIndicator : true
-		}
-	});
-
-	$("#submitAction").on('click', function() {
-		tableUserr.ajax.reload();
-	});
-
-	/*
-	 * $('#tableUser').on('search.dt', function() { var value =
-	 * $('.dataTables_filter input').val(); });
-	 */
-
-	var idUserForDelete = null;
-	$("#tableUser").on(
-			"click",
-			".deleteButton",
-			function() {
-				// get value table with spesific tr and td
-				// var val1 =$(t).find('tr:eq(2) td:eq(4)').text();
-				var idButtonDelete = $(this).attr("id").replace("deleteAuth",
-						"").trim();
-				var userName;
-				// loop the column of per row
-				var $row = $(this).closest("tr");
-				var $tds = $row.find("td");
-				var loopColumn = 1;
-				$.each($tds, function() {
-					if (loopColumn === 6) {
-						userName = $(this).text();
-						return false;
-					}
-					loopColumn += 1;
-				});
-				idUserForDelete = $(".idDataHide" + idButtonDelete).attr("id");
-				idUserForDelete = idUserForDelete.replace("idData", "").trim();
-				$("#modalDeleteUser").modal('show');
-				$("#messageDelete").text(
-						"Are you sure delete this data username " + userName
-								+ " ?");
-			});
-
-	$("#deleteUser").on("click", function() {
-		if (idUserForDelete !== null) {
-			deleteDataUser(idUserForDelete);
-		}
-		idUserForDelete = null;
-	});
-
-	function rolesName(roles) {
-		var rolesNameTmp = "";
-		for (a = 0; a < roles.length; a++) {
-			rolesNameTmp += roles[a].roleName;
-			if (a == (roles.length - 1)) {
-				continue;
-			}
-			rolesNameTmp += ", ";
-		}
-		return rolesNameTmp;
-	}
-
-	function deleteDataUser(idMenu) {
+	function deleteDataRow(id, tableReload) {
 		$.ajax({
 			type : "DELETE",
 			contentType : "application/json",
-			url : "/admin/v1/api/user/delete",
+			url : "/admin/v1/api/menu/deleteMenu",
 			headers : {
 				'X-XSRF-TOKEN' : csrfToken
 			},
-			data : _jsonRequestDeleteData(idMenu),
+			data : _jsonRequestDeleteData(id),
 			dataType : "json",
 			success : function(data, textStatus, jqXHR) {
-				// alert(data.id);
-				// $('rowId'+data.id).remove();
-				var tr = $('#rowId' + data.id).closest('tr');
-				tr.css("background-color", "#00acd6");
-				tr.fadeOut(400, function() {
-					tr.remove();
-				});
-				$("#modalDeleteUser").modal('hide');
-				$('#tableUser').DataTable().ajax.reload();
-				return false;
+				if (data.statusType == "DELETE_SUCCEED") {
+					var tr = $('#rowId' + data.id).closest('tr');
+					tr.css("background-color", "#00acd6");
+					tr.fadeOut(400, function() {
+						tr.remove();
+					});
+					$(tableReload).DataTable().ajax.reload();
+					_hideModalDelete();
+					return true;
+				}else{
+					_replaceModalDelete(null);
+					return false;
+				}
+			},
+			error : function(jqXHR, textStatus, errorThrown) {
+				_replaceModalDelete("Delete had been problem");
 			}
 		});
 	}
 
-	/*
-	 * Handle by ftl
-	 */
-	// getRoleList();
-	/*
-	 * function getRoleList() { $.get("/admin/v1/api/role/list", function(data) {
-	 * for (var a = 0; a < data.length; a++) { $("#SelectRole").append( "<option
-	 * value=" + data[a].id + ">" + data[a].roleName + "</option>"); } }); }
-	 */
-
-	// Add new user
-	$("#addNewUser").on('click', function() {
-		removePassword();
-		$("#formInputUser").text("Add new user");
-		$("#oldPassword").attr("hidden", "hidden");
-		$("#TextEmail").removeAttr("disabled");
-		$("#TextUsername").removeAttr("disabled");
-		$("#editUser").attr("disabled", "disabled");
-		$("#saveModalAddMenu").removeAttr("disabled");
-	});
-
-	// Get data from table
-	// Edit data
-	$("#tableUser").on('click', '.editButton', function() {
-		removePassword();
-		$("#formInputUser").text("Edit user");
-		$("#oldPassword").removeAttr("hidden");
-		$("#TextEmail").attr("disabled", "disabled");
-		$("#TextUsername").attr("disabled", "disabled");
-		$("#editUser").removeAttr("disabled");
-		$("#saveModalAddMenu").attr("disabled", "disabled");
-		getDataOnTable(this);
-	});
-
-	$(".buttonClose").on("click", function() {
-		$("#infoSaveUser").attr('class', '').text("");
-		removeModalInputUser();
-	});
-
-	function removePassword() {
-		$("#TextVerifyPassword").val("");
-		$("#TextOldPassword").val("");
-		$("#TextNewPassword").val("");
-	}
-
-	function removeModalInputUser() {
-		removePassword();
-		$("#TextUsername").val("");
-		$("#TextName").val("");
-		$("#TextEmail").val("");
-		$("#TextNoHp").val("");
-		$("#SelectRole").val("");
-		$("#CheckBoxIsActive").prop("checked", false);
-		var arrayTempVal = [];
-		$("#SelectRole").val(arrayTempVal).trigger('change');
-	}
-
-	function getDataOnTable(varThis) {
-		var idEditButton = $(varThis).attr('id');
-		// disable button edit
-		// $('#' + idEditButton).attr("disabled", true);
-		var id = idEditButton.replace("editAuth", "");
-		var textUserName, textName, textEmail, textNoHp, textSelectRole, textPassword, CheckBoxIsActive;
-		// find the row
-		var $row = $(varThis).closest("tr");
-		var $tds = $row.find("td");
-		var loopColumn = 1;
-
-		// loop the column of per row
-		$.each($tds, function() {
-			if (loopColumn === 2) {
-				$("#idUserNya").val($(this).text());
-			}
-			if (loopColumn === 5) {
-				$("#TextUsername").val($(this).text());
-			} else if (loopColumn === 6) {
-				$("#TextName").val($(this).text());
-			} else if (loopColumn === 7) {
-				$("#TextEmail").val($(this).text());
-			} else if (loopColumn === 8) {
-				$("#TextNoHp").val($(this).text());
-			} else if (loopColumn === 9) {
-				// begin1 : get authorization and set to select2
-
-				// split data from table, example admin, approval, public
-				var test = $(this).text();
-				var splitData = test.split(",");
-
-				var mapSelect2 = {};
-				for (var a = 0; a < splitData.length; a++) {
-					mapSelect2[splitData[a]] = splitData[a];
-				}
-
-				var arrayTempVal = [];
-				$('select#SelectRole').find('option').each(function() {
-					var intNumberSelect2 = parseInt($(this).val()) - 1;
-					var key;
-					for (key in mapSelect2) {
-						if ($(this).text().trim() === key.trim()) {
-							/*
-							 * get number for to set select2 select2 just
-							 * recieve val,not text
-							 */
-							arrayTempVal.push($(this).val());
-						}
-					}
-				});
-				$("#SelectRole").val(arrayTempVal).trigger('change');
-				// end1
-			} else if (loopColumn === 10) {
-				if ($(this).text().trim() === 'true') {
-					$("#CheckBoxIsActive").prop("checked", true);
-				} else {
-					$("#CheckBoxIsActive").prop('checked', false);
-				}
-			}
-			// Password not show
-			$("#TextNewPassword").val("");
-			loopColumn += 1;
-		});
-		enableForm(id);
-	}
-
-	function enableForm(id) {
-		$('#myModal').modal('show');
-	}
 });
