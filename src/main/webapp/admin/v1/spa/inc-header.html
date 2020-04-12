@@ -219,11 +219,11 @@
                         <!-- User image -->
                         <li class="user-header">
                             <img src="../../../resources/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
-
-                            <p>
-                               ${userInfo.name}, Java Developer
-                                <small> ${userInfo.createdtime}</small>
-                            </p>
+                            <p>${userInfo.name} </p>
+                            <p>${userInfo.email}</p>
+                            <p><#list userInfo.roles as roles>
+                                ${roles.roleName}
+                            </#list></p>
                         </li>
                         <!-- Menu Body -->
                         <li class="user-body">

@@ -12,6 +12,12 @@ TAB
 	color: #444;
 }
 
+.navbar-nav>.user-menu>.dropdown-menu>li.user-header {
+    height: auto;
+    padding: 10px;
+    text-align: center;
+}
+
 /* .nav-tabs-custom {
 	margin-bottom: 0px;
 	background: #fff;

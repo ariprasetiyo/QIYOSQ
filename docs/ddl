@@ -1,0 +1,3 @@
+#Create table sys_button_action
+create table sys_button_action (id integer, button_name varchar(100), version varchar(5), is_enable boolean, modification_time timestamp on update now() )
+alter table sys_button_action add primary key (button_name)
