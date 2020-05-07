@@ -5,15 +5,13 @@
  */
 package arprast.qiyosq.dao;
 
-import java.util.List;
+import arprast.qiyosq.dto.RequestData;
+import arprast.qiyosq.model.AuthorizationModel;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
-import arprast.qiyosq.dto.RequestData;
-import arprast.qiyosq.model.AuthorizationModel;
+import java.util.List;
 
 /**
  *
@@ -37,5 +35,28 @@ public class AuthorizationDaoImpl {
 				.setParameter("nsysRolesId", requestData.getId()).setFirstResult(requestData.getOffset())
 				.setMaxResults(requestData.getLimit()).getResultList();
 	}
+
+	public List<String> buttonAcionACL(final String username, String menuName, String roleName) {
+		return em
+				.createNativeQuery(queryButtonActionACL())
+				.setParameter("nusername", username)
+				.setParameter("nmenusName", menuName)
+				.setParameter("nrolesName", roleName)
+				.getResultList();
+
+	}
+
+	private static final String queryButtonActionACL(){
+		return new StringBuilder()
+				.append("select srba.button_name from sys_menu sm ")
+				.append("inner join sys_authorization sa on sm.id = sa.sys_menu_id ")
+				.append("inner join sys_roles sr on sa.sys_roles_id  = sr.id ")
+				.append("inner join sys_roles_button_action srba on srba.roles_id = sr.id ")
+				.append("inner join sys_user_roles  sur on sr.id = sur.sys_roles_id ")
+				.append("inner join sys_user su on su.id = sur.sys_user_id ")
+				.append("where su.username =:nusername and  menus_name =:nmenusName and role_name in ( :nrolesName)")
+				.toString();
+	}
+
 
 }

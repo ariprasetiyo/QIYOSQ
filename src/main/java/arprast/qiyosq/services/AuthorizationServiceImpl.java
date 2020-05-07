@@ -148,7 +148,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 
 			parentSign.delete(0, parentSign.length());
 			for (int a = 0; a < levelMenu; a++) {
-				parentSign.append("--- ");
+				parentSign.append("&nbsp&nbsp&nbsp");
 			}
 
 			MenusModel sysMenu = new MenusModel();
@@ -195,5 +195,10 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 	@Override
 	public long countAuthorization(long roleId) {
 		return authorizationDao.countByRole(roleId);
+	}
+
+	@Override
+	public List<String> getButtonActionAcl(final String username, final String menuName, final String roleName) {
+		return authorizationDaoImpl.buttonAcionACL(username, menuName, roleName);
 	}
 }

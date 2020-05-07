@@ -30,4 +30,6 @@ public interface AuthorizationService {
 	void deleteAuthorization(Long id);
 	
 	long countAuthorization(long roleId);
+
+	List<String> getButtonActionAcl(final String username, final String menuName, final String roleName);
 }

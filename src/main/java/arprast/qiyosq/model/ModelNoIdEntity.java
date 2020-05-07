@@ -1,4 +1,4 @@
-package arprast.qiyosq.model.sys;
+package arprast.qiyosq.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 

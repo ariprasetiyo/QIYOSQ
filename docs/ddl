@@ -1,3 +1,32 @@
-#Create table sys_button_action
-create table sys_button_action (id integer, button_name varchar(100), version varchar(5), is_enable boolean, modification_time timestamp on update now() )
-alter table sys_button_action add primary key (button_name)
+#insert data table sys_button_action
+insert into sys_button_action values
+('edit', 'system', now(), true, 'system' , now(), '1.0', 'global edit button action'),
+('save', 'system', now(), true, 'system' , now(),'1.0', 'global save button action'),
+('delete', 'system', now(), true, 'system' ,now(), '1.0', 'global delete button action'),
+('view', 'system', now(), true, 'system' , now(),'1.0', 'global view button action')
+
+Default create table
+CREATE TABLE `sys_roles_control_list` (
+`created_by` varchar(50) DEFAULT NULL,
+  `created_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `disabled` bit(1) NOT NULL,
+  `modified_by` varchar(50) DEFAULT NULL,
+  `modified_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `version` varchar(5) DEFAULT NULL,
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+one to manny ( sys_roles one to many sys_button_action )
+CREATE TABLE `sys_roles_button_action` (
+`roles_id` bigint(20) NOT NULL,
+`menu_name` varchar(20) NOT NULL,
+`created_by` varchar(50) DEFAULT NULL,
+`created_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+`disabled` bit(1) NOT NULL,
+`modified_by` varchar(50) DEFAULT NULL,
+`modified_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`version` varchar(5) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE INDEX sys_roles_button_action_roles_id ON sys_roles_button_action (roles_id);
+CREATE INDEX sys_roles_button_action_menu_name ON sys_roles_button_action (menu_name);

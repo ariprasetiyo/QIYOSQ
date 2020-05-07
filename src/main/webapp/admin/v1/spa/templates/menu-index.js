@@ -236,18 +236,26 @@ $(function() {
 						var idUser = null;
 
 						function buttonAction(i, idUser) {
-							return '<div class="center" style="margin-left:0%;"><input type = "hidden" name = "${_csrf.parameterName}" value = "${_csrf.token}" />'
+							var buttonEditMenu = '<div class="center" style="margin-left:0%;"><input type = "hidden" name = "${_csrf.parameterName}" value = "${_csrf.token}" />'
 									+ '<input type = "hidden" id = "idData'
 									+ idUser
 									+ '" class="idDataHide'
 									+ i
-									+ '" /> '
-									+ '<button type = "submit" id = "editRow'
-									+ idUser
-									+ '" class = "btn btn-primary editButton" > Edit </button> '
-									+ '<button type = "submit" id = "deleteRow'
-									+ idUser
-									+ '" class = "btn btn-danger deleteButton" > Delete </button></div>';
+									+ '" /> ';
+
+								     if(editButtonAction == editButtonActionStatic){
+								     buttonEditMenu += '<button type = "submit" id = "editRow'
+                                     	+ idUser
+                                     	+ '" class = "btn btn-primary editButton" > Edit </button> ';
+								     }
+
+								     if(editButtonAction == editButtonActionStatic){
+								      	buttonEditMenu += '<button type = "submit" id = "deleteRow'
+                                      	+ idUser
+                                      	+ '" class = "btn btn-danger deleteButton" > Delete </button></div>';
+								     }
+                        return buttonEditMenu;
+
 						}
 
 						for (var i = 0, ien = dataResponse.responseData.data.length; i < ien; i++) {

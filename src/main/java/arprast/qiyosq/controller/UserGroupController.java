@@ -5,6 +5,8 @@
  */
 package arprast.qiyosq.controller;
 
+import arprast.qiyosq.ref.StringConstan;
+import arprast.qiyosq.services.AuthorizationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,9 +22,13 @@ public class UserGroupController {
 	@Autowired
 	RolesService rolesService;
 
+	@Autowired
+	AuthorizationService authorizationService;
+
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	public String index(Model model) {
 		model.addAttribute("selectroles", rolesService.viewSysRoleAll());
+		model.addAttribute(StringConstan.BUTTON_ACTION_ACL, authorizationService.getButtonActionAcl("ari", "Add Menu", "admin"));
 		return "/admin/v1/spa/templates/user-group-index";
 	}
 }

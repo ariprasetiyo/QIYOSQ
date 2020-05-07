@@ -157,15 +157,18 @@ $(function() {
 						var idUser = null;
 
 						function buttonAction(i, idUser) {
-							return '<input type = "hidden" name = "${_csrf.parameterName}" value = "${_csrf.token}" />'
-									+ '<input type = "hidden" id = "idData'
-									+ idUser
-									+ '" class="idDataHide'
-									+ i
-									+ '" /> '
-									+ '<button type = "submit" id = "editAuth'
-									+ idUser
-									+ '" class = "btn btn-primary editButton" > Edit </button> ';
+	                        if(editButtonAction == editButtonActionStatic){
+                                return '<input type = "hidden" name = "${_csrf.parameterName}" value = "${_csrf.token}" />'
+                                                                    + '<input type = "hidden" id = "idData'
+                                                                    + idUser
+                                                                    + '" class="idDataHide'
+                                                                    + i
+                                                                    + '" /> '
+                                                                    + '<button type = "submit" id = "editAuth'
+                                                                    + idUser
+                                                                    + '" class = "btn btn-primary editButton" > Edit </button> ';
+	                        }
+	                        return '';
 						}
 
 						for (var i = 0, ien = dataResponse.responseData.data.length; i < ien; i++) {
