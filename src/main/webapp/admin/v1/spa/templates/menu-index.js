@@ -9,8 +9,7 @@ $(function() {
 				required : true
 			},
 			urlInput : {
-				minlength : 3,
-				required : true
+
 			}
 		},
 		messages : {
@@ -18,7 +17,6 @@ $(function() {
 				required : "Required"
 			},
 			nameOfMenu : {
-				urlInput : "Required"
 			}
 		},
 		highlight : function(a) {
