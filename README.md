@@ -163,5 +163,5 @@ git rm --cached FILENAME. Example git rm --cached server.sh
  \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
   '  |____| .__|_| |_|_| |_\__, | / / / /
  =========|_|==============|___/=/_/_/_/
- :: Spring Boot ::        (v1.5.7.RELEASE)
+ :: Spring Boot ::        (v2.2.6.RELEASE)
 ```
