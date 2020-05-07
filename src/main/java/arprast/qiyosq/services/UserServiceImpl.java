@@ -124,7 +124,8 @@ public class UserServiceImpl implements UserService {
 	@Transactional(rollbackFor = { Exception.class, Throwable.class, IllegalArgumentException.class }, readOnly = false)
 	public boolean deleteUser(long idUser) {
 		TransactionStatus TransactionStatus = TransactionAspectSupport.currentTransactionStatus();
-		userDao.delete(idUser);
+		userDao.deleteUserRoles(idUser);
+		userDao.deleteUser(idUser);
 		return TransactionStatus.isCompleted();
 	}
 	

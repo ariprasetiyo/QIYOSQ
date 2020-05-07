@@ -59,7 +59,7 @@ public interface UserDao extends JpaRepository<UserModel, Long> {
 	public String findUserPassword(@Param("nId") long id);
 
 	@Modifying
-	@Query("delete from UserModel where id =:nId ")
+	@Query(value = "delete from sys_user where id =:nId ", nativeQuery = true)
 	public int deleteUser(@Param("nId") long id);
 	
 	/**
@@ -72,8 +72,8 @@ public interface UserDao extends JpaRepository<UserModel, Long> {
 	public long countUserByRoleId(@Param("idRole") Long idRole);
 
 	@Modifying
-	@Query(value = "delete from UserModel where id =:idRole  ")
-	public void delete(@Param("idRole") long idRole);
+	@Query(value = "delete from sys_user_roles where sys_user_id = :idRole", nativeQuery = true)
+	public void deleteUserRoles(@Param("idRole") long idRole);
 
 	/*
 	 * @Autowired
