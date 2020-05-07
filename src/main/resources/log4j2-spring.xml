@@ -30,15 +30,15 @@
         </File>-->
     </Appenders>
     <Loggers>
-        <Logger name="org.springframework.web" level="info" additivity="false">
-            <AppenderRef ref="SpringBoot-File-Appender"/>
-            <AppenderRef ref="Console-Appender"/>
-        </Logger>
-        <Logger name="guru.springframework.blog.controllers" level="info" additivity="false">
-            <AppenderRef ref="App-File-Appender"/>
+<!--        <Logger name="org.springframework.web" level="info" additivity="false">-->
+<!--&lt;!&ndash;            <AppenderRef ref="SpringBoot-File-Appender"/>&ndash;&gt;-->
+<!--            <AppenderRef ref="Console-Appender"/>-->
+<!--        </Logger>-->
+        <Logger name="arprast.qiyosq" level="debug" additivity="false">
+<!--            <AppenderRef ref="App-File-Appender"/>-->
             <AppenderRef ref="Console-Appender"/>
          </Logger>
-        <Root>
+        <Root level="info">
             <AppenderRef ref="Console-Appender"/>
         </Root>
     </Loggers>
