@@ -2,7 +2,6 @@ package arprast.qiyosq.server;
 
 import javax.persistence.EntityManagerFactory;
 
-import org.apache.tomcat.jdbc.pool.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;

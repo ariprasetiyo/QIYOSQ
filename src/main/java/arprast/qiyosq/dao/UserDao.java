@@ -70,7 +70,11 @@ public interface UserDao extends JpaRepository<UserModel, Long> {
 	@Query(value = "select count(UM.id) from UserModel UM "
 			+ "LEFT JOIN UM.userRolesModel URM where URM.sysRoles.id = :idRole  ")
 	public long countUserByRoleId(@Param("idRole") Long idRole);
-	
+
+	@Modifying
+	@Query(value = "delete from UserModel where id =:idRole  ")
+	public void delete(@Param("idRole") long idRole);
+
 	/*
 	 * @Autowired
 	 * 

@@ -2,7 +2,8 @@ package arprast.qiyosq;
 
 import java.util.Collection;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.ImportResource;
@@ -23,7 +24,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @ImportResource("classpath:app-config.xml")
 public class SpringApplicationMain {
 
-	static Logger log = Logger.getLogger(SpringApplicationMain.class);
+	static Logger log = LoggerFactory.getLogger(SpringApplicationMain.class);
 
 	public static void main(String[] args) {
 
@@ -44,7 +45,7 @@ public class SpringApplicationMain {
 			Collection<?> auths = auth2.getAuthorities();
 
 			for (Object da : auths) {
-				log.debug(da);
+				log.debug("{}",da);
 			}
 
 			log.debug("name : " + auth2.getName());

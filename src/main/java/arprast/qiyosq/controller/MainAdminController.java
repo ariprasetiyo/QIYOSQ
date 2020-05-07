@@ -1,5 +1,7 @@
 package arprast.qiyosq.controller;
 
+import arprast.qiyosq.ref.StringConstan;
+import arprast.qiyosq.services.AuthorizationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -25,6 +27,7 @@ public class MainAdminController {
 
 		model.addAttribute("userInfo", userService.getUser());
 		model.addAttribute("selectroles", rolesService.viewSysRoleAll());
+
 		return "/admin/v1/spa/index";
 	}
 }

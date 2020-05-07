@@ -28,11 +28,11 @@ import arprast.qiyosq.model.MenusModel;
 @Repository
 public interface AuthorizationDao extends PagingAndSortingRepository<AuthorizationModel, Long> {
 	
-	@Query("from MenusModel where menusName like %:searchUserName% order by menusName asc")
-	public List<MenusModel> listOfMenus(String keySearch, Pageable pageable);
+//	@Query("from MenusModel where menusName like %:searchUserName% order by menusName asc")
+//	public List<MenusModel> listOfMenus(String keySearch, Pageable pageable);
 
-	@Query("select id from AuthorizationModel where sysRoles.roleName = :nRoleName order by id desc ")
-	public  long getIdByNameAuthorization(@Param("nRoleName") String nameAuthority);
+//	@Query("select id from AuthorizationModel where sysRoles.roleName = :nRoleName order by id desc ")
+//	public  long getIdByNameAuthorization(@Param("nRoleName") String nameAuthority);
 
 	// @Query("select a.MenuModel.url as patternDispatcherUrl, b.roleName as
 	// roleName from AuthorizationModel a left join a.sysRoles b ")
@@ -72,6 +72,7 @@ public interface AuthorizationDao extends PagingAndSortingRepository<Authorizati
 	// Using @NamedNativeSQL and sqlResultsetMapping
 	// resultSetMapping = "SysAuthorization.listScreenMenu" in Model
 	// parentId by default setting must be set 0
+	@Query(nativeQuery = true)
 	public  List<ScreenMenuDto> listScreenMenu(@Param("nsysRolesId") List<Long> id,
 			@Param("nparentId") Long parentId);
 
@@ -88,4 +89,7 @@ public interface AuthorizationDao extends PagingAndSortingRepository<Authorizati
 	@Query(value = "select count(id) from AuthorizationModel where  sysRoles.id = :idRole ")
 	public long countByRole(@Param("idRole") Long idRole);
 
+	@Modifying
+	@Query(value = "delete from AuthorizationModel where id =:idRole")
+    void delete(@Param("idRole") Long id);
 }
