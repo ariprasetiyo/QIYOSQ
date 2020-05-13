@@ -9,8 +9,8 @@ $(document).ready(function() {
 	}
         //backgourd warna hitam opacity
 	jQuery('#resultLoading').css({
-		'width':'100%',
-		'height':'100%',
+		'width':'20%',
+		'height':'15%',
 		'position':'fixed',
 		'z-index':'10000000',
 		'top':'0',

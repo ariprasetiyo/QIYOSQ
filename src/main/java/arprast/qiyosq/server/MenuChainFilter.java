@@ -17,6 +17,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
+import arprast.qiyosq.services.AuthorizationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,12 +29,16 @@ import arprast.qiyosq.ref.ActionType;
 import arprast.qiyosq.services.MenuService;
 import arprast.qiyosq.util.LogUtil;
 import arprast.qiyosq.util.Util;
+import arprast.qiyosq.ref.StringConstan;
 
 public class MenuChainFilter implements Filter {
 
 	private static final Logger logger = LoggerFactory.getLogger(MenuChainFilter.class);
 	private static final StringBuilder authorityLogs = new StringBuilder();
 	private static final String PATH_URI = "/admin/v1/view/";
+
+	@Autowired
+    AuthorizationService authorizationService;
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
@@ -83,6 +88,9 @@ public class MenuChainFilter implements Filter {
 
 			String listMenu = menuService.getScreenMenu(listAuthorities);
 			servletRequest.setAttribute("scriptMenu", listMenu);
+            servletRequest.setAttribute(StringConstan.BUTTON_ACTION_ACL, authorizationService.getButtonActionAcl("ari", "Add Menu", "admin"));
+			servletRequest.setAttribute(StringConstan.USER_GROUP_ACL, "admin");
+
 			if (Util.isEnableLoggerAccessPage()) {
 				logAccessPage(servletRequest, auth, listAuthorities, httpServletRquest, logger);
 			}

@@ -1,3 +1,4 @@
+<#include "../../../inc-lib-button-action.html"/>
 <!-- Main row -->
 <div class="row">
 	<!-- Left col -->
@@ -10,10 +11,14 @@
 						<div class="col-sm-7" style="padding-right: 5%;">
 							<div class="input-group">
 								<select class="form-control" name="roles_id">
-									<option value="0">All</option>
-									<#list selectroles as a>
-									<option value="${a.id}">${a.roleName}</option>
-									</#list>
+									<#if viewButtonAction == viewButtonActionStatic >
+										<option value="0">All</option>
+										<#list selectroles as a>
+											<option value="${a.id}">${a.roleName}</option>
+										</#list>
+									<#else>
+										<option value="1" >${user_group}</option>
+									</#if>
 								</select>
 								<div class="input-group-btn">
 									<button type="submit" id="submitAction"
@@ -30,9 +35,11 @@
 									<i class="fa fa-bars"></i>
 								</button>
 								<ul class="dropdown-menu pull-right" role="menu">
+									<#if addButtonAction == addButtonActionStatic >
 									<li><a href="#" data-toggle="modal" data-target="#myModal"
-										class="buttonClose" id="addNewUser">Add new user</a></li>
+										   class="buttonClose" id="addNewUser">Add new user</a></li>
 									<li class="divider"></li>
+									</#if>
 									<li><a href="#">View calendar</a></li>
 								</ul>
 							</div>
@@ -93,7 +100,7 @@
 				<div class="modal-header">
 					<button type="button" class="close buttonClose"
 						data-dismiss="modal">&times;</button>
-					<h4 class="modal-title" id="formInputUser">Add new user</h4>
+					<h4 class="modal-title" id="formInputUser"> Add new user </h4>
 				</div>
 				<div class="modal-body" style="margin-bottom: 3%;">
 					<div class="form-group">
@@ -176,7 +183,7 @@
 								<input disabled class="col-sm-9" type="text" id="TextEmail"
 									name="TextEmail" placeholder="Email">
 							</div> -->
-							
+
 							<div class="form-group">
 								<label for="recipient-name" class="form-control-label">No Hp</label>
 								<input class="form-control" type="text" id="TextNoHp"
@@ -187,7 +194,7 @@
 									Hp</label> <input class="col-sm-9" type="text" id="TextNoHp"
 									name="TextNoHp" placeholder="No Hp">
 							</div> -->
-							
+
 							<!-- <div class="row margin-bottom" style="width: 100%"
 								id="select2RoleDiv">
 								<label class="control-label col-sm-3" style="padding-left: 1%">Role</label>

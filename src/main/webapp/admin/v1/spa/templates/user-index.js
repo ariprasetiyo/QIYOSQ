@@ -159,18 +159,23 @@ $(function() {
 						var idUser = null;
 
 						function buttonAction(i, idUser) {
-							return '<input type = "hidden" name = "${_csrf.parameterName}" value = "${_csrf.token}" />'
+							var buttonActionHtml = '<input type = "hidden" name = "${_csrf.parameterName}" value = "${_csrf.token}" />'
 									+ '<input type = "hidden" id = "idData'
 									+ idUser
 									+ '" class="idDataHide'
 									+ i
-									+ '" /> '
-									+ '<button type = "submit" id = "editAuth'
-									+ i
-									+ '" class = "btn btn-primary editButton" > Edit </button> '
-									+ '<button type = "submit" id = "deleteAuth'
-									+ i
-									+ '" class = "btn btn-danger deleteButton" > Delete </button>';
+									+ '" /> ';
+
+									if(editButtonAction == editButtonActionStatic){
+									    buttonActionHtml +=  '<button type = "submit" id = "editAuth' + i
+                                                        	+ '" class = "btn btn-primary editButton" > Edit </button> '
+									}
+
+									if (deleteButtonAction == deleteButtonActionStatic){
+									    buttonActionHtml += '<button type = "submit" id = "deleteAuth'+ i
+                                    				    + '" class = "btn btn-danger deleteButton" > Delete </button>';
+									}
+						return buttonActionHtml;
 						}
 
 						for (var i = 0, ien = dataResponse.responseData.data.length; i < ien; i++) {

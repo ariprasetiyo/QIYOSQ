@@ -1,3 +1,4 @@
+<#include "../../../inc-lib-button-action.html"/>
 <!-- Main row -->
 <div class="row">
 	<!-- Left col -->
@@ -10,9 +11,13 @@
 						<div class="col-sm-7" style="padding-right: 5%;">
 							<div class="input-group">
 								<select class="form-control" name="roles_id">
-									<#list selectroles as a>
-									<option value="${a.id}">${a.roleName}</option>
-									</#list>
+									<#if viewButtonAction == viewButtonActionStatic >
+										<#list selectroles as a>
+										<option value="${a.id}">${a.roleName}</option>
+										</#list>
+									<#else>
+										<option value="1">${user_group}</option>
+									</#if>
 								</select>
 								<div class="input-group-btn">
 									<button type="submit" id="submitAction"

@@ -28,7 +28,7 @@ public class InitDataTest {
 		System.out.println("InitDataTest =======================================================");
 	}
 
-	@Sql(scripts = "/DropTables.sql")
+//	@Sql(scripts = "/DropTables.sql")
 	@Test
 	public void dropTable() {
 		System.out.println("dropTable =======================================================");

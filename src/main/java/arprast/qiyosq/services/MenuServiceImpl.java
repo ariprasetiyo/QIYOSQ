@@ -28,7 +28,7 @@ public class MenuServiceImpl implements MenuService {
 	private static final Logger logger = LoggerFactory.getLogger(MenuServiceImpl.class);
 	
 	private static final String HTML_0 = "<li class=\"treeview\">\n<a href=\"";
-	private static final String HTML_1 = "\">\n<i class=\"fa fa-share\"></i> <span>";
+	private static final String HTML_1 = "\">\n<i></i> <span>";
 	private static final String HTML_2 = "</span>\n<span class=\"pull-right-container\">\n<i class=\"fa fa-angle-left pull-right\"></i>\n</span>\n</a>\n";
 	private static final String HTML_3 = "<ul class=\"treeview-menu\">\n";
 	private static final String HTML_4 = "</ul></li>\n";

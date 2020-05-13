@@ -25,7 +25,7 @@ INSERT INTO sys_menu (id, created_by, created_time, disabled, modified_by, modif
 (10, 'ari', '2017-02-07 17:00:00', 0, 'ari', '2017-02-07 17:00:00', '1.0', 'Calendar Setting', 'admin/v1/setting/calendar'),
 (11, 'NULL', '2017-04-18 17:00:00', 0, 'NULL', '2017-04-18 17:00:00', '1.0', 'Application Setting', NULL),
 (12, 'NULL', '2017-04-18 17:00:00', 0, 'NULL', '2017-11-26 12:36:07', '1.0', 'Add Menu', '../../../admin/v1/view/menu'),
-(13, 'NULL', '2017-04-18 17:00:00', 0, 'NULL', '2017-11-26 12:36:21', '1.0', 'User Group', '../../../admin/v1/view/usergroup'),
+(13, 'NULL', '2017-04-18 17:00:00', 0, 'NULL', '2017-11-26 12:36:21', '1.0', 'User Group', '../../../admin/v1/view/main#/usergroup/'),
 (14, 'NULL', '2017-04-18 17:00:00', 0, 'NULL', '2017-11-26 12:36:35', '1.0', 'Basic Web', '../../../admin/v1/view/basicweb'),
 (15, NULL, '2017-11-04 05:07:08', 1, NULL, '2017-11-26 12:36:53', '1.0', 'basic SPA', '../../../admin/v1/view/main#/sample-spa/');
 

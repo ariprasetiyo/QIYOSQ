@@ -107,8 +107,8 @@ function _checkHighlightTr(thisVar) {
 }
 
 function _startLoading() {
-	ajaxindicatorstart('Please wait..');
-	window.setTimeout(ajaxindicatorstart('Please wait..'), 500);
+//	ajaxindicatorstart('Please wait..');
+//	window.setTimeout(ajaxindicatorstart('Please wait..'), 500);
 }
 
 function _finishLoading() {
