@@ -78,7 +78,7 @@ public class ConfigurationSecurity extends WebSecurityConfigurerAdapter {
 
         httpSecurity.authorizeRequests()
                 //                .antMatchers("/dashboard/**").hasAnyAuthority("admin")
-                .anyRequest().authenticated()
+//                .anyRequest().authenticated()
                 .and()
                 .formLogin()
                 .loginPage("/login")

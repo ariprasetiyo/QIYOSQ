@@ -72,20 +72,3 @@ public class asas {
         System.out.println(solutionObj.solution(a3));
     }
 }
-
-
-
- - ON US : netzme - toko netzme. tanpa rekon, settlement automatic by scheduler
- - OFF US :  Rekening netzme ke rekning lain via JALIN. h+1 ready TO settle, h+2 settlement
-         Flow :
-         - reconsile di dpt dari jalin bisa via email / SFTP. dari Gofar merubaha flag ready  TO test setelah itu upload ke web jajang
-            - sukses dan refund
-            - suspect ( tanda ? di jalin apakah berhasil ato blm ( gantung ), di kita di anggap berhasil ). masih menunggu konfirmasi pak noval utk kepastiaanya perlakuan supect jika status menjadi gagal
-
-
-         note
-         - ngasih ( keluar ). settlement manual,  jam 12 max , jalin ke kita, settle utk tiap transaski
-         - dapat ( masuk ). settlement automatic, max jam 2 siang  kita ke jalin, settle utk tiap transaski
-         - Ada netting yg perlu di tranfer manuak ke gofar, yaitu jika kita akan
-            - NGASIH : kita ke luar 3 jt, luar ke kita 1 jt. dana sudah tersedia di netzme. transfer ke jalin 2 jt.
-            - DAPAT : kita keluar 1 jt, luar ke kita ke 3 jt. maka kita ada dana masuk 2 jt

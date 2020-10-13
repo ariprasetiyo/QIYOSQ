@@ -5,6 +5,7 @@
  */
 package arprast.qiyosq.dao;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -27,6 +28,8 @@ import arprast.qiyosq.model.UserModel;
  * 
  */
 public class UserDaoImpl {
+
+	public static final int MYSQL_DUPLICATE_PK = 1062;
 
 	@Autowired
 	@PersistenceContext
@@ -117,17 +120,13 @@ public class UserDaoImpl {
 	@Transactional(rollbackFor = { Exception.class, Throwable.class, IllegalArgumentException.class }, readOnly = false)
 	public UserModel saveEditUserRole(UserModel user, boolean isEdit) {
 		TransactionStatus TransactionStatus = TransactionAspectSupport.currentTransactionStatus();
-		try {
+
 			if (isEdit) {
 				deleteByUserId(user.getId());
 			}
 			user = userDao.save(user);
 			return user;
-		} catch (Exception e) {
-			TransactionStatus.setRollbackOnly();
-			e.printStackTrace();
-		}
-		return null;
+
 	}
 
 }
