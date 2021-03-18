@@ -4,12 +4,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>arprast.com.qiyosq</groupId>
-    <artifactId>QIYOSQ</artifactId>
+    <artifactId>RESMOB</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
 
-    <name>QIYOSQ</name>
-    <description>Create QIYOSQ by your self</description>
+    <name>RESMOB</name>
+    <description>RESMBO by your self</description>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -51,6 +51,13 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.0</version>
+        </dependency>
+
 
         <dependency>
             <groupId>org.springframework.boot</groupId>

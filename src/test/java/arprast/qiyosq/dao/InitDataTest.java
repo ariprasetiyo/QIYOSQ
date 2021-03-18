@@ -15,12 +15,12 @@ import org.springframework.test.context.junit4.SpringRunner;
  *
  * @author ari-prasetiyo
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest
+//@RunWith(SpringRunner.class)
+//@SpringBootTest
 
 public class InitDataTest {
 
-	@Test
+//	@Test
 	@Sql(
 			// executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
 			scripts = "/InitData.sql")
@@ -29,7 +29,7 @@ public class InitDataTest {
 	}
 
 //	@Sql(scripts = "/DropTables.sql")
-	@Test
+//	@Test
 	public void dropTable() {
 		System.out.println("dropTable =======================================================");
 	}

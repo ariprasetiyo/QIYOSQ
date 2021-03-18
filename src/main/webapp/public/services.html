@@ -3,6 +3,28 @@
 	<head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta content="initial-scale=1.0, user-scalable=no" name="viewport">
+		<meta charset="utf-8">
+		<title>
+			Java Source Code
+		</title>
+		<link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+			  integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" rel="stylesheet">
+		<script crossorigin="anonymous"
+				integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+				src="https://code.jquery.com/jquery-3.2.1.slim.min.js">
+		</script>
+		<script defer
+				src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCJp_qshYS-tJwFHoR4qjLPzb-dVoJ7mWs&callback=initMap">
+		</script>
+		<style>
+                        html { position: relative; height: 100%; }
+                        body { margin-bottom: 60px; } .footer { position: absolute; bottom: 0; width: 100%; height: 60px; line-height: 60px; background-color: #f5f5f5; } body > .container { padding: 60px 15px 10px; } .footer > .container { padding-right: 15px; padding-left: 15px; } code { font-size: 80%; } #map { margin-top: 0px; width: 100%; height: 400px; } #floating-panel { position: absolute; top: 10px; left: 25%; z-index: 5; background-color: #fff; padding: 5px; border: 1px solid #999; text-align: center; font-family: 'Roboto','sans-serif'; line-height: 30px; padding-left: 10px; } #right-panel {height: 100%;float: right;width: 390px;overflow: auto;}
+
+		</style>
+		</link>
+		</meta>
+		</meta>
 	<title>Tour Template</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="description" content="" />
@@ -23,35 +45,35 @@
 	<link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500,700" rel="stylesheet">
 	
 	<!-- Animate.css -->
-	<link rel="stylesheet" href="css/animate.css">
+	<link rel="stylesheet" href="public/css/animate.css">
 	<!-- Icomoon Icon Fonts-->
-	<link rel="stylesheet" href="css/icomoon.css">
+	<link rel="stylesheet" href="public/css/icomoon.css">
 	<!-- Bootstrap  -->
-	<link rel="stylesheet" href="css/bootstrap.css">
+	<link rel="stylesheet" href="public/css/bootstrap.css">
 
 	<!-- Magnific Popup -->
-	<link rel="stylesheet" href="css/magnific-popup.css">
+	<link rel="stylesheet" href="public/css/magnific-popup.css">
 
 	<!-- Flexslider  -->
-	<link rel="stylesheet" href="css/flexslider.css">
+	<link rel="stylesheet" href="public/css/flexslider.css">
 
 	<!-- Owl Carousel -->
-	<link rel="stylesheet" href="css/owl.carousel.min.css">
-	<link rel="stylesheet" href="css/owl.theme.default.min.css">
-	
+	<link rel="stylesheet" href="public/css/owl.carousel.min.css">
+	<link rel="stylesheet" href="public/css/owl.theme.default.min.css">
+
 	<!-- Date Picker -->
-	<link rel="stylesheet" href="css/bootstrap-datepicker.css">
+	<link rel="stylesheet" href="public/css/bootstrap-datepicker.css">
 	<!-- Flaticons  -->
-	<link rel="stylesheet" href="fonts/flaticon/font/flaticon.css">
+	<link rel="stylesheet" href="public/fonts/flaticon/font/flaticon.css">
 
 	<!-- Theme style  -->
-	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="public/css/style.css">
 
 	<!-- Modernizr JS -->
-	<script src="js/modernizr-2.6.2.min.js"></script>
+	<script src="public/js/modernizr-2.6.2.min.js"></script>
 	<!-- FOR IE9 below -->
 	<!--[if lt IE 9]>
-	<script src="js/respond.min.js"></script>
+	<script src="public/js/respond.min.js"></script>
 	<![endif]-->
 
 	</head>
@@ -93,7 +115,7 @@
 		<aside id="colorlib-hero">
 			<div class="flexslider">
 				<ul class="slides">
-			   	<li style="background-image: url(images/cover-img-3.jpg);">
+			   	<li style="background-image: url(public/images/cover-img-3.jpg);">
 			   		<div class="overlay"></div>
 			   		<div class="container-fluid">
 			   			<div class="row">
@@ -113,40 +135,51 @@
 		<div id="colorlib-services">
 			<div class="container">
 				<div class="row">
-					<div class="col-md-3 animate-box text-center">
-						<div class="services">
-							<span class="icon">
-								<i class="flaticon-around"></i>
-							</span>
-							<h3>Amazing Travel</h3>
-							<p>Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean. A small river named Duden flows by their place and supplies</p>
+					<div class="col-md-12">
+						<br>
+						<div class="row">
+							<label class="col-sm-2 col-form-label">
+								Awal
+							</label>
+							<div class="col">
+								<select class="form-control" id="start">
+									<option value="Pekanbaru">Pekanbaru</option>
+									<option value="Duri Talang Mandi">Duri</option>
+									<option value="Dumai">Dumai</option>
+									<option value="Lirik Indragiri Hulu">Lirik</option>
+									<option value="Pasir Pengaraian">Pasir Pengaraian</option>
+									<option value="Pulau Bengkalis">Pulau Bengkalis</option>
+								</select>
+							</div>
+							<label class="col-sm-2 col-form-label">
+								Tujuan
+							</label>
+							<div class="col">
+								<select class="form-control" id="finish">
+									<option value="Pekanbaru">Pekanbaru</option>
+									<option value="Duri Talang Mandi">Duri</option>
+									<option value="Dumai">Dumai</option>
+									<option value="Lirik Indragiri Hulu">Lirik</option>
+									<option value="Pasir Pengaraian">Pasir Pegaraian</option>
+									<option value="Pulau Bengkalis">Pulau Bengkalis</option>
+								</select>
+							</div>
+						</div>
+						<span id="error">
+                        </span>
+						</br>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-8">
+						<div id="map" class="card">
 						</div>
 					</div>
-					<div class="col-md-3 animate-box text-center">
-						<div class="services">
-							<span class="icon">
-								<i class="flaticon-boat"></i>
-							</span>
-							<h3>Our Cruises</h3>
-							<p>Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean. A small river named Duden flows by their place and supplies</p>
-						</div>
-					</div>
-					<div class="col-md-3 animate-box text-center">
-						<div class="services">
-							<span class="icon">
-								<i class="flaticon-car"></i>
-							</span>
-							<h3>Book Your Trip</h3>
-							<p>Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean. A small river named Duden flows by their place and supplies</p>
-						</div>
-					</div>
-					<div class="col-md-3 animate-box text-center">
-						<div class="services">
-							<span class="icon">
-								<i class="flaticon-postcard"></i>
-							</span>
-							<h3>Nice Support</h3>
-							<p>Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean. A small river named Duden flows by their place and supplies</p>
+					<div class="col-md-4">
+						<div class="card">
+							<div id="panel" class="card-block" style="overflow-y: scroll;height: 400px;">
+
+							</div>
 						</div>
 					</div>
 				</div>
@@ -166,7 +199,7 @@
 						<div class="owl-carousel2">
 							<div class="item">
 								<div class="testimony text-center">
-									<span class="img-user" style="background-image: url(images/person1.jpg);"></span>
+									<span class="img-user" style="background-image: url(public/images/person1.jpg);"></span>
 									<span class="user">Alysha Myers</span>
 									<small>Miami Florida, USA</small>
 									<blockquote>
@@ -176,7 +209,7 @@
 							</div>
 							<div class="item">
 								<div class="testimony text-center">
-									<span class="img-user" style="background-image: url(images/person2.jpg);"></span>
+									<span class="img-user" style="background-image: url(public/images/person2.jpg);"></span>
 									<span class="user">James Fisher</span>
 									<small>New York, USA</small>
 									<blockquote>
@@ -186,7 +219,7 @@
 							</div>
 							<div class="item">
 								<div class="testimony text-center">
-									<span class="img-user" style="background-image: url(images/person3.jpg);"></span>
+									<span class="img-user" style="background-image: url(public/images/person3.jpg);"></span>
 									<span class="user">Jacob Webb</span>
 									<small>Athens, Greece</small>
 									<blockquote>
@@ -201,7 +234,7 @@
 		</div>
 
 	
-		<div id="colorlib-subscribe" style="background-image: url(images/img_bg_2.jpg);" data-stellar-background-ratio="0.5">
+		<div id="colorlib-subscribe" style="background-image: url(public/images/img_bg_2.jpg);" data-stellar-background-ratio="0.5">
 			<div class="overlay"></div>
 			<div class="container">
 				<div class="row">
@@ -301,27 +334,63 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 	</div>
 
 	<!-- jQuery -->
-	<script src="js/jquery.min.js"></script>
+	<script src="public/js/jquery.min.js"></script>
 	<!-- jQuery Easing -->
-	<script src="js/jquery.easing.1.3.js"></script>
+	<script src="public/js/jquery.easing.1.3.js"></script>
 	<!-- Bootstrap -->
-	<script src="js/bootstrap.min.js"></script>
+	<script src="public/js/bootstrap.min.js"></script>
 	<!-- Waypoints -->
-	<script src="js/jquery.waypoints.min.js"></script>
+	<script src="public/js/jquery.waypoints.min.js"></script>
 	<!-- Flexslider -->
-	<script src="js/jquery.flexslider-min.js"></script>
+	<script src="public/js/jquery.flexslider-min.js"></script>
 	<!-- Owl carousel -->
-	<script src="js/owl.carousel.min.js"></script>
+	<script src="public/js/owl.carousel.min.js"></script>
 	<!-- Magnific Popup -->
-	<script src="js/jquery.magnific-popup.min.js"></script>
-	<script src="js/magnific-popup-options.js"></script>
+	<script src="public/js/jquery.magnific-popup.min.js"></script>
+	<script src="public/js/magnific-popup-options.js"></script>
 	<!-- Date Picker -->
-	<script src="js/bootstrap-datepicker.js"></script>
+	<script src="public/js/bootstrap-datepicker.js"></script>
 	<!-- Stellar Parallax -->
-	<script src="js/jquery.stellar.min.js"></script>
+	<script src="public/js/jquery.stellar.min.js"></script>
 
 	<!-- Main -->
-	<script src="js/main.js"></script>
+	<script src="public/js/main.js"></script>
+
+	<script type="text/javascript">
+        function initMap() {
+        var directionsService = new google.maps.DirectionsService;
+        var directionsDisplay = new google.maps.DirectionsRenderer;
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 5,
+          center: {lat: -6.200000, lng: 106.816666}
+        });
+        directionsDisplay.setMap(map);
+        directionsDisplay.setPanel(document.getElementById('panel'));
+
+        var onChangeHandler = function() {
+          calculateAndDisplayRoute(directionsService, directionsDisplay);
+        };
+        document.getElementById('start').addEventListener('change', onChangeHandler);
+        document.getElementById('finish').addEventListener('change', onChangeHandler);
+      }
+
+      function calculateAndDisplayRoute(directionsService, directionsDisplay) {
+        directionsService.route({
+          origin: document.getElementById('start').value,
+          destination: document.getElementById('finish').value,
+          travelMode: 'DRIVING'
+        }, function(response, status) {
+          if (status === 'OK') {
+            directionsDisplay.setDirections(response);
+            $("#error").empty();
+            $("#error").removeClass();
+          } else {
+           $("#error").addClass("badge badge-danger");
+            $("#error").text("Tidak dapat menemukan nama lokasi, status error: "+status);
+          }
+        });
+      }
+    </script>
 
 	</body>
 </html>

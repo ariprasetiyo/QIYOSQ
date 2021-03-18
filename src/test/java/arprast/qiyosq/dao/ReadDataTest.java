@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import arprast.qiyosq.dao.AuthorizationDao;
 import arprast.qiyosq.dto.AuthorizationDto;
 
 import org.apache.commons.collections.map.MultiValueMap;

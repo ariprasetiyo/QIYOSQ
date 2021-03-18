@@ -11,9 +11,9 @@ import org.springframework.web.servlet.ModelAndView;
  * @author ari-prasetiyo
  */
 @Controller
-public class HomeController {
+public class ServicesController {
     
-    @RequestMapping(value = {"/", "/index", "/index.html"} , method = RequestMethod.GET)
+    @RequestMapping(value = "/services.html", method = RequestMethod.GET)
     public ModelAndView login(@RequestParam(value = "error", required = false) String error,
             @RequestParam(value = "logout", required = false) String logout) {
         ModelAndView model = new ModelAndView();
@@ -23,7 +23,7 @@ public class HomeController {
         if (logout != null) {
             model.addObject("message", "Logged out from AG successfully.");
         }
-        model.setViewName("public/index");
+        model.setViewName("public/services.html");
         return model;
     }
 }

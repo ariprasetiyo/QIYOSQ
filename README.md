@@ -17,6 +17,14 @@ mvn spring-boot:run -DskipTests -Drun.jvmArguments="-Xdebug -Xrunjdwp:transport=
 - Or Run application with server.sh in directory server :
 ./server.sh start
 
+---- currently ----
+- build spring-boot to war :
+mvn package -DskipTests
+
+- run spring-boot .war:
+java -jar filename.war
+
+
 - Access link url :
 http://localhost:8181/login
 
@@ -25,6 +33,7 @@ git config core.fileMode false
 
 - Git ignore file remove cache :
 git rm --cached FILENAME. Example git rm --cached server.sh
+
 
 - Root folder
 	* webapp

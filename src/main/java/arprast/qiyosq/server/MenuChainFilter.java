@@ -87,8 +87,9 @@ public class MenuChainFilter implements Filter {
 			}
 
 			String listMenu = menuService.getScreenMenu(listAuthorities);
+            List<String> buttonActionAcl = authorizationService.getButtonActionAcl("NRP1", "Add Menu", "admin");
 			servletRequest.setAttribute("scriptMenu", listMenu);
-            servletRequest.setAttribute(StringConstan.BUTTON_ACTION_ACL, authorizationService.getButtonActionAcl("ari", "Add Menu", "admin"));
+            servletRequest.setAttribute(StringConstan.BUTTON_ACTION_ACL, buttonActionAcl);
 			servletRequest.setAttribute(StringConstan.USER_GROUP_ACL, "admin");
 
 			if (Util.isEnableLoggerAccessPage()) {

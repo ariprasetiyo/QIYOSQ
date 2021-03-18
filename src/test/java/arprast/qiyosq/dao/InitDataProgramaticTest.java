@@ -30,8 +30,8 @@ import arprast.qiyosq.model.UserRolesModel;
  *
  * @author ari-prasetiyo
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest
+//@RunWith(SpringRunner.class)
+//@SpringBootTest
 public class InitDataProgramaticTest {
 
     @Autowired
@@ -68,7 +68,7 @@ public class InitDataProgramaticTest {
         }
     }
 
-    @Test
+//    @Test
     public void initDataRoles() {
         RolesModel sysRoles = new RolesModel();
         sysRoles.setRoleName("admin");
@@ -92,7 +92,7 @@ public class InitDataProgramaticTest {
     }
 
     //@Test
-    @Ignore
+//    @Ignore
     public void initDataSysAuthorization() {
 
         Long idRoles = sysRolesDao.getIdByName("admin");

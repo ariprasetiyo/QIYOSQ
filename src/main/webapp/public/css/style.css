@@ -18,6 +18,16 @@ body {
   color: #595959;
   background: #fff; }
 
+.search-rent-car {
+    margin-right: -50px;
+    margin-top: 3%;
+    background-color: #ffff;
+}
+
+input.search-car.form-control {
+    background: #ffff;
+}
+
 #page {
   position: relative;
   overflow-x: hidden;
@@ -260,7 +270,7 @@ h1, h2, h3, h4, h5, h6, figure {
     transform: scale(1.1); }
 
 #colorlib-hero {
-  height: 650px;
+  height: 350px;
   background: #fff url(../images/loader.gif) no-repeat center center;
   width: 100%;
   float: left;
@@ -280,7 +290,7 @@ h1, h2, h3, h4, h5, h6, figure {
         background-repeat: no-repeat;
         background-size: cover;
         background-position: center center;
-        height: 650px;
+        height: 350px;
         position: relative; }
         #colorlib-hero .flexslider .slides li .overlay {
           position: absolute;
@@ -312,12 +322,12 @@ h1, h2, h3, h4, h5, h6, figure {
     #colorlib-hero .flexslider .slider-text {
       display: table;
       opacity: 0;
-      height: 650px;
+      height: 350px;
       z-index: 9; }
       #colorlib-hero .flexslider .slider-text > .slider-text-inner {
         display: table-cell;
         vertical-align: middle;
-        height: 650px;
+        height: 350px;
         padding: 2em; }
         @media screen and (max-width: 768px) {
           #colorlib-hero .flexslider .slider-text > .slider-text-inner {
@@ -451,7 +461,7 @@ h1, h2, h3, h4, h5, h6, figure {
       color: #000; }
     #colorlib-reservation .nav-tabs li.active {
       color: #fff !important !important;
-      background: #2C2E3E !important; }
+      background:#17c1b3 !important; }
   @media screen and (max-width: 768px) {
     #colorlib-reservation .nav-tabs {
       margin-left: 10px; }
@@ -460,8 +470,9 @@ h1, h2, h3, h4, h5, h6, figure {
         #colorlib-reservation .nav-tabs li a {
           padding: 10px !important; } }
   #colorlib-reservation .tab-content {
-    background: #2C2E3E;
-    padding: 30px 60px; }
+    background: #239fa9;
+    //background: #2C2E3E;
+    padding: 10px 60px; }
 
 .colorlib-form label {
   font-weight: normal;

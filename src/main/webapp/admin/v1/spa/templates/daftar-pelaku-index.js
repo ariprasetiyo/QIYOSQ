@@ -260,6 +260,7 @@ $(function() {
 			listDataTable(data, callback, settings);
 		},
 		scrollY : _getScreenDataTable(),
+		scrollX : 2000,
 		scroller : {
 			loadingIndicator : true
 		},

@@ -53,6 +53,24 @@
 			_finishLoading();
 		});
 
+		this.get('#/daftar-pelaku/', function(context) {
+        			_startLoading();
+        			var str = location.href.toLowerCase();
+        			context.app.swap('');
+        			context.render('../../../admin/v1/view/daftar/pelaku/', {})
+        					.appendTo(context.$element());
+        			_finishLoading();
+        		});
+
+        this.get('#/daftar-dpo/', function(context) {
+                            _startLoading();
+                            var str = location.href.toLowerCase();
+                            context.app.swap('');
+                            context.render('../../../admin/v1/view/daftar/dpo/', {})
+                                    .appendTo(context.$element());
+                            _finishLoading();
+                        });
+
 		this.get('#/usergroup/', function(context) {
 			_startLoading();
 			var str = location.href.toLowerCase();
